@@ -4,7 +4,7 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary")
 
 const cloudinary = require("../config/cloudinary");
 
-const storage = new CloudinaryStorage({
+const videostorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: "udemy_clone/videos",
@@ -13,7 +13,17 @@ const storage = new CloudinaryStorage({
     }
 })
 
+const imagestorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "udemy_clone/thumbnails",
+        resource_type: "image",
+        allowed_formats: ["jpg","jpeg", "png","webp"]
+    }
+})
 
-const upload = multer({storage})
 
-module.exports = upload;
+const uploadvideo = multer({storage: videostorage})
+const uploadimage = multer({storage: imagestorage})
+
+module.exports = {uploadimage,uploadvideo};

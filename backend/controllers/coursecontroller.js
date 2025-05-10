@@ -40,3 +40,22 @@ exports.getcoursebyid = async (req,res) => {
         res.status(500).json({msg:"failed to fetch cousre"})
     }
 }
+
+exports.getcoursevideos = async (req,res) => {
+    try {
+        const course = await Course.findById(req.params.courseid);
+        const isenrolled = course.enrolledusers.includes(req.user._id)
+        const isinstructor = course.instructor.equals(req.user._id)
+
+        if(!isenrolled && !isinstructor){
+         return res.status(404).json({msg:"access denied"})
+        }
+
+        
+            res.status(200).json(course.videos)
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({msg:"failed to fetch videos"})
+    }
+}
