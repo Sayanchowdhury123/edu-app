@@ -1,71 +1,208 @@
 const { protect, isinstructor } = require("../middleware/auth");
-const {uploadvideo,uploadimage} = require("../middleware/upload")
-const Course = require("../models/course")
-const express = require("express")
+const { uploadvideo, uploadimage } = require("../middleware/upload");
+const Course = require("../models/course");
+const express = require("express");
 const router = express.Router();
+const { v4: uuidv4 } = require("uuid");
+const cloudinary = require("../config/cloudinary")
 
-router.post("/courses/:courseid/upload-video",protect,isinstructor,uploadvideo.single("video"), async (req,res) => {
+
+
+router.post(
+  "/courses/:courseid/sections/:sectionindex/upload-video",
+  protect,
+  isinstructor,
+  uploadvideo.single("video"),
+  async (req, res) => {
     try {
-        const {title,duration} = req.body;
-        const {path} = req.file;
-        const {courseid} = req.params;
+      const { title, isfreepreview } = req.body;
+      const { path } = req.file;
+      const { courseid } = req.params;
+      const { sectionindex } = req.params;
 
-        if(!title || !path){
-            return res.status(400).json({msg:"missing required fields"})
-        }
+      if (!title || !path) {
+        return res.status(400).json({ msg: "missing required fields" });
+      }
 
-        const course = await Course.findById(courseid);
-        if(!course){
-            return res.status(404).json({msg:"course not found"})
-        }
+      const course = await Course.findById(courseid);
+      if (!course) {
+        return res.status(404).json({ msg: "course not found" });
+      }
 
-        course.videos.push({
-            title: title,
-            url: path,
-            duration: duration
-        })
+      const section = course.sections[sectionindex];
+      if (!section) {
+        return res.status(404).json({ msg: "section not found" });
+      }
 
-        await course.save()
+      section.lessons.push({
+        id: uuidv4(),
+        title: title,
+        videourl: path,
+        cloudinaryid: req.file.filename,
+        isfreepreview: isfreepreview === "true",
+      });
 
-        res.status(200).json({
-            msg:"video uploaded and saved to course", 
-            video: {
-            title,
-            url: path,
-            duration: duration
-        },
-        course
-    })
-        
+      await course.save();
+
+      res.status(200).json({
+        msg: "video uploaded and lesson added",
+      });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({msg:"failed to upload and save video"})
+      console.log(error);
+      res.status(500).json({ msg: "failed to upload and save video" });
     }
-})
+  }
+);
 
-
-router.post("/courses/:courseid/upload-thumbnail",protect,isinstructor,uploadimage.single("thumbnail"), async (req,res) => {
+router.put(
+  "/courses/:courseid/sections/:sectionindex/lessons/:lessonid",
+  protect,
+  isinstructor,
+  uploadvideo.single("video"),
+  async (req, res) => {
     try {
-          const {path} = req.file;
-        const {courseid} = req.params;
+      const { title, isfreepreview } = req.body;
+      const { path } = req.file;
+      const { courseid } = req.params;
+      const { sectionindex } = req.params;
+      const { lessonid } = req.params;
 
-        const course = await Course.findById(courseid);
+      if (!title || !path) {
+        return res.status(400).json({ msg: "missing required fields" });
+      }
 
-        course.thumbnail = path;
-        await course.save();
+      const course = await Course.findById(courseid);
+      if (!course) {
+        return res.status(404).json({ msg: "course not found" });
+      }
 
-          res.status(200).json({
-            msg:"thumbnail uploaded and saved to course", 
-            thumbnail: path,
-            course
+      const section = course.sections[sectionindex];
+      if (!section) {
+        return res.status(404).json({ msg: "section not found" });
+      }
 
-         })
-        
-    } catch (error) {
-          console.log(error);
-        res.status(500).json({msg:"failed to upload and save image"})
+      const lesson = section.lessons.find((l) => l.id === lessonid);
+      if (!lesson) {
+        return res.status(404).json({ msg: "lesson not found" });
+      }
+
+      if (title) lesson.title = title;
+      if (isfreepreview !== undefined) lesson.isfreepreview = isfreepreview;
+      if(req.file){
+            if(lesson.cloudinaryid){
+       await cloudinary.uploader.destroy(lesson.cloudinaryid, {resource_type: "video"})
     }
-})
+      }
+        lesson.videourl = path;
+        lesson.cloudinaryid = req.file.filename;
 
+      await course.save();
+
+      res.status(200).json({ msg: "video edited" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "failed to update lesson" });
+    }
+  }
+);
+
+router.delete(
+  "/courses/:courseid/sections/:sectionindex/lessons/:lessonid",
+  protect,
+  isinstructor,
+  async (req, res) => {
+    try {
+      const { courseid } = req.params;
+      const { sectionindex } = req.params;
+      const { lessonid } = req.params;
+
+      const course = await Course.findById(courseid);
+      if (!course) {
+        return res.status(404).json({ msg: "course not found" });
+      }
+
+      const section = course.sections[sectionindex];
+      if (!section) {
+        return res.status(404).json({ msg: "section not found" });
+      }
+
+    const lessson =  section.lessons.find((l) => l.id === lessonid)
+     if (!lessson) {
+        return res.status(404).json({ msg: "lession not found" });
+      }
+
+    if(lessson.cloudinaryid){
+       await cloudinary.uploader.destroy(lessson.cloudinaryid, {resource_type: "video"})
+    }
+
+    
+    
+   section.lessons =  section.lessons.filter((l) => l.id !== lessonid);
+
+      await course.save();
+
+      res.status(200).json({
+        msg: " lesson deleted",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "failed to delete lesson" });
+    }
+  }
+);
+
+router.post(
+  "/courses/:courseid/upload-thumbnail",
+  protect,
+  isinstructor,
+  uploadimage.single("thumbnail"),
+  async (req, res) => {
+    try {
+      const { path } = req.file;
+      const { courseid } = req.params;
+
+      const course = await Course.findById(courseid);
+
+      course.thumbnail = path;
+      await course.save();
+
+      res.status(200).json({
+        msg: "thumbnail uploaded and saved to course",
+        thumbnail: path,
+        course,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "failed to upload and save image" });
+    }
+  }
+);
+
+router.put(
+  "/courses/:courseid/upload-thumbnail",
+  protect,
+  isinstructor,
+  uploadimage.single("thumbnail"),
+  async (req, res) => {
+    try {
+      const { path } = req.file;
+      const { courseid } = req.params;
+
+      const course = await Course.findById(courseid);
+
+      course.thumbnail = path;
+      await course.save();
+
+      res.status(200).json({
+        msg: "thumbnail updated",
+        thumbnail: path,
+        course,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "failed to edit thumbnail" });
+    }
+  }
+);
 
 module.exports = router;

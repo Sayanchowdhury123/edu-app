@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const lessonschema = new mongoose.Schema({
+  _id: false,
+  id: {type:String,required:true},
+  title: {type:String},
+  videourl: {type: String},
+  isfreeprivew:{type: Boolean, default: false},
+  cloudinaryid: {type: String},
+
+})
+
+const sectionschema = new mongoose.Schema({
+  title: String,
+  lessons: [lessonschema]
+})
+
 const courseschema = new mongoose.Schema({
   title: String,
   description: String,
@@ -7,13 +22,7 @@ const courseschema = new mongoose.Schema({
   category: String,
   instructor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   thumbnail: String,
-  videos: [
-    {
-      title: String,
-      url: String,
-      duration: String,
-    },
-  ],
+  sections: [sectionschema],
   enrolledusers: [
     {
       type: mongoose.Schema.Types.ObjectId,

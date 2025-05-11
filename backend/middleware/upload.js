@@ -22,8 +22,17 @@ const imagestorage = new CloudinaryStorage({
     }
 })
 
+const avatarstorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "udemy_clone/avatars",
+        allowed_formats: ["jpg","jpeg", "png","webp"]
+    }
+})
+
 
 const uploadvideo = multer({storage: videostorage})
 const uploadimage = multer({storage: imagestorage})
+const uploadavatar = multer({storage: avatarstorage})
 
-module.exports = {uploadimage,uploadvideo};
+module.exports = {uploadimage,uploadvideo,uploadavatar};
