@@ -103,7 +103,7 @@ router.delete("/wishlist/:courseid", protect, async (req,res) => {
       return res.status(400).json({ msg: "user not found" });
     }
 
-    user.wishlist.filter((c) => c._id.toString() !== req.params.courseid)
+  user.wishlist =  user.wishlist.filter((c) => c._id.toString() !== req.params.courseid.toString())
 
     await user.save();
         res.status(200).json({msg:"deleted from wishlist"})

@@ -70,7 +70,7 @@ router.delete("/:courseid/reviews/:reviewid", protect, async (req, res) => {
     if (!course) {
       return res.status(400).json({ msg: "course not found" });
     }
-      course.reviews.filter((r) => r._id.toString()  !== req.params.reviewid);
+  course.reviews =  course.reviews.filter((r) => r._id.toString()  !== req.params.reviewid.toString());
 
     await course.save();
     res.status(200).json({ msg: "review deleted" });
