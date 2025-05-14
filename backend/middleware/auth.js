@@ -9,6 +9,7 @@ const protect = async (req,res,next) => {
             token = token.split(" ")[1];
             const decode = jwt.verify(token,process.env.JWT);
             req.user = await User.findById(decode.id).select("-password");
+            
             next();
         } catch (error) {
               res.status(401).json({message: "not authorized, token failed"})  ;
@@ -19,6 +20,7 @@ const protect = async (req,res,next) => {
 } 
 
 const isinstructor = async (req,res,next) => {
+    
     if(req.user.role === "instructor"){
         return next();
     } else{

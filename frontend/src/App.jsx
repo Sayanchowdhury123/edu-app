@@ -5,6 +5,8 @@ import Signup from './pages/auth/signup'
 import Login from './pages/auth/login'
 import Privateroute from './pages/Privateroute'
 import Profile from './pages/Profile'
+import Instructordashboard from './pages/Instrucdashboard'
+import Createcourse from './pages/createcourse'
 
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/profile' element={<Privateroute><Profile/></Privateroute>}  />
+        <Route path='/instructor-dasshboard' element={<Privateroute><Instructordashboard/></Privateroute>}  />
+        <Route path='/create-course' element={<Privateroute><Createcourse/></Privateroute>}  />
       </Routes>
     </Router>
     

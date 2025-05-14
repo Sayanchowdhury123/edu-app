@@ -57,9 +57,10 @@ const token = jwt.sign({id: user._id}, process.env.JWT , {expiresIn: "14d"});
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-       },
-       token
+        role: user.role,
+        token: token
+       }
+     
    });
 
     }catch(error){

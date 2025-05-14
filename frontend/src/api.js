@@ -5,13 +5,6 @@ const axiosinstance = axios.create({
 })
 
 
-axiosinstance.interceptors.request.use((config) => {
-    const user = localStorage.getItem("user");
-    
-    if(user.token){
-        config.headers.Authorization = `Bearer ${user.token}`
-    }
-    return config;
-});
+
 
 export default axiosinstance;
