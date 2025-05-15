@@ -7,6 +7,8 @@ import Privateroute from './pages/Privateroute'
 import Profile from './pages/Profile'
 import Instructordashboard from './pages/Instrucdashboard'
 import Createcourse from './pages/createcourse'
+import Cousremanagementpage from './pages/Coursemangement'
+import Editcourse from './pages/Editcourse'
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route path='/profile' element={<Privateroute><Profile/></Privateroute>}  />
         <Route path='/instructor-dasshboard' element={<Privateroute><Instructordashboard/></Privateroute>}  />
         <Route path='/create-course' element={<Privateroute><Createcourse/></Privateroute>}  />
+        <Route path='/course-management' element={<Privateroute><Cousremanagementpage/></Privateroute>} />
+        <Route  path='/instructor/edit-course/:courseid' element={<Privateroute><Editcourse/></Privateroute>} />
       </Routes>
     </Router>
     

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import axiosinstance from "../api";
 import { useContext } from "react";
 import { Authcontext } from "../context/Authcontext";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -16,7 +17,7 @@ const courseschema = Yup.object().shape({
 })
 
 const Createcourse = () => {
-
+   const navigate = useNavigate()
     const { user } = useContext(Authcontext)
 
     const handlesubmit = async (values, { setSubmitting, resetForm }) => {
@@ -29,6 +30,7 @@ const Createcourse = () => {
             console.log(res.data);
             resetForm();
             alert("cousre created successsfully")
+           navigate("/course-management")
             
         } catch (error) {
             console.log(error);

@@ -12,7 +12,7 @@ const router = express.Router();
 const Course = require("../models/course");
 
 router.get("/", getcourses);
-router.get("/:id", getcoursebyid);
+router.get("/:courseid", getcoursebyid);
 router.get("/:courseid/videos", protect, getcoursevideos);
 router.post("/", protect, isinstructor, createcourse);
 router.put("/:courseid",protect,isinstructor, updatecourse)

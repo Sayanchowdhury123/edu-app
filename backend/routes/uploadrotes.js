@@ -151,25 +151,26 @@ router.delete(
   }
 );
 
-router.post(
+router.patch(
   "/courses/:courseid/upload-thumbnail",
   protect,
   isinstructor,
   uploadimage.single("thumbnail"),
   async (req, res) => {
     try {
-      const { path } = req.file;
+    
+   
       const { courseid } = req.params;
 
       const course = await Course.findById(courseid);
 
-      course.thumbnail = path;
+      course.thumbnail = req.file.path;
       await course.save();
 
       res.status(200).json({
         msg: "thumbnail uploaded and saved to course",
-        thumbnail: path,
-        course,
+        
+        
       });
     } catch (error) {
       console.log(error);
@@ -178,31 +179,6 @@ router.post(
   }
 );
 
-router.put(
-  "/courses/:courseid/upload-thumbnail",
-  protect,
-  isinstructor,
-  uploadimage.single("thumbnail"),
-  async (req, res) => {
-    try {
-      const { path } = req.file;
-      const { courseid } = req.params;
 
-      const course = await Course.findById(courseid);
-
-      course.thumbnail = path;
-      await course.save();
-
-      res.status(200).json({
-        msg: "thumbnail updated",
-        thumbnail: path,
-        course,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: "failed to edit thumbnail" });
-    }
-  }
-);
 
 module.exports = router;

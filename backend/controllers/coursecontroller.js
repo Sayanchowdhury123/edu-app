@@ -31,7 +31,9 @@ exports.getcourses = async (req,res) => {
 
 exports.getcoursebyid = async (req,res) => {
     try {
-        const course = await Course.findById(req.params.id).populate("instructor", "name")
+        
+        const course = await Course.findById(req.params.courseid).populate("instructor", "name")
+        
         res.json(course)
     } catch (error) {
         console.log(error)
@@ -106,13 +108,13 @@ exports.deletecourse = async (req,res) => {
     try {
        
             const courses = await Course.find({instructor: req.user._id})
-              const course = await Course.findById(req.params.courseid);
+              const course = await Course.findByIdAndDelete(req.params.courseid);
             if(!course){
                 return res.status(400).json({msg:"course not found"})
             }
-          courses.filter((c) => c._id !== course._id)
+          
 
-          await course.save();
+        //  await course.save();
 
     res.status(200).json({msg:"course deleted"})
 

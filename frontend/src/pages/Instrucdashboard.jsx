@@ -86,7 +86,11 @@ const navigate = useNavigate()
        <motion.div initial={{opacity:0, y:20}} animate={{opacity:1,y:0}} className="p-4">
         <div className="flex justify-between">
          <h1 className="text-3xl font-bold mb-4">Instructor Dashboard</h1>
-         <button className="btn rounded-xl font-semibold" onClick={() => navigate("/create-course")} >Create Course</button>
+         <div>
+            <button className="btn rounded-xl font-semibold" onClick={() => navigate("/course-management")} >Course management</button>
+             <button className="btn rounded-xl font-semibold" onClick={() => navigate("/create-course")} >Create Course</button>
+         </div>
+   
         </div>
          
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/dashboard",protect,isinstructor,async (req,res) => {
     try {
-        const courses = await Course.find({instructor: req.user._id}).select("title price enrolledusers reviews").lean();
+        const courses = await Course.find({instructor: req.user._id}).select("title price enrolledusers thumbnail reviews").lean();
       
 
         res.status(200).json({
