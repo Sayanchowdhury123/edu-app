@@ -43,14 +43,18 @@ router.put(
       const { title } = req.body;
       const {sectionindex} = req.params.sectionindex;
       const course = await Course.findById(req.params.courseid);
+      console.log(req.params.sectionindex);
       if (!course) {
         return res.status(400).json({ msg: "course not found" });
       }
-
-      const section = course.sections[sectionindex];
+   
+      const section = course.sections[req.params.sectionindex];
+       
           if(!section){
             return res.status(404).json({msg:"section not found"})
         }
+
+       
 
         section.title = title;
         await course.save();

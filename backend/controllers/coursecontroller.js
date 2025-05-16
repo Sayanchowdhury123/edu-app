@@ -43,12 +43,13 @@ exports.getcoursebyid = async (req,res) => {
 
 exports.getcoursevideos = async (req,res) => {
     try {
-        const course = await Course.findById(req.params.courseid).select("title sections enrolledusers").lean()
+        const course = await Course.findById(req.params.courseid).select("title sections instructor enrolledusers").lean()
          if(!course){
                 return res.status(400).json({msg:"course not found"})
             }
         const isenrolled = course.enrolledusers.includes(req.user._id)
-        const isinstructor = course.instructor.equals(req.user._id)
+        const isinstructor = course.instructor?.equals(req.user._id)
+     
 
         if(!isenrolled && !isinstructor){
          return res.status(404).json({msg:"access denied"})
