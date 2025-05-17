@@ -4,9 +4,7 @@ const Course = require("../models/course");
 const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
-const cloudinary = require("../config/cloudinary")
-
-
+const cloudinary = require("../config/cloudinary");
 
 router.post(
   "/courses/:courseid/sections/:sectionindex/upload-video",
@@ -66,6 +64,7 @@ router.put(
       const { courseid } = req.params;
       const { sectionindex } = req.params;
       const { lessonid } = req.params;
+      console.log(courseid);
 
       if (!title || !path) {
         return res.status(400).json({ msg: "missing required fields" });
@@ -88,13 +87,15 @@ router.put(
 
       if (title) lesson.title = title;
       if (isfreepreview !== undefined) lesson.isfreepreview = isfreepreview;
-      if(req.file){
-            if(lesson.cloudinaryid){
-       await cloudinary.uploader.destroy(lesson.cloudinaryid, {resource_type: "video"})
-    }
+      if (req.file) {
+        if (lesson.cloudinaryid) {
+          await cloudinary.uploader.destroy(lesson.cloudinaryid, {
+            resource_type: "video",
+          });
+        }
       }
-        lesson.videourl = path;
-        lesson.cloudinaryid = req.file.filename;
+      lesson.videourl = path;
+      lesson.cloudinaryid = req.file.filename;
 
       await course.save();
 
@@ -126,18 +127,18 @@ router.delete(
         return res.status(404).json({ msg: "section not found" });
       }
 
-    const lessson =  section.lessons.find((l) => l.id === lessonid)
-     if (!lessson) {
+      const lessson = section.lessons.find((l) => l.id === lessonid);
+      if (!lessson) {
         return res.status(404).json({ msg: "lession not found" });
       }
 
-    if(lessson.cloudinaryid){
-       await cloudinary.uploader.destroy(lessson.cloudinaryid, {resource_type: "video"})
-    }
+      if (lessson.cloudinaryid) {
+        await cloudinary.uploader.destroy(lessson.cloudinaryid, {
+          resource_type: "video",
+        });
+      }
 
-    
-    
-   section.lessons =  section.lessons.filter((l) => l.id !== lessonid);
+      section.lessons = section.lessons.filter((l) => l.id !== lessonid);
 
       await course.save();
 
@@ -158,8 +159,6 @@ router.patch(
   uploadimage.single("thumbnail"),
   async (req, res) => {
     try {
-    
-   
       const { courseid } = req.params;
 
       const course = await Course.findById(courseid);
@@ -169,8 +168,6 @@ router.patch(
 
       res.status(200).json({
         msg: "thumbnail uploaded and saved to course",
-        
-        
       });
     } catch (error) {
       console.log(error);
@@ -178,7 +175,5 @@ router.patch(
     }
   }
 );
-
-
 
 module.exports = router;

@@ -85,6 +85,7 @@ const Sessionlesson = () => {
        setuploadsectionindex(null)
 
             fetchvideos();
+            
             alert("video uploaded")
 
             
@@ -160,6 +161,7 @@ const Sessionlesson = () => {
                                 <li key={lesson.id}>
                                     {lesson.title}
                                     <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => deletelesson(section.index, lesson.id)}  >Delete lesson</button>
+                                     <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => navigate(`/edit-lesson/${courseid}/${section.index}/${lesson.id}`)}  >Edit lesson</button>
 
                                 </li>
 
@@ -188,7 +190,8 @@ const Sessionlesson = () => {
                                     transition={{ duration: 0.3 }}
                                 >
                                     <div className="flex items-center gap-4">
-
+                                        
+                                        <span className="loading loading-spinner loading-md text-primary" />
                                         <p className="text-primary font-semibold">
                                             Uploading : {uploadprogress}%
                                         </p>
