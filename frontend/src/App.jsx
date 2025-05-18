@@ -12,6 +12,7 @@ import Editcourse from './pages/Editcourse'
 import Sessionlesson from './pages/sessionslesson'
 import Editsection from './pages/editsections'
 import Editlesson from './pages/editlesson'
+import Homepage from './pages/homepage'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
+        <Route path='/' element={<Homepage/>} />
         <Route path='/profile' element={<Privateroute><Profile/></Privateroute>}  />
         <Route path='/instructor-dasshboard' element={<Privateroute><Instructordashboard/></Privateroute>}  />
         <Route path='/create-course' element={<Privateroute><Createcourse/></Privateroute>}  />
