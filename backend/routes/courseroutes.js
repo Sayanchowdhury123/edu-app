@@ -12,11 +12,27 @@ const router = express.Router();
 const Course = require("../models/course");
 
 router.get("/", getcourses);
-router.get("/:courseid", getcoursebyid);
+router.get("/:courseid", protect,getcoursebyid);
 router.get("/:courseid/videos", protect, getcoursevideos);
 router.post("/", protect, isinstructor, createcourse);
 router.put("/:courseid",protect,isinstructor, updatecourse)
 router.delete("/:courseid",protect,isinstructor, deletecourse)
+
+
+router.get("/similar/:cat/:courseid", protect,async (req,res) => {
+  const {cat} = req.params;
+  const {courseid} = req.params;
+  
+    try {
+        const courses = await Course.find({category:cat,
+          _id: {$ne: courseid}
+        }).limit(3)
+        res.status(200).json(courses)
+    } catch (error) {
+         console.log(error);
+           res.status(500).json({ msg: "failed to fetch" });
+    }
+})
 
 router.post("/:courseid/sections", protect, isinstructor, async (req, res) => {
   try {
@@ -30,7 +46,7 @@ router.post("/:courseid/sections", protect, isinstructor, async (req, res) => {
     res.status(200).json({ msg: "section added", sections: course.sections });
   } catch (error) {
     console.log(error);
-    res.status(200).json({ msg: "failed to add section" });
+    res.status(500).json({ msg: "failed to add section" });
   }
 });
 

@@ -3,7 +3,7 @@ const User = require("../models/user")
 
 const protect = async (req,res,next) => {
     let token = req.header("Authorization");
-
+    
     if(token && token.startsWith("Bearer")){
         try {
             token = token.split(" ")[1];
@@ -18,6 +18,7 @@ const protect = async (req,res,next) => {
           res.status(401).json({message: "no token"})  ;
     }
 } 
+
 
 const isinstructor = async (req,res,next) => {
     

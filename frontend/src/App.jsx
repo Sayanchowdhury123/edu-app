@@ -13,6 +13,8 @@ import Sessionlesson from './pages/sessionslesson'
 import Editsection from './pages/editsections'
 import Editlesson from './pages/editlesson'
 import Homepage from './pages/homepage'
+import Course from './pages/Course'
+import Editreview from './pages/Editreview'
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
         <Route  path='/session-lesson/:courseid' element={<Privateroute><Sessionlesson/></Privateroute>} />
         <Route path='/edit-section/:courseid/:sectionindex' element={<Privateroute><Editsection/></Privateroute>} />
         <Route path='/edit-lesson/:courseid/:sectionindex/:lessonid' element={<Privateroute><Editlesson/></Privateroute>} />
+        <Route path='/course/:courseid'  element={<Privateroute><Course/></Privateroute>} />
+        <Route path='/reviews/:reviewid/:courseid' element={<Privateroute><Editreview/></Privateroute>} />
       </Routes>
     </Router>
     

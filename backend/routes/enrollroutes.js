@@ -5,15 +5,18 @@ const User = require("../models/user");
 const sendemail = require("../utils/sendemail");
 const router = express.Router();
 
-router.post("/enroll/:courseid", protect, async (req, res) => {
+router.post("/:courseid", protect, async (req, res) => {
   try {
+    const userid = req.user._id.toString();
     const { courseid } = req.params;
     const course = await Course.findById(courseid);
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(userid);
     if (!course) {
       return res.status(400).json({ msg: "course not found" });
     }
-    course.enrolledusers.push(req.user._id);
+
+
+    course.enrolledusers.push(userid);
     await course.save();
 
     const subject = `Enrolled in ${course.title}`;
@@ -31,11 +34,11 @@ router.post("/enroll/:courseid", protect, async (req, res) => {
   }
 });
 
-router.delete("/enroll/:courseid", protect, async (req, res) => {
+router.delete("/:courseid", protect, async (req, res) => {
   try {
     const { courseid } = req.params;
     const course = await Course.findById(courseid);
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id.toString());
     if (!course) {
       return res.status(400).json({ msg: "course not found" });
     }
