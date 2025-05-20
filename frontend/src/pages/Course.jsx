@@ -170,7 +170,11 @@ const Course = () => {
 
     }, [course])
 
-
+const handleplay = (lesson) => {
+    navigate(`/video/${lesson.id}`, {
+        state: {videourl : lesson.videourl, title: lesson.title, courseid: courseid}
+    })
+}
 
 
 
@@ -178,7 +182,7 @@ const Course = () => {
         <motion.div className="max-w-[1200px] mx-auto p-6" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
             <div className="card bg-base-100 shadow-xl mb-6">
                 <figure>
-                    <motion.img src={course.thumbnail} alt="thumbnail" className="w-full object-cover h-96" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
+                    <motion.img src={course.thumbnail} alt="thumbnail" className="w-full object-cover h-full" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
 
                 <div className="card-body">
@@ -216,7 +220,7 @@ const Course = () => {
                                                 {s?.lessons?.map((l, i) => (
                                                     <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
                                                         <span className="text-sm font-medium">{l.title}</span>
-                                                        <a href={l.videourl} target="_blank" className="btn btn-xs btn-outline btn-primary">Watch video</a>
+                                                        <button className="btn btn-xs btn-outline btn-primary" onClick={() => handleplay(l)}>Watch video</button>
                                                     </motion.div>
                                                 ))}
                                             </div>
@@ -238,20 +242,23 @@ const Course = () => {
                                 <form onSubmit={addreview} className="">
                                     <textarea type="text" className="textarea w-full" placeholder="Write your comment" onChange={(e) => setcomment(e.target.value)} value={comment} />
                                     <div className="starability-slot mt-4">
-                                        <input type="radio" id="rate5" value="5" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate5" title="amazing">5 stars</label>
-
-                                        <input type="radio" id="rate4" value="4" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate4" title="very good">4 stars</label>
-
-                                        <input type="radio" id="rate3" value="3" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate3" title="average">3 stars</label>
-
-                                        <input type="radio" id="rate2" value="2" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate2" title="not good">2 stars</label>
 
                                         <input type="radio" id="rate1" value="1" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate1" title="terrible">1 stars</label>
+
+                                          <input type="radio" id="rate2" value="2" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <label htmlFor="rate2" title="not good">2 stars</label>
+
+                                           <input type="radio" id="rate3" value="3" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <label htmlFor="rate3" title="average">3 stars</label>
+
+                                         <input type="radio" id="rate4" value="4" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <label htmlFor="rate4" title="very good">4 stars</label>
+
+                                        <input type="radio" id="rate5" value="5" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <label htmlFor="rate5" title="amazing">5 stars</label>
+
+                                       
 
 
                                     </div>
