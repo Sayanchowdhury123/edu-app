@@ -1,8 +1,8 @@
 
 import { motion } from "framer-motion";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import screenfull from "screenfull";
 import { IoMdPause } from "react-icons/io";
 import { FaPause, FaPlay } from "react-icons/fa";
@@ -10,11 +10,13 @@ import { MdFullscreen } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
 import { FaVolumeMute } from "react-icons/fa";
 import { GoUnmute } from "react-icons/go";
+import axiosinstance from "../api";
+import { Authcontext } from "../context/Authcontext";
 
 const Videoplayer = () => {
-
+    const {user} = useContext(Authcontext)
     const location = useLocation();
-    const { videourl, title, courseid } = location.state || {};
+    const { videourl, title, courseid,lessonid } = location.state || {};
     const playerref = useRef(null)
     const playercontainerref = useRef(null)
     const [playing, setplaying] = useState(false)
@@ -24,12 +26,16 @@ const Videoplayer = () => {
     const [v, setv] = useState(true)
     const [duration, setduration] = useState(0)
     const [showicon, setshowicon] = useState(null)
+    const navigate = useNavigate()
 
     const handleprogress = (state) => {
         setplayed(state.played)
-
-
-
+       console.log(state.played);
+       
+   if(state.played === 1){
+      progress();
+      console.log(lessonid);
+   }
     }
 
     const togglefullscrenn = () => {
@@ -55,6 +61,19 @@ const Videoplayer = () => {
         })
     }
 
+    const progress = async () => {
+        try {
+            const res = await axiosinstance.post(`/progress/${courseid}/complete`, {lessonid: lessonid},{
+                 headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                } 
+            })
+
+            alert(`${title} is completed`)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
 
@@ -64,7 +83,13 @@ const Videoplayer = () => {
             onClick={() => setv((prev) => !prev)}
         >
             <div className="text-center mt-6">
-                <Link to={`/course/${courseid}`} >Back To Dashboard</Link>
+                <div>
+               <Link to={`/course/${courseid}`} >Back To Dashboard</Link>
+                </div>
+                
+                 <button onClick={() => navigate("/profile",{
+                    state: {courseid: courseid}
+                 })}>Go To Profile</button>
 
             </div>
 

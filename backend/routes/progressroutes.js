@@ -17,6 +17,7 @@ router.get("/:courseid",protect,async (req,res) => {
 router.post("/:courseid/complete",protect,async (req,res) => {
     try {
         const {lessonid} = req.body;
+        console.log(lessonid);
         let progress = await Courseprogress.findOne({user: req.user._id, course: req.params.courseid})
 
         if(!progress){

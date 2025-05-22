@@ -4,6 +4,7 @@ import axiosinstance from "../api";
 import { Authcontext } from "../context/Authcontext";
 import "../App.css";
 import { motion } from "framer-motion";
+import { TiTick } from "react-icons/ti";
 
 
 const Course = () => {
@@ -16,6 +17,7 @@ const Course = () => {
     const [comment, setcomment] = useState("")
     const navigate = useNavigate();
     const [sim, setsim] = useState([]);
+     const[courseprogress,setcourseprogress] = useState([])
 
     const fetchcourse = async () => {
         try {
@@ -46,6 +48,21 @@ const Course = () => {
         }
     }
 
+     const progress = async () => {
+            try {
+                const res = await axiosinstance.get(`/progress/${courseid}`,{
+                    headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+                })
+    
+                setcourseprogress(res.data)
+                console.log(res.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
     useEffect(() => {
         fetchcourse();
 
@@ -55,6 +72,10 @@ const Course = () => {
         fetchuser();
 
     }, [user])
+
+    useEffect(() => {
+     progress()
+    },[])
 
     const enrolled = async (courseid) => {
         try {
@@ -172,7 +193,7 @@ const Course = () => {
 
 const handleplay = (lesson) => {
     navigate(`/video/${lesson.id}`, {
-        state: {videourl : lesson.videourl, title: lesson.title, courseid: courseid}
+        state: {videourl : lesson.videourl, title: lesson.title, courseid: courseid, lessonid: lesson.id}
     })
 }
 
@@ -220,7 +241,12 @@ const handleplay = (lesson) => {
                                                 {s?.lessons?.map((l, i) => (
                                                     <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
                                                         <span className="text-sm font-medium">{l.title}</span>
-                                                        <button className="btn btn-xs btn-outline btn-primary" onClick={() => handleplay(l)}>Watch video</button>
+                                                        <div className="flex gap-2 items-center">
+                                                             <button className="btn btn-xs btn-outline btn-primary" onClick={() => handleplay(l)}>Watch video</button>
+                                                             {courseprogress?.completedlesson?.includes(l.id) && (<TiTick className="text-primary" />)}
+                                                        </div>
+                                                
+
                                                     </motion.div>
                                                 ))}
                                             </div>
