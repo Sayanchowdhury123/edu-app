@@ -58,7 +58,7 @@ router.get("/wishlist",protect,async (req,res) => {
     }
 })
 
-router.post("/upload-avatar",protect,uploadavatar.single("avatar"),async (req,res) => {
+router.patch("/upload-avatar",protect,uploadavatar.single("avatar"),async (req,res) => {
     try {
         const {path} = req.file;
          const userid = req.user._id;

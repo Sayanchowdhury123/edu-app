@@ -33,6 +33,7 @@ const avatarstorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: "udemy_clone/avatars",
+        resource_type: "image",
         allowed_formats: ["jpg","jpeg", "png","webp"]
     }
 })

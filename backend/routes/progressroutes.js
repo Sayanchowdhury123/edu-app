@@ -4,9 +4,9 @@ const Courseprogress = require("../models/courseprogress");
 const router = express.Router();
 
 
-router.get("/:courseid",protect,async (req,res) => {
+router.get("/",protect,async (req,res) => {
     try {
-            let progress = await Courseprogress.findOne({user: req.user._id, course: req.params.courseid})
+            let progress = await Courseprogress.findOne({user: req.user._id})
               res.status(200).json(progress || {completedlesson: []})
     } catch (error) {
              console.log(error);
