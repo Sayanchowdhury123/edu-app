@@ -7,7 +7,8 @@ const courseprogressschema = new mongoose.Schema({
         {
             type: String
         }
-     ]
+     ],
+     
 },{timestamps: true})
 
 
