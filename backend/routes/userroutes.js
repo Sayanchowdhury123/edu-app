@@ -10,7 +10,7 @@ router.get("/profile", protect, async (req,res) => {
     try {
         const userid = req.user._id;
         const user = await User.findById(userid).select("-password").populate("wishlist", "title thumbnail").lean();
-        const enrolledcourses = await Course.find({enrolledusers: req.user._id});
+        const enrolledcourses = await Course.find({enrolledusers: req.user._id}).populate("instructor")
 
         res.status(200).json({
             user,
@@ -48,9 +48,18 @@ router.put("/profile", protect, async (req,res) => {
 router.get("/wishlist",protect,async (req,res) => {
     try {
            const userid = req.user._id;
-    const user = await User.findById(userid).populate("wishlist","title category thumbnail")
+    const user = await User.findById(userid).populate({
+        path:"wishlist",
+        select: "title thumbnail price instructor",
+        populate: {
+            path: "instructor",
+            select:"name"
+        }
+    })
+    const courses = await Course.find({});
     res.status(200).json({
-        wishlist: user.wishlist
+        wishlist: user.wishlist,
+        courses: courses
     })
     } catch (error) {
         console.log(error);

@@ -14,9 +14,9 @@ import axiosinstance from "../api";
 import { Authcontext } from "../context/Authcontext";
 
 const Videoplayer = () => {
-    const {user} = useContext(Authcontext)
+    const { user } = useContext(Authcontext)
     const location = useLocation();
-    const { videourl, title, courseid,lessonid } = location.state || {};
+    const { videourl, title, courseid, lessonid } = location.state || {};
     const playerref = useRef(null)
     const playercontainerref = useRef(null)
     const [playing, setplaying] = useState(false)
@@ -27,15 +27,56 @@ const Videoplayer = () => {
     const [duration, setduration] = useState(0)
     const [showicon, setshowicon] = useState(null)
     const navigate = useNavigate()
+    const [courseprogress, setcourseprogress] = useState([])
+
+
+
+    const progressc = async () => {
+        try {
+            const res = await axiosinstance.get(`/progress`, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            setcourseprogress(res.data)
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        progressc()
+    }, [])
+
+
 
     const handleprogress = (state) => {
         setplayed(state.played)
-       console.log(state.played);
-       
-   if(state.played === 1){
-      progress();
-      console.log(lessonid);
-   }
+
+        const coursep = courseprogress?.find((c) => c.course === courseid)
+        const iscompleted = coursep?.completedlesson?.includes(lessonid)
+        if (!iscompleted && state.played === 1) {
+
+            progress();
+            console.log(lessonid);
+
+        }
+    }
+
+    const progress = async () => {
+        try {
+            const res = await axiosinstance.post(`/progress/${courseid}/complete`, { lessonid: lessonid }, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            alert(`${title} is completed`)
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const togglefullscrenn = () => {
@@ -61,19 +102,7 @@ const Videoplayer = () => {
         })
     }
 
-    const progress = async () => {
-        try {
-            const res = await axiosinstance.post(`/progress/${courseid}/complete`, {lessonid: lessonid},{
-                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
-                } 
-            })
 
-            alert(`${title} is completed`)
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
 
 
@@ -84,12 +113,12 @@ const Videoplayer = () => {
         >
             <div className="text-center mt-6">
                 <div>
-               <Link to={`/course/${courseid}`} >Back To Dashboard</Link>
+                    <Link to={`/course/${courseid}`} >Back To Dashboard</Link>
                 </div>
-                
-                 <button onClick={() => navigate("/profile",{
-                    state: {courseid: courseid}
-                 })}>Go To Profile</button>
+
+                <button onClick={() => navigate("/profile", {
+                    state: { courseid: courseid }
+                })}>Go To Profile</button>
 
             </div>
 
@@ -147,7 +176,7 @@ const Videoplayer = () => {
                                             e.stopPropagation();
                                             setmuted((prev) => !prev)
                                         }} className="btn">
-                                          {muted ? (<FaVolumeMute/>): (<GoUnmute/>)}  
+                                            {muted ? (<FaVolumeMute />) : (<GoUnmute />)}
                                         </button>
 
                                         <input type="range" min={0} max={1} step="0.01" value={volume}

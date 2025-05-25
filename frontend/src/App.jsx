@@ -27,7 +27,7 @@ function App() {
       <Routes>
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
-        <Route path='/' element={<Homepage/>} />
+        <Route path='/home' element={<Homepage/>} />
         <Route path='/profile' element={<Privateroute><Profile/></Privateroute>}  />
         <Route path='/instructor-dasshboard' element={<Privateroute><Instructordashboard/></Privateroute>}  />
         <Route path='/create-course' element={<Privateroute><Createcourse/></Privateroute>}  />

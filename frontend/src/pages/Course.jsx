@@ -17,7 +17,7 @@ const Course = () => {
     const [comment, setcomment] = useState("")
     const navigate = useNavigate();
     const [sim, setsim] = useState([]);
-     const[courseprogress,setcourseprogress] = useState([])
+    const [courseprogress, setcourseprogress] = useState([])
 
     const fetchcourse = async () => {
         try {
@@ -48,20 +48,24 @@ const Course = () => {
         }
     }
 
-     const progress = async () => {
-            try {
-                const res = await axiosinstance.get(`/progress/${courseid}`,{
-                    headers: {
+    const progress = async () => {
+        try {
+            const res = await axiosinstance.get(`/progress`, {
+                headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
-                })
-    
-                setcourseprogress(res.data)
-                console.log(res.data);
-            } catch (error) {
-                console.log(error);
-            }
+            })
+
+            setcourseprogress(res.data)
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
         }
+    }
+
+    useEffect(() => {
+        progress()
+    }, [])
 
     useEffect(() => {
         fetchcourse();
@@ -73,9 +77,7 @@ const Course = () => {
 
     }, [user])
 
-    useEffect(() => {
-     progress()
-    },[])
+
 
     const enrolled = async (courseid) => {
         try {
@@ -191,11 +193,11 @@ const Course = () => {
 
     }, [course])
 
-const handleplay = (lesson) => {
-    navigate(`/video/${lesson.id}`, {
-        state: {videourl : lesson.videourl, title: lesson.title, courseid: courseid, lessonid: lesson.id}
-    })
-}
+    const handleplay = (lesson) => {
+        navigate(`/video/${lesson.id}`, {
+            state: { videourl: lesson.videourl, title: lesson.title, courseid: courseid, lessonid: lesson.id }
+        })
+    }
 
 
 
@@ -238,17 +240,24 @@ const handleplay = (lesson) => {
                                                 {s.title || `Section ${index + 1}`}
                                             </div>
                                             <div className="collapse-content">
-                                                {s?.lessons?.map((l, i) => (
-                                                    <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
-                                                        <span className="text-sm font-medium">{l.title}</span>
-                                                        <div className="flex gap-2 items-center">
-                                                             <button className="btn btn-xs btn-outline btn-primary" onClick={() => handleplay(l)}>Watch video</button>
-                                                             {courseprogress?.completedlesson?.includes(l.id) && (<TiTick className="text-primary" />)}
-                                                        </div>
-                                                
+                                                {s?.lessons?.map((l, i) => {
+                                                    const coursep = courseprogress?.find(c => c.course === courseid)
+                                                    const iscompleted = coursep?.completedlesson?.includes(l.id)
 
-                                                    </motion.div>
-                                                ))}
+                                                    return (
+                                                        <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
+                                                            <span className="text-sm font-medium">{l.title}</span>
+                                                            <div className="flex gap-2 items-center">
+                                                                {iscompleted && (<TiTick className="text-primary" />)}
+                                                                <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
+
+                                                            </div>
+
+
+                                                        </motion.div>
+                                                    )
+
+                                                })}
                                             </div>
 
                                         </motion.div>
@@ -261,7 +270,7 @@ const handleplay = (lesson) => {
 
 
 
-                  <motion.div className="space-y-10" initial={{opacity:0, y:40}} animate={{opacity:1,y: 0}} transition={{duration:0.6}}>
+                    <motion.div className="space-y-10" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                         {course.enrolledusers?.includes(user.user.id) ? (
                             <div className="space-y-4">
                                 <h1 className="text-2xl font-bold">Add Review</h1>
@@ -272,19 +281,19 @@ const handleplay = (lesson) => {
                                         <input type="radio" id="rate1" value="1" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate1" title="terrible">1 stars</label>
 
-                                          <input type="radio" id="rate2" value="2" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <input type="radio" id="rate2" value="2" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate2" title="not good">2 stars</label>
 
-                                           <input type="radio" id="rate3" value="3" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <input type="radio" id="rate3" value="3" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate3" title="average">3 stars</label>
 
-                                         <input type="radio" id="rate4" value="4" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                        <input type="radio" id="rate4" value="4" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate4" title="very good">4 stars</label>
 
                                         <input type="radio" id="rate5" value="5" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate5" title="amazing">5 stars</label>
 
-                                       
+
 
 
                                     </div>
@@ -325,7 +334,7 @@ const handleplay = (lesson) => {
                         <h1 className="text-2xl font-bold mb-4 ">Similar Courses</h1>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
-                            {sim?.map((s,i) => (
+                            {sim?.map((s, i) => (
                                 <motion.div key={s._id} className="card bg-base-100 shadow-lg" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.03 }} transition={{ duration: 0.4, delay: i * 0.1 }}>
                                     <figure>
                                         <img src={s.thumbnail} alt="thumnail" className="w-full object-cover " />
