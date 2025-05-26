@@ -28,7 +28,7 @@ const navigate = useNavigate();
             login(res.data)
             resetForm();
             alert("Login successsfully")
-            navigate("/profile")
+            navigate("/home")
         } catch (error) {
             console.log(error);
             alert("Login failed")

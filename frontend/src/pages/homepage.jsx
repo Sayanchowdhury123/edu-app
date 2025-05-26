@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import axiosinstance from "../api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, noop } from "framer-motion";
+import { Authcontext } from "../context/Authcontext";
 
 
 
@@ -10,11 +11,13 @@ import { motion, noop } from "framer-motion";
 
 const Homepage = () => {
 
-   
+   const {user} = useContext(Authcontext)
     const [courses, setcourses] = useState([])
     const [selectcategory, setselectcategory] = useState("")
     const [filtered, setfiltered] = useState([])
     const [category, setcategory] = useState([])
+    const [profile, setprofile] = useState()
+    const navigate = useNavigate()
  
 
     useEffect(() => {
@@ -51,10 +54,41 @@ const Homepage = () => {
         }
     }, [selectcategory])
 
-    return (
-        <div className=" min-h-screen bg-base-200 py-10 " style={{scrollbarWidth:"none"}}>
-            <div className="container mx-auto px-4"  >
 
+       const userprofile = async () => {
+        try {
+            const res = await axiosinstance.get(`/users/profile`, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            setprofile(res.data)
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+     userprofile();
+    },[])
+
+    return (
+        <div className=" min-h-screen bg-base-200 py-5 " style={{scrollbarWidth:"none"}}>
+      
+      <div className="flex justify-end px-6 cursor-pointer" onClick={() => navigate(`/profile`)}>
+             {user?.user?.token && (
+                <div className="flex items-center gap-2 ">
+                  <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 100 }} src={profile?.user?.avatar} alt="avatar" className="rounded-[50%] w-10 h-10 object-cover shadow-xl" />
+                  <p className="text-primary font-semibold text-sm">{profile?.user?.name}</p>
+                </div>
+            )}
+      </div>
+           
+
+            <div className="container mx-auto px-4"  >
+                 
 
                 <h1 className="text-4xl font-bold text-center mb-4 text-primary">Browse Courses</h1>
 
