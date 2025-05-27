@@ -42,4 +42,20 @@ router.post("/:courseid/complete",protect,async (req,res) => {
     }
 })
 
+
+router.delete("/:courseid", protect,async (req,res) => {
+    try {
+        const courseprogress = await Courseprogress.findOneAndDelete({
+            course: req.params.courseid
+        })
+
+
+        res.status(200).json({msg:"progress deleted"})
+        
+    } catch (error) {
+        console.log(error);
+               res.status(500).json({msg: "progress delete error"})
+    }
+})
+
 module.exports = router;

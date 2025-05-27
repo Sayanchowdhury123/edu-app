@@ -48,6 +48,18 @@ const Cousremanagementpage = () => {
         fetchinfo();
     }, [user])
 
+    const delprogress = async (courseid) => {
+        try {
+            const res = await axiosinstance.delete(`/progress/${courseid}`,{
+                   headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
 
     const deletecourse = async (courseid) => {
@@ -57,6 +69,9 @@ const Cousremanagementpage = () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
+
+          delprogress(courseid)
+
             fetchinfo();
         } catch (error) {
             console.log(error);
@@ -111,7 +126,7 @@ const Cousremanagementpage = () => {
 
                         <motion.div key={c._id} className="card bg-base-100 shadow-xl"
                             variants={cardVariants} whileHover={{ scale: 1.02 }}
-                            onClick={() => navigate(`/session-lesson/${c._id}`)}
+                          
                         >
 
                             <div className="card-body ">
@@ -142,8 +157,15 @@ const Cousremanagementpage = () => {
 
                             <div className="card-actions">
                                 <Link to={`/instructor/edit-course/${c._id}`} className="btn btn-primary btn-sm mb-4 ml-6">Edit</Link>
-                                <button onClick={() => deletecourse(c._id)} className="btn btn-error btn-sm mb-4">Delete</button>
+                                <button onClick={(e) => {
+                                    e.stopPropagation()
+                                    deletecourse(c._id)
+                                }} className="btn btn-error btn-sm mb-4">Delete</button>
                                 <button onClick={handlefile} className="btn btn-neutral btn-sm mb-4">Add thumbnail</button>
+
+                                <button className="btn btn-sm btn-outline"   onClick={() => navigate(`/session-lesson/${c._id}`)}>
+                                     Manage Course
+                                </button>
                                   
                             </div>
 

@@ -16,6 +16,7 @@ import Homepage from './pages/homepage'
 import Course from './pages/Course'
 import Editreview from './pages/Editreview'
 import Videoplayer from './pages/videoplayer'
+import Search from './pages/seach'
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <Route path='/course/:courseid'  element={<Privateroute><Course/></Privateroute>} />
         <Route path='/reviews/:reviewid/:courseid' element={<Privateroute><Editreview/></Privateroute>} />
         <Route path='/video/:id' element={<Privateroute><Videoplayer/></Privateroute>} />
+        <Route path='/search' element={<Search/>} />
       </Routes>
     </Router>
     

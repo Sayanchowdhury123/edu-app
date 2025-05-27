@@ -17,6 +17,8 @@ const Profile = () => {
     const fileinputref = useRef(null);
     const navigate = useNavigate()
     const [wl, setwl] = useState([])
+    const[uploading,setuploading] = useState(false)
+
 
     const become_ins = async () => {
         try {
@@ -67,7 +69,7 @@ const Profile = () => {
             const formdata = new FormData();
             formdata.append("avatar", file)
             try {
-
+              setuploading(true)
                 const res = await axiosinstance.patch(`/users/upload-avatar`, formdata, {
                     headers: {
                         Authorization: `Bearer ${user.user.token}`,
@@ -76,11 +78,14 @@ const Profile = () => {
                     }
                 })
 
-                alert("photo uploaded")
+               
                 userprofile();
+              alert("avatar updated")
 
             } catch (error) {
                 console.log(error);
+            }finally{
+                setuploading(false)
             }
         }
 
@@ -160,7 +165,7 @@ const Profile = () => {
 
 
     return (
-        <motion.div className=' min-h-screen p-4' initial={{ opacity: 1, y: 50 }}
+        <motion.div className=' min-h-screen p-8' initial={{ opacity: 1, y: 50 }}
             animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}  >
 
             <div className="flex gap-4 mb-4 justify-between">
@@ -193,6 +198,15 @@ const Profile = () => {
                 <div className=" mx-auto  w-64 relative">
 
                     <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 100 }} src={profile?.user?.avatar} alt="avatar" className="rounded-[50%] w-64 h-64 object-cover border-4 border-primary shadow-xl" />
+                        {
+                                    uploading  && (
+                                        <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-full">
+                                            <span className="loading loading-bars loading-lg text-primary">
+
+                                            </span>
+                                        </div>
+                                    )
+                                }
                     <motion.div className="absolute top-[190px] right-4 cursor-pointer" whileHover={{ scale: 1.2 }}>
                         <CiCirclePlus className="text-5xl " onClick={handlefile} />
                     </motion.div>
