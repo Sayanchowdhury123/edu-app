@@ -17,6 +17,7 @@ import Course from './pages/Course'
 import Editreview from './pages/Editreview'
 import Videoplayer from './pages/videoplayer'
 import Search from './pages/seach'
+import Chatbox from './pages/Chatbox'
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         <Route path='/reviews/:reviewid/:courseid' element={<Privateroute><Editreview/></Privateroute>} />
         <Route path='/video/:id' element={<Privateroute><Videoplayer/></Privateroute>} />
         <Route path='/search' element={<Search/>} />
+        <Route path='/chat/:id' element={<Privateroute><Chatbox/></Privateroute>} />
       </Routes>
     </Router>
     

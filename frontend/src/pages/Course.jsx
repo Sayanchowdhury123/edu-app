@@ -28,6 +28,7 @@ const Course = () => {
                 }
             })
             setcourse(res.data)
+            console.log(res.data);
 
         } catch (error) {
             console.log(error);
@@ -229,6 +230,8 @@ const Course = () => {
                 <figure>
                     <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
+
+                <button className="btn" onClick={() => navigate(`/chat/${courseid}`, {state: {courseid: course._id}})}>{user.user.role === "instructor" ? "chat with students" : "chat with instructor"}</button>
 
                 <div className="card-body">
                     <p className="card-title text-2xl font-semibold">{course.title}</p>
