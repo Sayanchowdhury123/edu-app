@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 import axiosinstance from "../api";
 import { motion } from "framer-motion";
+import { useRef } from "react";
 
 
 const socket = io("http://localhost:5000")
@@ -16,6 +17,7 @@ const Chatbox = () => {
     const [messages, setmessages] = useState([])
     const [message, setmessage] = useState("")
     const [course, setcourse] = useState({})
+    const messageendref = useRef(null)
 
 
     const fetchcourse = async () => {
@@ -26,7 +28,7 @@ const Chatbox = () => {
                 }
             })
             setcourse(res.data)
-            console.log(res.data);
+            //console.log(res.data);
 
         } catch (error) {
             console.log(error);
@@ -35,6 +37,7 @@ const Chatbox = () => {
 
     useEffect(() => {
         fetchcourse()
+        console.log(user.user.token);
     }, [])
 
     useEffect(() => {
@@ -60,6 +63,7 @@ const Chatbox = () => {
             })
 
             setmessages(res.data)
+            console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -85,33 +89,38 @@ const Chatbox = () => {
         return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     }
 
+    useEffect(() => {
+
+        messageendref.current?.scrollIntoView({ behavior: "smooth" })
+
+    }, [messages.length])
+
     return (
         <div className="max-w-5xl mx-auto mt-10 p-6 bg-base-200 rounded-2xl shadow-xl">
             <h1 className="text-2xl font-bold mb-4 text-center text-primary">Group discussion for {course?.title}</h1>
             <div className={`space-y-3 h-[600px] overflow-y-auto px-2  `} style={{ scrollbarWidth: "none" }}>
                 {messages?.map((msg, index) => (
-                    
-                        <motion.div key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className={`chat ${msg.sender._id === user.user.id ? "chat-end" : "chat-start"}`}>
-                            <div className="chat-header font-semibold text-secondary">
-                                {msg.sender._id.toString() === user.user.id ? "You" : msg.sender.name}
-                                <time className="text-xs ml-1 text-gray-500">
-                                    {formattime(msg.timestamp)}
-                                </time>
-                            </div>
-                            <div className="chat-bubble bg-primary text-white">
-                                {msg.message}
-                            </div>
-                        </motion.div>
 
-                       
-                    
+                    <motion.div key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className={`chat ${msg.sender._id === user.user.id ? "chat-end" : "chat-start"}  `}>
+                        <div className="chat-header font-semibold text-secondary">
+                            {msg.sender._id.toString() === user.user.id ? "You" : msg.sender.name}
+                            <time className="text-xs ml-1 text-gray-500">
+                                {formattime(msg.timestamp)}
+                            </time>
+                        </div>
+                        <div className="chat-bubble bg-primary text-white">
+                            {msg.message}
+                        </div>
+                    </motion.div>
 
                 ))}
 
+                <div ref={messageendref} />
             </div>
 
+
             <div className="mt-4 flex items-center gap-2">
-                <input type="text" onChange={(e) => setmessage(e.target.value)} value={message} placeholder="Type Your Message" className="input flex-grow " />
+                <input type="text" onChange={(e) => setmessage(e.target.value)} value={message} placeholder="Type Your Message" className="input flex-grow "  onKeyDown={(e) => e.key === "Enter" && sendmessage()} />
                 <button onClick={sendmessage} className="btn btn-primary">Send</button>
             </div>
 

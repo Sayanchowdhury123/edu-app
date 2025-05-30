@@ -17,4 +17,30 @@ router.get("/:courseid", protect, async (req,res) => {
     }
 })
 
+
+router.put("/:messageid", protect, async (req,res) => {
+    const {newmessage} = req.body;
+    try {
+        const message = await Message.findById(req.params.messageid)
+        message.message = newmessage;
+        await message.save()
+         res.status(200).json({msg:"message updated"})
+    } catch (error) {
+          console.log(error);
+        res.status(500).json({msg:"failed to edit message"})
+    }
+})
+
+
+router.delete("/:messageid", protect, async (req,res) => {
+    try {
+      const messagedel = await Message.findByIdAndDelete(req.params.messageid)
+      res.status(200).json({msg:"message deleted"})
+         
+    } catch (error) {
+        console.log(error);
+          res.status(500).json({msg:"failed to delete message"})
+    }
+})
+
 module.exports = router;
