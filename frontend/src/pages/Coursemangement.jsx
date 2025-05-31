@@ -134,7 +134,7 @@ const Cousremanagementpage = () => {
                                       <img src={`${c.thumbnail}?${new Date().getTime()}`} alt="thumbnail" className="w-full h-64 object-cover rounded-xl bg-base-100" />
                                 {
                                     uploading === c._id && (
-                                        <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl">
+                                        <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" > 
                                             <span className="loading loading-bars loading-lg text-primary">
 
                                             </span>
