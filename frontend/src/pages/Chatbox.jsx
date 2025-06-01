@@ -5,6 +5,9 @@ import { io } from "socket.io-client";
 import axiosinstance from "../api";
 import { motion } from "framer-motion";
 import { useRef } from "react";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+
 
 
 const socket = io("http://localhost:5000")
@@ -20,8 +23,8 @@ const Chatbox = () => {
     const messageendref = useRef(null)
     const [modal, setmodal] = useState(false)
     const [messageid, setmessageid] = useState("")
-    const [edittext,setedittext] = useState("")
-    const [showedit,setshowedit] = useState(false)
+    const [edittext, setedittext] = useState("")
+    const [showedit, setshowedit] = useState(false)
 
 
     const fetchcourse = async () => {
@@ -120,11 +123,11 @@ const Chatbox = () => {
         }
     }
 
-    
+
     const editmsg = async () => {
         try {
             if (messageid) {
-                const res = await axiosinstance.put(`/chat/${messageid}`,{newmessage: edittext}, {
+                const res = await axiosinstance.put(`/chat/${messageid}`, { newmessage: edittext }, {
                     headers: {
                         Authorization: `Bearer ${user.user.token}`
                     }
@@ -143,31 +146,43 @@ const Chatbox = () => {
     return (
         <div className="max-w-5xl mx-auto mt-10 p-6 bg-base-200 rounded-2xl shadow-xl">
             {modal && (
-                <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl">
-                    <button onClick={(e) => {
-                        e.stopPropagation()
-                        delmsg()
-                    }}>Delete</button>
-                    <button onClick={() => {setshowedit((prev) => !prev)
-                        setmodal(false)
-                    }}>Edit</button>
-                </div>
+                <motion.div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl gap-4"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                >
+
+                    {!showedit ? (
+                    <div className="flex gap-4">
+                        <button className="btn btn-error" onClick={(e) => {
+                            e.stopPropagation()
+                            delmsg()
+                        }}><MdDelete className="" />Delete</button>
+                        <button className="btn btn-info" onClick={() => {
+                            setshowedit(true)
+                        }}><FaEdit className="" />Edit</button>
+                    </div>
+                 ) : (
+                    
+                        <motion.div   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-base-300 p-6 rounded-xl shadow-xl w-full max-w-md space-y-4 ">
+                            <textarea name="" id="" onChange={(e) => setedittext(e.target.value)} placeholder="Edit your message" className="textarea textarea-bordered w-full"></textarea>
+
+                            <div className="flex justify-between">
+                                <button className="btn btn-success " onClick={(e) => {
+                                     editmsg()
+                                    setmodal(false)
+                                 }}>Save Changes</button>
+                                <button onClick={() => setshowedit(false)} className="btn ">Cancel</button>
+                            </div>
+
+                        </motion.div>
+                    
+                 )}
+                   
+
+                </motion.div>
             )}
 
 
-            {
-                showedit && (
-                    <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
-                         <textarea name="" id="" onChange={(e) => setedittext(e.target.value)}></textarea>
-                         <button className="" onClick={(e) => {
-                            
-                            editmsg()
-                            
-                         }}>Edit Text</button> 
-                         <button onClick={() => setshowedit(false)}>Cancel</button>
-                    </div>
-                )
-            }
+           
 
             <h1 className="text-2xl font-bold mb-4 text-center text-primary">Group discussion for {course?.title}</h1>
 
