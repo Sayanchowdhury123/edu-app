@@ -55,8 +55,19 @@ const Chatbox = () => {
             setmessages((prev) => [...prev, data])
         })
 
+        socket.on("r-edit", (message) => {
+              console.log(message);
+            setmessages((prev) => prev.map((msg) => msg?._id === message?._id ? message : msg))
+        })
+
+        socket.on("r-del",(messageid) => {
+            setmessages((prev) => prev.filter((msg) => msg?._id !== messageid))
+        })
+
         return () => {
             socket.off("receive-message")
+            socket.off("r-edit")
+             socket.off("r-del")
         }
     }, [courseid])
 
@@ -70,7 +81,7 @@ const Chatbox = () => {
             })
 
             setmessages(res.data)
-            console.log(res.data);
+           // console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -106,17 +117,19 @@ const Chatbox = () => {
 
     const delmsg = async () => {
         try {
-            if (messageid) {
+            
                 const res = await axiosinstance.delete(`/chat/${messageid}`, {
                     headers: {
                         Authorization: `Bearer ${user.user.token}`
                     }
                 })
-
-                fetchmessgaes();
-                alert("msg deleted")
+                
+                
+                fetchmessgaes()
                 setmodal(false)
-            }
+                socket.emit("del", {messageid,courseid})
+                 alert("msg deleted")
+            
 
         } catch (error) {
             console.log(error);
@@ -126,17 +139,21 @@ const Chatbox = () => {
 
     const editmsg = async () => {
         try {
-            if (messageid) {
+            
                 const res = await axiosinstance.put(`/chat/${messageid}`, { newmessage: edittext }, {
                     headers: {
                         Authorization: `Bearer ${user.user.token}`
                     }
                 })
-
-                fetchmessgaes();
-                alert("msg edited")
+                 
+                 const textupdated = res.data;
+                // console.log(textupdated);
+                 socket.emit("edit", {courseid, textupdated} )
+              
                 setshowedit(false)
-            }
+                 setmessages((prev) => prev.map((msg) => msg?._id === textupdated?._id ? textupdated : msg))
+                 alert("msg edited")
+            
 
         } catch (error) {
             console.log(error);
@@ -193,12 +210,12 @@ const Chatbox = () => {
 
                 {messages?.map((msg, index) => (
 
-                    <motion.div key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className={`chat ${msg.sender._id === user.user.id ? "chat-end" : "chat-start"}  `} onClick={() => {
+                    <motion.div key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className={`chat ${msg?.sender?._id === user.user.id ? "chat-end" : "chat-start"}  `} onClick={() => {
                         setmessageid(msg._id)
                         setmodal((prev) => !prev)
                     }}  >
                         <div className="chat-header font-semibold text-secondary"  >
-                            {msg.sender._id.toString() === user.user.id ? "You" : msg.sender.name}
+                            {msg.sender?._id?.toString() === user.user.id ? "You" : msg.sender.name}
                             <time className="text-xs ml-1 text-gray-500">
                                 {formattime(msg.timestamp)}
                             </time>

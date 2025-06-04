@@ -27,6 +27,18 @@ io.on("connection", (socket) => {
 
     })
 
+   socket.on("edit", async ({courseid,textupdated}) => {
+      console.log(textupdated);
+      const message = await Message.findById(textupdated._id).populate("sender", "name")
+
+    io.to(courseid).emit("r-edit", message)
+   })
+
+   socket.on("del", ({messageid,courseid}) => {
+    io.to(courseid).emit("r-del", messageid)
+   })
+
+
     socket.on("send-message", async (data) => {
        
         const {sender,message,courseid} = data.data;
@@ -50,6 +62,9 @@ io.on("connection", (socket) => {
             timestamp: newmessage.timestamp
          })
     })
+
+
+
 
 
     socket.on("disconnect", () => {

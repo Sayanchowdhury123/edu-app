@@ -24,7 +24,7 @@ router.put("/:messageid", protect, async (req,res) => {
         const message = await Message.findById(req.params.messageid)
         message.message = newmessage;
         await message.save()
-         res.status(200).json({msg:"message updated"})
+         res.status(200).json(message)
     } catch (error) {
           console.log(error);
         res.status(500).json({msg:"failed to edit message"})
