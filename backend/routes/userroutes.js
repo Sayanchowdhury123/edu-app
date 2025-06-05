@@ -4,6 +4,7 @@ const Course = require("../models/course");
 const User = require("../models/user");
 const router = express.Router();
 const {uploadavatar} = require("../middleware/upload")
+const cloudinary = require("cloudinary").v2;
 
 
 router.get("/profile", protect, async (req,res) => {
@@ -67,21 +68,31 @@ router.get("/wishlist",protect,async (req,res) => {
     }
 })
 
-router.patch("/upload-avatar",protect,uploadavatar.single("avatar"),async (req,res) => {
+router.patch("/upload-avatar",protect,async (req,res) => {
+    
     try {
-        const {path} = req.file;
+        
+    if(!req.files || !req.files.avatar){
+        return res.status(400).json({msg:"no file uploaded"})
+    }
+
+    const file = req.files.avatar;
+
+    const result = await cloudinary.uploader.upload(file.tempFilePath,{
+        folder: "profilepictures",
+    })
          const userid = req.user._id;
     const user = await User.findById(userid);
     if (!user) {
       return res.status(400).json({ msg: "user not found" });
     }
      
-    user.avatar = path;
+    user.avatar = result.secure_url;
     await user.save();
-    res.status(200).json({msg:"avatar uploaded",avatar: req.file.path})
+    res.status(200).json({msg:"avatar uploaded",avatar: result.secure_url})
     
     } catch (error) {
-        console.log(error);
+      console.log(error);
     res.status(500).json({msg:"failed to upload avatar" })
     }
 })

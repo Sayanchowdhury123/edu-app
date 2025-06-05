@@ -21,8 +21,9 @@ const Profile = () => {
 
 
     const become_ins = async () => {
+        console.log(user.user.token);
         try {
-            const res = await axiosinstance.put("/instructor/become-instructor", {
+            const res = await axiosinstance.put("/instructor/become-instructor",{},{
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
@@ -44,7 +45,7 @@ const Profile = () => {
             })
 
             setcourseprogress(res.data)
-            console.log(res.data);
+           // console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -62,23 +63,21 @@ const Profile = () => {
 
     const filechange = async (e) => {
         const file = e.target.files[0];
+
         setavatar(file)
-
-
         if (file) {
             const formdata = new FormData();
             formdata.append("avatar", file)
+            
             try {
               setuploading(true)
                 const res = await axiosinstance.patch(`/users/upload-avatar`, formdata, {
                     headers: {
-                        Authorization: `Bearer ${user.user.token}`,
-                        "Content-Type": "multipart/form-data"
-
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${user.user.token}`
+                        
                     }
                 })
-
-               
                 userprofile();
               alert("avatar updated")
 
@@ -100,7 +99,7 @@ const Profile = () => {
             })
 
             setprofile(res.data)
-            //console.log(res.data);
+            console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -136,7 +135,7 @@ const Profile = () => {
 
             setwl(res.data)
 
-            console.log(res.data);
+          //  console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -182,7 +181,7 @@ const Profile = () => {
                     <button className="btn btn-error" onClick={logout}>Logout</button>
 
                     {
-                        user.user.role === "instructor" && (
+                        user?.user?.role === "instructor" && (
                             <Link className="btn btn-accent" to={"/instructor-dasshboard"}>
                                 instructor dashboard
                             </Link>

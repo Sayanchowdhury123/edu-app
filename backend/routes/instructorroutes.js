@@ -25,6 +25,7 @@ router.get("/dashboard",protect,isinstructor,async (req,res) => {
 
 router.put("/become-instructor", protect, async (req,res) => {
     try {
+        
         const user = await User.findById(req.user._id)
         user.role = "instructor";
         await user.save();
