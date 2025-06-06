@@ -4,23 +4,29 @@ const Course = require("../models/course");
 const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
-const cloudinary = require("../config/cloudinary");
+const cloudinary = require("cloudinary").v2;
 
 router.post(
   "/courses/:courseid/sections/:sectionindex/upload-video",
   protect,
   isinstructor,
-  uploadvideo.single("video"),
   async (req, res) => {
     try {
       const { title, isfreepreview } = req.body;
-      const { path } = req.file;
+    
       const { courseid } = req.params;
       const { sectionindex } = req.params;
 
-      if (!title || !path) {
+      if (!title || !req.files.video) {
         return res.status(400).json({ msg: "missing required fields" });
       }
+
+      const file = req.files.video;
+
+      const result = await cloudinary.uploader.upload(file.tempFilePath,{
+        folder: "lecture/videos",
+        resource_type:"video",
+      })
 
       const course = await Course.findById(courseid);
       if (!course) {
@@ -35,8 +41,8 @@ router.post(
       section.lessons.push({
         id: uuidv4(),
         title: title,
-        videourl: path,
-        cloudinaryid: req.file.filename,
+        videourl: result.secure_url,
+        cloudinaryid: result.public_id,
         isfreepreview: isfreepreview === "true",
       });
 
@@ -56,17 +62,15 @@ router.put(
   "/courses/:courseid/sections/:sectionindex/lessons/:lessonid",
   protect,
   isinstructor,
-  uploadvideo.single("video"),
   async (req, res) => {
     try {
       const { title, isfreepreview } = req.body;
-      const { path } = req.file;
       const { courseid } = req.params;
       const { sectionindex } = req.params;
       const { lessonid } = req.params;
-      console.log(courseid);
+      
 
-      if (!title || !path) {
+      if (!title || !req.files.video) {
         return res.status(400).json({ msg: "missing required fields" });
       }
 
@@ -87,15 +91,22 @@ router.put(
 
       if (title) lesson.title = title;
       if (isfreepreview !== undefined) lesson.isfreepreview = isfreepreview;
-      if (req.file) {
+      if (req.files.video) {
         if (lesson.cloudinaryid) {
           await cloudinary.uploader.destroy(lesson.cloudinaryid, {
             resource_type: "video",
           });
         }
+
+         const result = await cloudinary.uploader.upload(file.tempFilePath,{
+        folder: "lecture/videos",
+        resource_type:"video",
+      })
+
+       lesson.videourl = result.secure_url;
+      lesson.cloudinaryid = result.public_id;
       }
-      lesson.videourl = path;
-      lesson.cloudinaryid = req.file.filename;
+     
 
       await course.save();
 
@@ -156,14 +167,20 @@ router.patch(
   "/courses/:courseid/upload-thumbnail",
   protect,
   isinstructor,
-  uploadimage.single("thumbnail"),
   async (req, res) => {
     try {
+      if(!req.files.thumbnail){
+        return res.status(400).json({ msg: "missing required fields" });
+      }
       const { courseid } = req.params;
 
       const course = await Course.findById(courseid);
+        const file = req.files.thumbnail;
+       const result = await cloudinary.uploader.upload(file.tempFilePath,{
+        folder: "lecture/photos",
+    })
 
-      course.thumbnail = req.file.path;
+      course.thumbnail = result.secure_url;
       await course.save();
 
       res.status(200).json({

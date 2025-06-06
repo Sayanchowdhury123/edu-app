@@ -44,7 +44,7 @@ const Chatbox = () => {
 
     useEffect(() => {
         fetchcourse()
-        console.log(user.user.token);
+       // console.log(user.user.token);
     }, [])
 
     useEffect(() => {

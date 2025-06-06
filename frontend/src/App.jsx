@@ -18,6 +18,7 @@ import Editreview from './pages/Editreview'
 import Videoplayer from './pages/videoplayer'
 import Search from './pages/seach'
 import Chatbox from './pages/Chatbox'
+import {Toaster} from "react-hot-toast";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
   return (
     <>
     <Router>
+      <Toaster/>
       <Routes>
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />

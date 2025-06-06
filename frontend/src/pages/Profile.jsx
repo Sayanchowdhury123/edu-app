@@ -5,6 +5,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
 import { motion } from "framer-motion";
 import Cp from "./Cp";
+import { FaEdit } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { IoIosHome } from "react-icons/io";
+import { IoIosLogOut } from "react-icons/io";
+import { MdDashboard } from "react-icons/md";
+import { FaBarsProgress } from "react-icons/fa6";
+import { RiProgress3Fill } from "react-icons/ri";
 
 
 const Profile = () => {
@@ -17,22 +24,24 @@ const Profile = () => {
     const fileinputref = useRef(null);
     const navigate = useNavigate()
     const [wl, setwl] = useState([])
-    const[uploading,setuploading] = useState(false)
+    const [uploading, setuploading] = useState(false)
+    const [newname, setnewname] = useState("")
+    const [modal, setmodal] = useState(false)
 
 
     const become_ins = async () => {
         console.log(user.user.token);
         try {
-            const res = await axiosinstance.put("/instructor/become-instructor",{},{
+            const res = await axiosinstance.put("/instructor/become-instructor", {}, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
             login(res.data)
-            alert("you became instructor")
+            toast.success("you became instructor")
         } catch (error) {
             console.log(error);
-            alert("failed to become instructor")
+            toast.error("failed to become instructor")
         }
     }
 
@@ -45,7 +54,7 @@ const Profile = () => {
             })
 
             setcourseprogress(res.data)
-           // console.log(res.data);
+            // console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -68,22 +77,23 @@ const Profile = () => {
         if (file) {
             const formdata = new FormData();
             formdata.append("avatar", file)
-            
+
             try {
-              setuploading(true)
+                setuploading(true)
                 const res = await axiosinstance.patch(`/users/upload-avatar`, formdata, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                         Authorization: `Bearer ${user.user.token}`
-                        
+
                     }
                 })
                 userprofile();
-              alert("avatar updated")
+                toast.success("avatar updated")
 
             } catch (error) {
                 console.log(error);
-            }finally{
+                toast.error("failed to update avatar")
+            } finally {
                 setuploading(false)
             }
         }
@@ -119,9 +129,10 @@ const Profile = () => {
             })
 
             userprofile()
-            alert("you are unenrolled")
+            toast.success("you are unenrolled")
         } catch (error) {
             console.log(error);
+            toast.error("you failed to unenroll")
         }
     }
 
@@ -135,7 +146,7 @@ const Profile = () => {
 
             setwl(res.data)
 
-          //  console.log(res.data);
+            //  console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -155,35 +166,83 @@ const Profile = () => {
             })
 
             wishlist()
-            alert("removed from wishlist")
+            toast.success("removed from wishlist")
 
         } catch (error) {
             console.log(error);
+            toast.error("failed to remove from wishlist")
         }
     }
 
+
+    const editprofile = async () => {
+        try {
+            const res = await axiosinstance.put(`/users/profile`, { name: newname }, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            userprofile();
+            toast.success("profile name edited")
+
+        } catch (error) {
+            console.log(error);
+            toast.error("failed to update profile")
+        }
+    }
 
     return (
         <motion.div className=' min-h-screen p-8' initial={{ opacity: 1, y: 50 }}
             animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}  >
 
+            {modal && (
+                <motion.div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl gap-4 z-1000"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                >
+
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-base-300 p-6 rounded-xl shadow-xl w-full max-w-md space-y-4 ">
+                        <input name="" id="" onChange={(e) => setnewname(e.target.value)} placeholder="Edit your name" className="input input-bordered w-full" />
+
+                        <div className="flex justify-between">
+                            <button className="btn btn-success " onClick={(e) => {
+                                editprofile()
+                                setmodal(false)
+                            }}>Save Changes</button>
+                            <button onClick={() => setmodal(false)} className="btn ">Cancel</button>
+                        </div>
+
+                    </motion.div>
+
+
+
+
+                </motion.div>
+            )}
+
+
             <div className="flex gap-4 mb-4 justify-between">
 
                 <div>
                     <Link className="btn btn-primary" to={"/home"}>
-                        Home Page
+                    <IoIosHome/>  Home Page
                     </Link>
+
+
                 </div>
 
                 <div className="flex gap-4">
                     {user.user.role === "instructor" ? "" : <button onClick={become_ins} className="btn btn-primary">Become instructor</button>}
 
-                    <button className="btn btn-error" onClick={logout}>Logout</button>
+                    <button className="btn btn-error " onClick={logout}>
+                       <IoIosLogOut className="relative "/> 
+                       <p className="inline-block relative bottom-[1px]">Logout</p>
+                       </button>
 
                     {
                         user?.user?.role === "instructor" && (
                             <Link className="btn btn-accent" to={"/instructor-dasshboard"}>
-                                instructor dashboard
+                              <MdDashboard/>   <p className="inline-block relative bottom-[1px]">Instructor Dashboard</p>
                             </Link>
                         )
                     }
@@ -197,15 +256,15 @@ const Profile = () => {
                 <div className=" mx-auto  w-64 relative">
 
                     <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 100 }} src={profile?.user?.avatar} alt="avatar" className="rounded-[50%] w-64 h-64 object-cover border-4 border-primary shadow-xl" />
-                        {
-                                    uploading  && (
-                                        <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-full">
-                                            <span className="loading loading-bars loading-lg text-primary">
+                    {
+                        uploading && (
+                            <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-full">
+                                <span className="loading loading-bars loading-lg text-primary">
 
-                                            </span>
-                                        </div>
-                                    )
-                                }
+                                </span>
+                            </div>
+                        )
+                    }
                     <motion.div className="absolute top-[190px] right-4 cursor-pointer" whileHover={{ scale: 1.2 }}>
                         <CiCirclePlus className="text-5xl " onClick={handlefile} />
                     </motion.div>
@@ -214,7 +273,14 @@ const Profile = () => {
                 </div>
 
 
-                <p className="text-xl font-semibold mt-4">{profile?.user?.name}</p>
+                <p className="text-xl font-semibold mt-4 inline-block">{profile?.user?.name}</p>
+                <motion.div className="inline-block relative left-1 bottom-[3px]" whileHover={{scale:1.2}}>
+                    <FaEdit className="inline-block " onClick={() => {
+                        setmodal(true)
+
+                    }} />
+                </motion.div>
+
                 <p className="text-gray-500">{profile?.user?.email}</p>
             </div>
 
@@ -222,12 +288,12 @@ const Profile = () => {
 
 
             <div className=" mb-8">
-                <p className="text-2xl font-semibold mb-2">Course Progress</p>
+                <p className="text-2xl font-semibold mb-2 inline-block">Course Progress</p>  
                 <div>
                     {courseprogress?.length === 0 ? (
                         <div className="text-center space-y-2">
                             <p className="text-error">you have to watch course videos</p>
-                            <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">Hone Page</button>
+                            <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome/>  Home Page</button>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:grid-cols-2 gap-6 ">
@@ -268,7 +334,7 @@ const Profile = () => {
 
                     <div className="text-center space-y-2">
                         <p className="text-error">you are not enrolled in any courses</p>
-                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">Hone Page</button>
+                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome/>  Home Page</button>
                     </div>
 
                 ) : (
@@ -310,7 +376,7 @@ const Profile = () => {
                 {wl?.wishlist?.length === 0 ? (
                     <div className="text-center space-y-2" >
                         <p className="text-error">you have add to courses to wishlist</p>
-                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">Hone Page</button>
+                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome/>  Home Page</button>
                     </div>
                 ) : (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"  >
