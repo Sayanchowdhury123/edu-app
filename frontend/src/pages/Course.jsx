@@ -5,6 +5,7 @@ import { Authcontext } from "../context/Authcontext";
 import "../App.css";
 import { motion } from "framer-motion";
 import { TiTick } from "react-icons/ti";
+import { saveAs, SaveAs } from "file-saver";
 
 
 const Course = () => {
@@ -214,6 +215,30 @@ const Course = () => {
     }
 
 
+    const Downloadcertificate = async () => {
+        try {
+            const res = await axiosinstance.post("/certificate/generate", {
+                studentname: user.user.name,
+                coursetitle: course?.title
+            }, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                },
+                responseType: "blob"
+            })
+    
+            const blob = new Blob([res.data], { type: "application/pdf" });
+           
+            saveAs(blob, "certificate.pdf")
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const coursep = courseprogress?.find(c => c.course === courseid)
+    const completedlessonlength = coursep?.completedlesson?.length;
+    const totallessons = course?.sections?.reduce((acc, section) => acc + section?.lessons?.length, 0)
+    const alllessoncompleted = completedlessonlength === totallessons;
 
     return (
         <motion.div className="max-w-[1200px] mx-auto p-6" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
@@ -231,7 +256,7 @@ const Course = () => {
                     <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
 
-                <button className="btn" onClick={() => navigate(`/chat/${courseid}`, {state: {courseid: course._id}})}>{user.user.role === "instructor" ? "chat with students" : "chat with instructor"}</button>
+                <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "chat with students" : "chat with instructor"}</button>
 
                 <div className="card-body">
                     <p className="card-title text-2xl font-semibold">{course.title}</p>
@@ -250,6 +275,9 @@ const Course = () => {
                             <button className="btn btn-outline btn-accent  " onClick={() => removewishlist(course._id)}> Remove From Wishlist</button>)
                             : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
                         }
+
+
+                        {alllessoncompleted && (<button className="btn btn-success ml-4" onClick={Downloadcertificate} >Download Certificate</button>)}
                     </div>
 
                     <div className="mt-6">
@@ -287,6 +315,7 @@ const Course = () => {
 
 
                                                                 </motion.div>
+
                                                             )
 
                                                         })}

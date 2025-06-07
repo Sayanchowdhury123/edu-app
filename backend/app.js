@@ -33,6 +33,7 @@ app.use("/api/users", profile)
 app.use("/api/progress", progress)
 app.use("/api/instructor", instructorroutes)
 app.use("/api/chat", require("./routes/chatroutes"))
+app.use("/api/certificate", require("./routes/certificate"))
 
 
 module.exports = app;
