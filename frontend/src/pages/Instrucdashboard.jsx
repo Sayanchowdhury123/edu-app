@@ -107,7 +107,7 @@ const navigate = useNavigate()
 
               <div className="bg-base-100 p-4 rounded shadow">
                  <h2 className="text-xl font-semibold">Total revenue</h2>
-                 <p className="text-2xl">{totalrevenue}</p>
+                 <p className="text-2xl">₹{totalrevenue}</p>
             </div>
          </div>
 

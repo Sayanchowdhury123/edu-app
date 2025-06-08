@@ -34,15 +34,15 @@ const Signup = () => {
 
 
     return (
-        <div className="bg-white min-h-screen flex flex-col justify-center items-center ">
-                  <div className="w-md mx-auto   p-6 bg-white rounded shadow">
-            <h2 className="text-black text-2xl font-bold mb-4 text-center">Register</h2>
+        <div className=" min-h-screen flex flex-col justify-center items-center ">
+                  <div className="w-md mx-auto bg-base-300   p-6  rounded shadow">
+            <h2 className=" text-2xl font-bold mb-4 text-center">Register</h2>
             <Formik initialValues={{ name: "", email: "", password: "" }}
                 validationSchema={signupschema}
                 onSubmit={handlesubmit}
             >
                 {({ isSubmitting }) => (
-                    <Form className="space-y-4 text-black">
+                    <Form className="space-y-4 ">
                         <div>
                             <label className="block mb-1">Name</label>
                             <Field name="name" className="input w-full input-bordered" />

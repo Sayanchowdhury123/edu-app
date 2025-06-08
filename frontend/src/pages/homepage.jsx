@@ -7,6 +7,8 @@ import { Authcontext } from "../context/Authcontext";
 import { IoSearch } from "react-icons/io5";
 import { IoMdSearch } from "react-icons/io";
 import { IoSearchCircleOutline } from "react-icons/io5";
+import {Sun,Moon} from "lucide-react"
+import { Themecontext } from "../context/Themecontext";
 
 
 
@@ -14,7 +16,7 @@ import { IoSearchCircleOutline } from "react-icons/io5";
 
 
 const Homepage = () => {
-
+   const {theme,toggletheme} = useContext(Themecontext)
    const {user} = useContext(Authcontext)
     const [courses, setcourses] = useState([])
     const [selectcategory, setselectcategory] = useState("")
@@ -89,13 +91,21 @@ const Homepage = () => {
     return (
         <div className=" min-h-screen bg-base-200 py-5 " style={{scrollbarWidth:"none"}}>
       
-      <div className="flex justify-end px-6 cursor-pointer" onClick={() => navigate(`/profile`)}>
+      <div className="flex justify-end items-center gap-6 px-6 cursor-pointer"  >
+          <div>
+          <button onClick={toggletheme} className="btn btn-sm btn-outline">
+             {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+             {theme === "light" ? "Dark" : "Light"}
+          </button>
+     
+          </div>
              {user?.user?.token && (
-                <div className="flex items-center gap-2 ">
+                <div className="flex items-center gap-2 " onClick={() => navigate(`/profile`)}>
                   <motion.img initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 100 }} src={profile?.user?.avatar} alt="avatar" className="rounded-[50%] w-10 h-10 object-cover shadow-xl" />
                   <p className="text-primary font-semibold text-sm">{profile?.user?.name}</p>
                 </div>
             )}
+        
       </div>
            
 
@@ -114,7 +124,7 @@ const Homepage = () => {
                     </select>
 
                   
-                         <IoSearch className="relative  top-[2px] text-4xl bg-black rounded-full p-2 cursor-pointer"  onClick={() => navigate("/search")} />
+                         <IoSearch className={`relative   top-[2px] text-4xl ${theme === "light" ? "bg-black text-white" : "bg-white text-black"}  rounded-full p-2 cursor-pointer`}  onClick={() => navigate("/search")} />
                 
                 
                 </div>

@@ -39,15 +39,15 @@ const navigate = useNavigate();
 
 
     return (
-        <div className="bg-white min-h-screen flex flex-col justify-center items-center ">
-                  <div className="w-md mx-auto   p-6 bg-white rounded shadow">
-            <h2 className="text-black text-2xl font-bold mb-4 text-center">Login</h2>
+        <div className=" min-h-screen flex flex-col justify-center items-center ">
+                  <div className="w-md mx-auto   p-6 bg-base-300 rounded shadow">
+            <h2 className=" text-2xl font-bold mb-4 text-center">Login</h2>
             <Formik initialValues={{  email: "", password: "" }}
                 validationSchema={loginschema}
                 onSubmit={handlesubmit}
             >
                 {({ isSubmitting }) => (
-                    <Form className="space-y-4 text-black">
+                    <Form className="space-y-4 ">
                     
 
                         <div>
