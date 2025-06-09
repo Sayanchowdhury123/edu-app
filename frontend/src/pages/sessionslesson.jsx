@@ -2,7 +2,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Authcontext } from "../context/Authcontext";
 import axiosinstance from "../api";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion, stagger } from "framer-motion";
 
 
@@ -20,6 +20,12 @@ const Sessionlesson = () => {
     const navigate = useNavigate();
     const [uploadsectionindex, setuploadsectionindex] = useState(0)
     const [uploadprogress, setuploadprogress] = useState(null)
+    const[lec,setlec] = useState(false)
+    const[lectext,setlectext] = useState("")
+    const[sectionindex,setsectionindex] = useState()
+    const[lessonid,setlessonid] = useState()
+     const location = useLocation();
+        const { coursename } = location.state || {};
 
     const fetchvideos = async () => {
         try {
@@ -128,9 +134,48 @@ const Sessionlesson = () => {
             console.log(error);
         }
     }
+
+     const addlecture = async () => {
+        try {
+             const res = await axiosinstance.put(`/lecture/${courseid}/sections/${sectionindex}/lessons/${lessonid}`,{lecture:lectext,coursename:coursename},{
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+
+                }
+            })
+
+            fetchvideos()
+            alert("lecture added")
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
 
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto p-6">
+           {lec && (
+                <motion.div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl gap-4 z-1000"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                >
+
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-base-300 p-6 rounded-xl shadow-xl  w-[800px] space-y-4 ">
+                        <textarea name="" id="" onChange={(e) => setlectext(e.target.value)} placeholder="Add lecture" className="textarea textarea-bordered w-full h-96 " ></textarea>
+
+                        <div className="flex justify-between">
+                            <button className="btn btn-success " onClick={(e) => {
+                                addlecture()
+                                setlec(false)
+                            }}>Save Changes</button>
+                            <button onClick={() => setlec(false)} className="btn ">Cancel</button>
+                        </div>
+
+                    </motion.div>
+
+
+
+
+                </motion.div>
+            )}
             <h2 className="text-2xl font-bold mb-4">Manage sections and lessons</h2>
 
             <div className="mb-6">
@@ -162,6 +207,11 @@ const Sessionlesson = () => {
                                     {lesson.title}
                                     <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => deletelesson(section.index, lesson.id)}  >Delete lesson</button>
                                      <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => navigate(`/edit-lesson/${courseid}/${section.index}/${lesson.id}`)}  >Edit lesson</button>
+                                     <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => {
+                                        setlec(true)
+                                        setsectionindex(section.index)
+                                        setlessonid(lesson.id)
+                                     }} >Add Lecture</button>
 
                                 </li>
 

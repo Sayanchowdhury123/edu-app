@@ -7,6 +7,7 @@ const lessonschema = new mongoose.Schema({
   videourl: {type: String},
   isfreeprivew:{type: Boolean, default: false},
   cloudinaryid: {type: String},
+  lecture: {type:Buffer}
 
 })
 

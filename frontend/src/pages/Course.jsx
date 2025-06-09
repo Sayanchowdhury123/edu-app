@@ -21,6 +21,7 @@ const Course = () => {
     const [courseprogress, setcourseprogress] = useState([])
     const [uploading, setuploading] = useState(false)
 
+
     const fetchcourse = async () => {
         try {
             const res = await axiosinstance.get(`/course/${courseid}`, {
@@ -240,6 +241,8 @@ const Course = () => {
     const totallessons = course?.sections?.reduce((acc, section) => acc + section?.lessons?.length, 0)
     const alllessoncompleted = completedlessonlength === totallessons;
 
+   
+
     return (
         <motion.div className="max-w-[1200px] mx-auto p-6" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
             {
@@ -310,6 +313,7 @@ const Course = () => {
                                                                     <div className="flex gap-2 items-center">
                                                                         {iscompleted && (<TiTick className="text-primary" />)}
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
+                                                                        {l.lecture && (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>)}
 
                                                                     </div>
 

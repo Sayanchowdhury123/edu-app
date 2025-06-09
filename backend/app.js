@@ -34,6 +34,7 @@ app.use("/api/progress", progress)
 app.use("/api/instructor", instructorroutes)
 app.use("/api/chat", require("./routes/chatroutes"))
 app.use("/api/certificate", require("./routes/certificate"))
+app.use("/api/lecture", require("./routes/lectureroutes"))
 
 
 module.exports = app;

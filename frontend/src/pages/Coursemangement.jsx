@@ -163,7 +163,9 @@ const Cousremanagementpage = () => {
                                 }} className="btn btn-error btn-sm mb-4">Delete</button>
                                 <button onClick={handlefile} className="btn btn-neutral btn-sm mb-4">Add thumbnail</button>
 
-                                <button className="btn btn-sm btn-outline"   onClick={() => navigate(`/session-lesson/${c._id}`)}>
+                                <button className="btn btn-sm btn-outline"   onClick={() => navigate(`/session-lesson/${c._id}`,{
+                                    state: {coursename: c.title}
+                                })}>
                                      Manage Course
                                 </button>
                                   
