@@ -5,6 +5,7 @@ import axiosinstance from "../api";
 import { useContext, useEffect, useState } from "react";
 import { Authcontext } from "../context/Authcontext";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 
@@ -70,12 +71,12 @@ const Editcourse = () => {
             })
             console.log(res.data);
             resetForm();
-            alert("cousre Edited successsfully")
+            toast.success("cousre Edited successsfully")
            navigate("/course-management")
             
         } catch (error) {
             console.log(error);
-            alert("cousre edit failed")
+            toast.error("cousre edit failed")
         } finally {
             setSubmitting(false)
         }

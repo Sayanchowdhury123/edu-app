@@ -88,7 +88,6 @@ const navigate = useNavigate()
          <h1 className="text-3xl font-bold mb-4">Instructor Dashboard</h1>
          <div>
             <button className="btn rounded-xl font-semibold" onClick={() => navigate("/course-management")} >Course management</button>
-             <button className="btn rounded-xl font-semibold" onClick={() => navigate("/create-course")} >Create Course</button>
          </div>
    
         </div>

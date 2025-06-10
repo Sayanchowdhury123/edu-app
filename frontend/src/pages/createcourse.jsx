@@ -5,6 +5,7 @@ import axiosinstance from "../api";
 import { useContext } from "react";
 import { Authcontext } from "../context/Authcontext";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 
@@ -29,12 +30,12 @@ const Createcourse = () => {
             })
             console.log(res.data);
             resetForm();
-            alert("cousre created successsfully")
+            toast.success("cousre created successsfully")
            navigate("/course-management")
             
         } catch (error) {
             console.log(error);
-            alert("cousre creation failed")
+            toast.error("cousre creation failed")
         } finally {
             setSubmitting(false)
         }

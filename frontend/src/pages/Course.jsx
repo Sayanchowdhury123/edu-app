@@ -6,6 +6,7 @@ import "../App.css";
 import { motion } from "framer-motion";
 import { TiTick } from "react-icons/ti";
 import { saveAs, SaveAs } from "file-saver";
+import Congratulation from "./Congratulation";
 
 
 const Course = () => {
@@ -245,6 +246,7 @@ const Course = () => {
 
     return (
         <motion.div className="max-w-[1200px] mx-auto p-6" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
+            {alllessoncompleted && <Congratulation courseid={course._id}/>}
             {
                 uploading && (
                     <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center z-1000">
@@ -262,6 +264,7 @@ const Course = () => {
                 <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "chat with students" : "chat with instructor"}</button>
 
                 <div className="card-body">
+                    
                     <p className="card-title text-2xl font-semibold">{course.title}</p>
                     <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
                     <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
