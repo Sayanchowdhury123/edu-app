@@ -1,5 +1,6 @@
 const app = require("./app");
 const connectdb = require("./config/db");
+const Course = require("./models/course")
 
 
 
@@ -21,6 +22,30 @@ const io = socketIo(server, {
 
 io.on("connection", (socket) => {
     console.log("user connected", socket.id);
+
+
+  socket.on("instructor-join", (courseId) => {
+    socket.join(courseId);
+  });
+
+  socket.on("viewer-join", (courseId) => {
+    socket.join(courseId);
+    socket.to(courseId).emit("viewer-join");
+  });
+
+  socket.on("offer", ({ offer, courseId }) => {
+    socket.to(courseId).emit("offer", { offer });
+  });
+
+  socket.on("answer", ({ answer, courseId }) => {
+    socket.to(courseId).emit("answer", { answer });
+  });
+
+  socket.on("ice-candidate", ({ candidate, courseId }) => {
+    socket.to(courseId).emit("ice-candidate", { candidate });
+  });
+
+
 
     socket.on("join-room", (roomid) => {
         socket.join(roomid)

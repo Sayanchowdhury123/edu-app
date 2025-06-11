@@ -31,8 +31,8 @@ const Course = () => {
                 }
             })
             setcourse(res.data)
-            console.log(res.data);
-
+           // console.log(res.data);
+           //  console.log(user.user);
         } catch (error) {
             console.log(error);
         }
@@ -47,7 +47,7 @@ const Course = () => {
             })
             setu(res.data)
 
-
+       //console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -62,7 +62,7 @@ const Course = () => {
             })
 
             setcourseprogress(res.data)
-            console.log(res.data);
+           // console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -262,6 +262,16 @@ const Course = () => {
                 </figure>
 
                 <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "chat with students" : "chat with instructor"}</button>
+
+                {user?.user?.role === "instructor" ? (
+                    <button onClick={() => navigate("/startlive",{
+                    state: {courseId: courseid}
+                })}>Go Live</button>
+            ) : (
+                <button onClick={() => navigate("/joinlive",{
+                    state: {courseId: courseid}
+                })} >Join Live Class</button>
+                )}
 
                 <div className="card-body">
                     

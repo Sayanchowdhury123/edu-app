@@ -19,6 +19,8 @@ import Videoplayer from './pages/videoplayer'
 import Search from './pages/seach'
 import Chatbox from './pages/Chatbox'
 import {Toaster} from "react-hot-toast";
+import InstructorLiveStream from './pages/InstructorLiveStream'
+import StudentViewer from './pages/StudentViewer'
 
 
 function App() {
@@ -45,6 +47,8 @@ function App() {
         <Route path='/video/:id' element={<Privateroute><Videoplayer/></Privateroute>} />
         <Route path='/search' element={<Search/>} />
         <Route path='/chat/:id' element={<Privateroute><Chatbox/></Privateroute>} />
+        <Route path='/startlive' element={<Privateroute><InstructorLiveStream/></Privateroute>} />
+         <Route path='/joinlive' element={<Privateroute><StudentViewer/></Privateroute>} />
       </Routes>
     </Router>
     
