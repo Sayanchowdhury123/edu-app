@@ -261,14 +261,14 @@ const Course = () => {
                     <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
 
-                <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "chat with students" : "chat with instructor"}</button>
-
+                <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
+      
                 {user?.user?.role === "instructor" ? (
-                    <button onClick={() => navigate("/startlive",{
+                    <button className="btn " onClick={() => navigate("/startlive",{
                     state: {courseId: courseid}
-                })}>Go Live</button>
+                })}>Start Live Stream</button>
             ) : (
-                <button onClick={() => navigate("/joinlive",{
+                <button className="btn" onClick={() => navigate("/joinlive",{
                     state: {courseId: courseid}
                 })} >Join Live Class</button>
                 )}
