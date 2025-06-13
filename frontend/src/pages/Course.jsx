@@ -265,7 +265,7 @@ const Course = () => {
       
                 {user?.user?.role === "instructor" ? (
                     <button className="btn " onClick={() => navigate("/startlive",{
-                    state: {courseId: courseid}
+                    state: {courseId: courseid }
                 })}>Start Live Stream</button>
             ) : (
                 <button className="btn" onClick={() => navigate("/joinlive",{

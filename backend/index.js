@@ -23,31 +23,6 @@ const io = socketIo(server, {
 io.on("connection", (socket) => {
     console.log("user connected", socket.id);
 
-socket.on("end-call", ({courseId}) => {
-  
-    socket.to(courseId).emit("end-call");
-    socket.leave(courseId)
-})
-  socket.on("instructor-join", (courseId) => {
-    socket.join(courseId);
-  });
-
-  socket.on("viewer-join", (courseId) => {
-    socket.join(courseId);
-    socket.to(courseId).emit("viewer-join", {viewid: socket.id});
-  });
-
-  socket.on("offer", ({ offer, courseId }) => {
-    socket.to(courseId).emit("offer", { offer });
-  });
-
-  socket.on("answer", ({ answer, courseId }) => {
-    socket.to(courseId).emit("answer", { answer });
-  });
-
-  socket.on("ice-candidate", ({ candidate, courseId }) => {
-    socket.to(courseId).emit("ice-candidate", { candidate });
-  });
 
 
 

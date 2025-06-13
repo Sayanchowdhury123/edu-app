@@ -11,6 +11,7 @@ const profile = require("./routes/userroutes")
 const progress = require("./routes/progressroutes")
 const cloudinary = require("cloudinary").v2;
 const instructorroutes = require("./routes/instructorroutes")
+const livekitroute = require("./routes/livekit")
 const app = express();
 app.use(cors())
 app.use(express.json());
@@ -35,6 +36,7 @@ app.use("/api/instructor", instructorroutes)
 app.use("/api/chat", require("./routes/chatroutes"))
 app.use("/api/certificate", require("./routes/certificate"))
 app.use("/api/lecture", require("./routes/lectureroutes"))
+app.use("/api/livekit", livekitroute)
 
 
 module.exports = app;

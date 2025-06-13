@@ -4,6 +4,7 @@ import { Authcontext } from "../context/Authcontext";
 import axiosinstance from "../api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { motion, stagger } from "framer-motion";
+import toast from "react-hot-toast";
 
 
 const Editsection = () => {
@@ -24,10 +25,11 @@ const navigate = useNavigate();
             })
 
             
-            alert("section edited")
+            toast.success("section edited")
             navigate(`/session-lesson/${courseid}`)
          } catch (error) {
             console.log(error);
+            toast.error("Failed to to edit section")
          }
     }
 

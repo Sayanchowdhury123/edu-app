@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Authcontext } from "../context/Authcontext";
 import { motion } from "framer-motion";
 import axiosinstance from "../api";
-
+import toast from "react-hot-toast";
 
 const Editlesson = () => {
     const { courseid } = useParams();
@@ -44,10 +44,11 @@ const Editlesson = () => {
             setuploadprogress(0)
             setuploadsectionindex(false)
 
-            alert("lesson edited")
+            toast.success("lesson edited")
             navigate(`/session-lesson/${courseid}`)
         } catch (error) {
             console.log(error);
+            toast.error("failed to edit lesson")
         }
     }
 

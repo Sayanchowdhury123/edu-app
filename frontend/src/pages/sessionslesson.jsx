@@ -4,13 +4,14 @@ import { Authcontext } from "../context/Authcontext";
 import axiosinstance from "../api";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion, stagger } from "framer-motion";
+import toast from "react-hot-toast";
 
 
 
 const Sessionlesson = () => {
     const { user } = useContext(Authcontext)
     const [course, setcousre] = useState([])
-    const fileinput = useRef(null);
+    const fileinput = useRef([]);
     const [file, setfile] = useState("")
     const [uploading, setuploading] = useState(false)
     const [sectiontitle, setsectiontitle] = useState("")
@@ -26,6 +27,9 @@ const Sessionlesson = () => {
     const [lessonid, setlessonid] = useState()
     const location = useLocation();
     const { coursename } = location.state || {};
+    const inputref = useRef()
+    const [deleteing, setdeleting] = useState(null)
+
 
     const fetchvideos = async () => {
         try {
@@ -39,6 +43,7 @@ const Sessionlesson = () => {
             //console.log(res.data.sections);
         } catch (error) {
             console.log(error);
+            toast.error("failed to fetch sections")
         }
     }
 
@@ -56,8 +61,10 @@ const Sessionlesson = () => {
 
             setsectiontitle("")
             fetchvideos();
+            toast.success("added section")
         } catch (error) {
             console.log(error);
+            toast.error("failed to add sections")
         }
     }
 
@@ -87,23 +94,35 @@ const Sessionlesson = () => {
             })
 
 
+
+            const updated = [...lessondata]
+            updated[sectionindex] = {
+                ...updated[sectionindex],
+                title: "",
+                
+            }
+
+            setlessondata(updated)
+
+            if(fileinput.current[sectionindex]){
+                fileinput.current[sectionindex] = null;
+            }
+
             setuploadprogress(0)
             setuploadsectionindex(null)
 
             fetchvideos();
-
-            alert("video uploaded")
-
-
-
+            toast.success("Lesson added and video uploaded")
         } catch (error) {
             console.log(error);
+            toast.error("failed to add lesson and upload video")
         }
 
 
     }
 
     const deletelesson = async (sectionindex, lessonid) => {
+        setdeleting(sectionindex)
         try {
             const res = await axiosinstance.delete(`/courses/${courseid}/sections/${sectionindex}/lessons/${lessonid}`, {
                 headers: {
@@ -113,14 +132,18 @@ const Sessionlesson = () => {
             })
 
             fetchvideos();
-            alert("lesson deleted")
+            toast.success("lesson deleted")
         } catch (error) {
             console.log(error);
+            toast.error("failed to delete lesson")
+        } finally {
+            setdeleting(null)
         }
     }
 
     const deletsection = async (sectionindex) => {
         try {
+            setdeleting(sectionindex)
             const res = await axiosinstance.delete(`/course/${courseid}/sections/${sectionindex}`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
@@ -129,9 +152,12 @@ const Sessionlesson = () => {
             })
 
             fetchvideos();
-            alert("section deleted")
+            toast.success("section deleted")
         } catch (error) {
             console.log(error);
+            toast.error("failed to delete section")
+        } finally {
+            setdeleting(null)
         }
     }
 
@@ -145,13 +171,14 @@ const Sessionlesson = () => {
             })
 
             fetchvideos()
-            alert("lecture added")
+            toast.success("lecture added")
         } catch (error) {
             console.log(error);
+            toast.error("failed to delete lecture")
         }
     }
 
-    const dellecture = async (courseid,sectionindex,lessonid) => {
+    const dellecture = async (courseid, sectionindex, lessonid) => {
         try {
             const res = await axiosinstance.delete(`/lecture/${courseid}/sections/${sectionindex}/lessons/${lessonid}`, {
                 headers: {
@@ -161,9 +188,10 @@ const Sessionlesson = () => {
             })
 
             fetchvideos()
-            alert("lecture removed")
+            toast.success("lecture removed")
         } catch (error) {
             console.log(error);
+            toast.error("failed to delete lecture")
         }
     }
     return (
@@ -202,10 +230,17 @@ const Sessionlesson = () => {
 
             </div>
 
-
-            {
+           <div className="h-[80vh] overflow-y-auto" style={{scrollbarWidth:"none"}}>
+                {
                 sections?.map((section) => (
                     <motion.div key={section.index} className="mb-6 p-4 border rounded-2xl " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} >
+                        {deleteing === section.index && (
+                            <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
+                                <span className="loading loading-bars loading-lg text-primary">
+
+                                </span>
+                            </div>
+                        )}
 
                         <div className="flex justify-between">
                             <h3 className="font-semibold text-lg mb-2 ">{section.title}</h3>
@@ -216,27 +251,33 @@ const Sessionlesson = () => {
                             </div>
 
                         </div>
-
-                        <ul className="list-disc ml-5">
+    <div className="overflow-y-auto h-[6vh]" style={{scrollbarWidth:"none"}}>
+        <ul className="list-disc ml-5 ">
                             {section?.lessons?.map((lesson) => (
                                 <li key={lesson.id}>
-                                    {lesson.title}
-                                    <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => deletelesson(section.index, lesson.id)}  >Delete lesson</button>
-                                    <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => navigate(`/edit-lesson/${courseid}/${section.index}/${lesson.id}`)}  >Edit lesson</button>
-                                    <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => {
-                                        setlec(true)
-                                        setsectionindex(section.index)
-                                        setlessonid(lesson.id)
-                                    }} >Add Lecture</button>
-                                    <button type="submit" className="btn-link btn mb-1  ml-3 btn-sm " onClick={() => {
-                                      dellecture(courseid,section.index,lesson.id)
-                                    }} >Remove Lecture</button>
+
+                                    <p> {lesson.title}</p>
+                                    <div className="relative right-3">
+                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => deletelesson(section.index, lesson.id)}  >Delete lesson</button>
+                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => navigate(`/edit-lesson/${courseid}/${section.index}/${lesson.id}`)} >Edit lesson</button>
+                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
+                                            setlec(true)
+                                            setsectionindex(section.index)
+                                            setlessonid(lesson.id)
+                                        }} >Add Lecture</button>
+                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
+                                            dellecture(courseid, section.index, lesson.id)
+                                        }} >Remove Lecture</button>
+                                    </div>
+
 
                                 </li>
 
 
                             ))}
                         </ul>
+    </div>
+                      
 
                         <form onSubmit={(e) => {
                             e.preventDefault();
@@ -249,7 +290,7 @@ const Sessionlesson = () => {
                                     title: e.target.value
                                 }
                                 setlessondata(updated)
-                            }} value={lessondata[section.index]?.title} required />
+                            }} value={lessondata[section.index]?.title} ref={inputref} required />
 
                             {uploadsectionindex === section.index && uploadprogress > 0 && (
                                 <motion.div className="w-full bg-base-100 p-4 rounded-lg shadow-md mt-4"
@@ -262,7 +303,7 @@ const Sessionlesson = () => {
 
                                         <span className="loading loading-spinner loading-md text-primary" />
                                         <p className="text-primary font-semibold">
-                                            Uploading : {uploadprogress}%
+                                            Uploading...
                                         </p>
 
                                     </div>
@@ -279,7 +320,7 @@ const Sessionlesson = () => {
                                     }
                                     setlessondata(updated)
                                 }
-                            }} required />
+                            }} ref={(el) => (fileinput.current[section.index] = el)} required />
                             <button type="submit" className="btn btn-accent w-full">Add lesson</button>
                         </form>
 
@@ -292,6 +333,8 @@ const Sessionlesson = () => {
 
                 ))
             }
+           </div>
+           
         </motion.div>
     )
 }
