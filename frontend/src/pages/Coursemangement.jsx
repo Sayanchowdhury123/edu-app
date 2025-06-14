@@ -4,6 +4,7 @@ import axiosinstance from "../api";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, stagger } from "framer-motion";
 import toast from "react-hot-toast";
+import Loadingscrenn from "./Loadingscreen";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -29,9 +30,11 @@ const Cousremanagementpage = () => {
     const [file, setfile] = useState("")
     const [uploading, setuploading] = useState(null)
     const navigate = useNavigate()
+      const[loading,setloading] = useState(false)
 
     const fetchinfo = async () => {
         try {
+            setloading(true)
             const res = await axiosinstance.get("/instructor/dashboard", {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
@@ -41,6 +44,8 @@ const Cousremanagementpage = () => {
             //console.log(res.data.courses);
         } catch (error) {
             console.log("failed to fetch");
+        }finally{
+            setloading(false)
         }
     }
 
@@ -119,13 +124,24 @@ const Cousremanagementpage = () => {
 
 
     }
+    
+      if(loading) return <Loadingscrenn/>
 
     return (
         <motion.div className="p-6" initial="hidden" animate="visible" variants={containerVariants}  >
-
-            <motion.h1 className="text-2xl font-bold mb-4" variants={cardVariants}>
+      <div className="flex justify-between items-center mb-4">
+            <motion.h1 className="text-2xl font-bold " variants={cardVariants}>
                 Manage your courses
             </motion.h1>
+
+
+            <div>
+                <button className="btn rounded-xl font-semibold" onClick={() => navigate("/course-updates")}>Course Updates</button>
+            </div>
+      </div>
+          
+
+            
 
             <div>
                 {course?.length === 0 ? (

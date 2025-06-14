@@ -12,7 +12,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { MdDashboard } from "react-icons/md";
 import { FaBarsProgress } from "react-icons/fa6";
 import { RiProgress3Fill } from "react-icons/ri";
-
+import Loadingscrenn from "./Loadingscreen";
 
 const Profile = () => {
     const { login, user, logout } = useContext(Authcontext)
@@ -27,6 +27,7 @@ const Profile = () => {
     const [uploading, setuploading] = useState(false)
     const [newname, setnewname] = useState("")
     const [modal, setmodal] = useState(false)
+     const[loading,setloading] = useState(false)
 
 
     const become_ins = async () => {
@@ -34,7 +35,7 @@ const Profile = () => {
         try {
             const res = await axiosinstance.put("/instructor/become-instructor", {}, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
             login(res.data)
@@ -49,7 +50,7 @@ const Profile = () => {
         try {
             const res = await axiosinstance.get(`/progress`, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -83,7 +84,7 @@ const Profile = () => {
                 const res = await axiosinstance.patch(`/users/upload-avatar`, formdata, {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${user.user.token}`
+                        Authorization: `Bearer ${user?.user?.token}`
 
                     }
                 })
@@ -102,9 +103,10 @@ const Profile = () => {
 
     const userprofile = async () => {
         try {
+            setloading(true)
             const res = await axiosinstance.get(`/users/profile`, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -112,6 +114,8 @@ const Profile = () => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+        }finally{
+            setloading(false)
         }
     }
 
@@ -124,7 +128,7 @@ const Profile = () => {
         try {
             const res = await axiosinstance.delete(`/enroll/${courseid}`, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -140,7 +144,7 @@ const Profile = () => {
         try {
             const res = await axiosinstance.get(`/users/wishlist`, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -161,7 +165,7 @@ const Profile = () => {
         try {
             const res = await axiosinstance.delete(`/users/wishlist/${courseid}`, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -179,7 +183,7 @@ const Profile = () => {
         try {
             const res = await axiosinstance.put(`/users/profile`, { name: newname }, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -192,6 +196,7 @@ const Profile = () => {
         }
     }
 
+    if(loading) return <Loadingscrenn/>
     return (
         <motion.div className=' min-h-screen p-8' initial={{ opacity: 1, y: 50 }}
             animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}  >
@@ -232,7 +237,7 @@ const Profile = () => {
                 </div>
 
                 <div className="flex gap-4">
-                    {user.user.role === "instructor" ? "" : <button onClick={become_ins} className="btn btn-primary">Become instructor</button>}
+                    {user?.user?.role === "instructor" ? "" : <button onClick={become_ins} className="btn btn-primary">Become instructor</button>}
 
                     <button className="btn btn-error " onClick={logout}>
                        <IoIosLogOut className="relative "/> 

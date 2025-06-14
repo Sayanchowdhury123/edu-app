@@ -5,7 +5,7 @@ import axiosinstance from "../api";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion, stagger } from "framer-motion";
 import toast from "react-hot-toast";
-
+import Loadingscrenn from "./Loadingscreen";
 
 
 const Sessionlesson = () => {
@@ -29,10 +29,12 @@ const Sessionlesson = () => {
     const { coursename } = location.state || {};
     const inputref = useRef()
     const [deleteing, setdeleting] = useState(null)
+    const[loading,setloading] = useState(false)
 
 
     const fetchvideos = async () => {
         try {
+            setloading(true)
             const res = await axiosinstance.get(`/course/${courseid}/videos`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
@@ -44,6 +46,8 @@ const Sessionlesson = () => {
         } catch (error) {
             console.log(error);
             toast.error("failed to fetch sections")
+        }finally{
+            setloading(false)
         }
     }
 
@@ -194,6 +198,8 @@ const Sessionlesson = () => {
             toast.error("failed to delete lecture")
         }
     }
+
+    if(loading) return <Loadingscrenn/>
     return (
 
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto p-6">

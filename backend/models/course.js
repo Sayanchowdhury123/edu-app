@@ -41,6 +41,11 @@ const courseschema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+
+  announcement: {
+   text: {type:String,default:""},
+   date: {type:Date}
+  },
 });
 
 module.exports = mongoose.model("Course", courseschema);

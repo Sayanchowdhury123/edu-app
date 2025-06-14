@@ -21,7 +21,9 @@ import Chatbox from './pages/Chatbox'
 import {Toaster} from "react-hot-toast";
 import InstructorLiveStream from './pages/InstructorLiveStream'
 import StudentViewer from './pages/StudentViewer'
-
+import Courseupdates from './pages/Courseupdate'
+import Addupdates from './pages/Addupadtes'
+import NotFound from './pages/NotFound'
 
 function App() {
  
@@ -49,6 +51,9 @@ function App() {
         <Route path='/chat/:id' element={<Privateroute><Chatbox/></Privateroute>} />
         <Route path='/startlive' element={<Privateroute><InstructorLiveStream/></Privateroute>} />
          <Route path='/joinlive' element={<Privateroute><StudentViewer/></Privateroute>} />
+         <Route path='/course-updates' element={<Privateroute><Courseupdates/></Privateroute>} />
+         <Route path='/addupdate/:courseid' element={<Privateroute><Addupdates/></Privateroute>} />
+         <Route path='*' element={<NotFound/>} />
       </Routes>
     </Router>
     

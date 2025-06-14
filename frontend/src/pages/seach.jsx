@@ -7,7 +7,7 @@ import { motion, noop } from "framer-motion";
 import { Authcontext } from "../context/Authcontext";
 import { IoMdSearch } from "react-icons/io";
 import { IoSearchCircleOutline } from "react-icons/io5";
-
+import Loadingscrenn from "./Loadingscreen";
 
 
 
@@ -15,7 +15,7 @@ const Search = () => {
 
     const { user } = useContext(Authcontext)
     const [courses, setcourses] = useState([])
-
+     const[loading,setloading] = useState(false)
     const navigate = useNavigate()
     const [searcharray, setsercharray] = useState([])
     const [searchtext, setsearchtext] = useState("")
@@ -27,6 +27,7 @@ const Search = () => {
 
     const fetchcourses = async () => {
         try {
+            setloading(true)
             const res = await axiosinstance.get("/course")
             setcourses(res.data)
 
@@ -37,6 +38,8 @@ const Search = () => {
 
         } catch (error) {
             console.log(error);
+        }finally{
+            setloading(false)
         }
     }
 
@@ -54,7 +57,7 @@ const Search = () => {
     }
 
 
-
+     if(loading) return <Loadingscrenn/>
     return (
         <div className=" min-h-screen bg-base-200 py-5 " style={{ scrollbarWidth: "none" }}>
 

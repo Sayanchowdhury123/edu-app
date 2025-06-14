@@ -9,7 +9,7 @@ import { IoMdSearch } from "react-icons/io";
 import { IoSearchCircleOutline } from "react-icons/io5";
 import {Sun,Moon} from "lucide-react"
 import { Themecontext } from "../context/Themecontext";
-
+import Loadingscrenn from "./Loadingscreen";
 
 
 
@@ -26,7 +26,7 @@ const Homepage = () => {
     const navigate = useNavigate()
     const [searcharray,setsercharray] = useState([])
     const [searchtext,setsearchtext] = useState("")
- 
+     const[loading,setloading] = useState(false)
 
     useEffect(() => {
         fetchcourses();
@@ -34,6 +34,7 @@ const Homepage = () => {
 
     const fetchcourses = async () => {
         try {
+            setloading(true)
             const res = await axiosinstance.get("/course")
             setcourses(res.data)
             setfiltered(res.data)
@@ -46,9 +47,11 @@ const Homepage = () => {
 
 
             setcategory(unique)
-
+             
         } catch (error) {
             console.log(error);
+        }finally{
+            setloading(false)
         }
     }
 
@@ -68,7 +71,7 @@ const Homepage = () => {
         try {
             const res = await axiosinstance.get(`/users/profile`, {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user?.user?.token}`
                 }
             })
 
@@ -87,7 +90,7 @@ const Homepage = () => {
         const sa = courses.filter((c) => c.title === searchtext)
         setsercharray(sa)
     }
-
+      if(loading) return <Loadingscrenn/>
     return (
         <div className=" min-h-screen bg-base-200 py-5 " style={{scrollbarWidth:"none"}}>
       

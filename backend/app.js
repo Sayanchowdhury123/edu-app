@@ -37,6 +37,6 @@ app.use("/api/chat", require("./routes/chatroutes"))
 app.use("/api/certificate", require("./routes/certificate"))
 app.use("/api/lecture", require("./routes/lectureroutes"))
 app.use("/api/livekit", livekitroute)
-
+app.use("/api/courseupdate", require("./routes/updatesroute"))
 
 module.exports = app;

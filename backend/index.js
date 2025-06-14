@@ -24,7 +24,13 @@ io.on("connection", (socket) => {
     console.log("user connected", socket.id);
 
 
+     socket.on("join-update",(courseid) => {
+        socket.join(courseid)
+     })
 
+     socket.on("add-update",({adata,courseid}) => {
+        socket.to(courseid).emit("got-update", adata)
+     })
 
     socket.on("join-room", (roomid) => {
         socket.join(roomid)

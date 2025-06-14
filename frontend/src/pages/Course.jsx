@@ -7,7 +7,11 @@ import { motion } from "framer-motion";
 import { TiTick } from "react-icons/ti";
 import { saveAs, SaveAs } from "file-saver";
 import Congratulation from "./Congratulation";
+import AnnouncementBanner from "./AnnouncementBanner";
+import io from "socket.io-client"
+import Loadingscrenn from "./Loadingscreen";
 
+const socket = io("http://localhost:5000")
 
 const Course = () => {
     const { courseid } = useParams()
@@ -21,20 +25,41 @@ const Course = () => {
     const [sim, setsim] = useState([]);
     const [courseprogress, setcourseprogress] = useState([])
     const [uploading, setuploading] = useState(false)
+    const[loading,setloading] = useState(false)
+
+
+    useEffect(() => {
+     socket.emit("join-update",courseid)
+
+
+     socket.on("got-update", (adata) => {
+        
+        setcourse((prev) => {
+            return {...prev, announcement: adata}
+        })
+     })
+   
+     return () => {
+        socket.off("got-update")
+     }
+    },[courseid])
 
 
     const fetchcourse = async () => {
         try {
+            setloading(true)
             const res = await axiosinstance.get(`/course/${courseid}`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
             setcourse(res.data)
-           // console.log(res.data);
+           console.log(res.data);
            //  console.log(user.user);
         } catch (error) {
             console.log(error);
+        }finally{
+            setloading(false)
         }
     }
 
@@ -242,10 +267,14 @@ const Course = () => {
     const totallessons = course?.sections?.reduce((acc, section) => acc + section?.lessons?.length, 0)
     const alllessoncompleted = completedlessonlength === totallessons;
 
-   
+   if(loading) return <Loadingscrenn/>
 
     return (
-        <motion.div className="max-w-[1200px] mx-auto p-6" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
+        
+        <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
+         
+         {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement}/>)}
+
             {alllessoncompleted && <Congratulation courseid={course._id}/>}
             {
                 uploading && (
@@ -263,16 +292,7 @@ const Course = () => {
 
                 <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
       
-                {user?.user?.role === "instructor" ? (
-                    <button className="btn " onClick={() => navigate("/startlive",{
-                    state: {courseId: courseid }
-                })}>Start Live Stream</button>
-            ) : (
-                <button className="btn" onClick={() => navigate("/joinlive",{
-                    state: {courseId: courseid}
-                })} >Join Live Class</button>
-                )}
-
+                
                 <div className="card-body">
                     
                     <p className="card-title text-2xl font-semibold">{course.title}</p>

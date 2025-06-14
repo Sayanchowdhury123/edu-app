@@ -8,6 +8,7 @@ import { Chart as Chartjs,BarElement,CategoryScale,LinearScale } from "chart.js"
 import {motion} from "framer-motion";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Loadingscrenn from "./Loadingscreen";
 
 Chartjs.register(BarElement,CategoryScale,LinearScale)
 
@@ -16,11 +17,14 @@ const[stats,setstats] = useState([])
 const {user} = useContext(Authcontext)
 const chartref = useRef(null)
 const navigate = useNavigate()
+const[loading,setloading] = useState(false)
+
    useEffect(() => {
 
   
   const fetchinfo = async () => {
     try {
+        setloading(true)
         const res = await axiosinstance.get("/instructor/dashboard", {
             headers: {
                 Authorization: `Bearer ${user.user.token}`
@@ -30,6 +34,8 @@ const navigate = useNavigate()
        console.log(res.data);
     } catch (error) {
         console.log("failed to fetch");
+    }finally{
+        setloading(false)
     }
   }
 
@@ -81,6 +87,8 @@ const navigate = useNavigate()
         ]
 
     }
+
+          if(loading) return <Loadingscrenn/>
 
     return(
        <motion.div initial={{opacity:0, y:20}} animate={{opacity:1,y:0}} className="p-4">
