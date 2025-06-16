@@ -1,11 +1,11 @@
 const express = require("express")
 const router = express.Router();
 const Course = require("../models/course");
-const { protect } = require("../middleware/auth");
+const { protect, isinstructor } = require("../middleware/auth");
 
 
 
-router.put("/add/:courseid", protect,async (req,res) => {
+router.put("/add/:courseid", protect,isinstructor,async (req,res) => {
  const {update} = req.body;
      try {
         const course = await Course.findById(req.params.courseid);
@@ -25,7 +25,7 @@ router.put("/add/:courseid", protect,async (req,res) => {
     }
 })
 
-router.delete("/del/:courseid", protect,async (req,res) => {
+router.delete("/del/:courseid", protect,isinstructor,async (req,res) => {
  
      try {
         const course = await Course.findById(req.params.courseid);

@@ -1,6 +1,6 @@
 const express = require("express");
 const Message = require("../models/messages");
-const { protect } = require("../middleware/auth");
+const { protect, isinstructor } = require("../middleware/auth");
 const router = express.Router();
 const { PDFDocument, rgb, StandardFonts } = require("pdf-lib");
 const fs = require("fs");
@@ -50,7 +50,7 @@ router.get(
 
 router.put(
   "/:courseid/sections/:sectionindex/lessons/:lessonid",
-  protect,
+  protect,isinstructor,
   async (req, res) => {
     const { lecture, coursename } = req.body;
     const { courseid } = req.params;
@@ -125,7 +125,7 @@ router.put(
 
 router.delete(
   "/:courseid/sections/:sectionindex/lessons/:lessonid",
-  protect,
+  protect,isinstructor,
   async (req, res) => {
     const { courseid } = req.params;
     const { sectionindex } = req.params;

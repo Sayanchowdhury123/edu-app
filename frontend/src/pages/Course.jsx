@@ -25,24 +25,25 @@ const Course = () => {
     const [sim, setsim] = useState([]);
     const [courseprogress, setcourseprogress] = useState([])
     const [uploading, setuploading] = useState(false)
-    const[loading,setloading] = useState(false)
+    const [loading, setloading] = useState(false)
+    const [completelesson, setcompletelesson] = useState(false)
 
 
     useEffect(() => {
-     socket.emit("join-update",courseid)
+        socket.emit("join-update", courseid)
 
 
-     socket.on("got-update", (adata) => {
-        
-        setcourse((prev) => {
-            return {...prev, announcement: adata}
+        socket.on("got-update", (adata) => {
+
+            setcourse((prev) => {
+                return { ...prev, announcement: adata }
+            })
         })
-     })
-   
-     return () => {
-        socket.off("got-update")
-     }
-    },[courseid])
+
+        return () => {
+            socket.off("got-update")
+        }
+    }, [courseid])
 
 
     const fetchcourse = async () => {
@@ -54,11 +55,11 @@ const Course = () => {
                 }
             })
             setcourse(res.data)
-           console.log(res.data);
-           //  console.log(user.user);
+            console.log(res.data);
+            //  console.log(user.user);
         } catch (error) {
             console.log(error);
-        }finally{
+        } finally {
             setloading(false)
         }
     }
@@ -72,7 +73,7 @@ const Course = () => {
             })
             setu(res.data)
 
-       //console.log(res.data);
+            //console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -87,7 +88,7 @@ const Course = () => {
             })
 
             setcourseprogress(res.data)
-           // console.log(res.data);
+            // console.log(res.data);
         } catch (error) {
             console.log(error);
         }
@@ -253,9 +254,9 @@ const Course = () => {
                 },
                 responseType: "blob"
             })
-    
+
             const blob = new Blob([res.data], { type: "application/pdf" });
-           
+
             saveAs(blob, "certificate.pdf")
         } catch (error) {
             console.log(error);
@@ -267,15 +268,20 @@ const Course = () => {
     const totallessons = course?.sections?.reduce((acc, section) => acc + section?.lessons?.length, 0)
     const alllessoncompleted = completedlessonlength === totallessons;
 
-   if(loading) return <Loadingscrenn/>
+
+
+
+    if (loading) return <Loadingscrenn />
 
     return (
-        
-        <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
-         
-         {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement}/>)}
 
-            {alllessoncompleted && <Congratulation courseid={course._id}/>}
+        <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
+
+            {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement} />)}
+
+            {alllessoncompleted && <Congratulation courseid={course._id} />}
+
+
             {
                 uploading && (
                     <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center z-1000">
@@ -285,16 +291,19 @@ const Course = () => {
                     </div>
                 )
             }
+
+
+
             <div className="card bg-base-100 shadow-xl mb-6">
                 <figure>
                     <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
 
                 <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
-      
-                
+
+
                 <div className="card-body">
-                    
+
                     <p className="card-title text-2xl font-semibold">{course.title}</p>
                     <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
                     <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
@@ -347,7 +356,9 @@ const Course = () => {
                                                                         {iscompleted && (<TiTick className="text-primary" />)}
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
                                                                         {l.lecture && (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>)}
-
+                                                                        {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate("/render-quiz",{
+                                                                            state: {course: course}
+                                                                        })}>Give a quiz</button>)}
                                                                     </div>
 
 

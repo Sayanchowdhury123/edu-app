@@ -7,7 +7,17 @@ const lessonschema = new mongoose.Schema({
   videourl: {type: String},
   isfreeprivew:{type: Boolean, default: false},
   cloudinaryid: {type: String},
-  lecture: {type:Buffer}
+  lecture: {type:Buffer},
+  quiz: [
+    {
+      que: {type: String,required: true},
+      ans: {type:String,required:true},
+      options: [{type:String,required:true}],
+      title: {type: String,required: true}
+
+    }
+  ],
+
 
 })
 

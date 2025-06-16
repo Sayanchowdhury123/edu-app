@@ -24,6 +24,10 @@ import StudentViewer from './pages/StudentViewer'
 import Courseupdates from './pages/Courseupdate'
 import Addupdates from './pages/Addupadtes'
 import NotFound from './pages/NotFound'
+import Quiz from './pages/Quiz'
+import Quizes from './pages/Quizes'
+import Editquiz from './pages/Editquiz'
+import RenderQuiz from './pages/Renderquiz'
 
 function App() {
  
@@ -54,6 +58,10 @@ function App() {
          <Route path='/course-updates' element={<Privateroute><Courseupdates/></Privateroute>} />
          <Route path='/addupdate/:courseid' element={<Privateroute><Addupdates/></Privateroute>} />
          <Route path='*' element={<NotFound/>} />
+         <Route path='/quiz' element={<Privateroute><Quiz/></Privateroute>} />
+         <Route path='/quizes' element={<Privateroute><Quizes/></Privateroute>} />
+         <Route path='/edit-quiz' element={<Privateroute><Editquiz/></Privateroute>} />
+         <Route path='render-quiz' element={<Privateroute><RenderQuiz/></Privateroute>} />
       </Routes>
     </Router>
     

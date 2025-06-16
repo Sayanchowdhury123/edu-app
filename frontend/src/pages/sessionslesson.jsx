@@ -29,7 +29,7 @@ const Sessionlesson = () => {
     const { coursename } = location.state || {};
     const inputref = useRef()
     const [deleteing, setdeleting] = useState(null)
-    const[loading,setloading] = useState(false)
+    const [loading, setloading] = useState(false)
 
 
     const fetchvideos = async () => {
@@ -46,7 +46,7 @@ const Sessionlesson = () => {
         } catch (error) {
             console.log(error);
             toast.error("failed to fetch sections")
-        }finally{
+        } finally {
             setloading(false)
         }
     }
@@ -103,12 +103,12 @@ const Sessionlesson = () => {
             updated[sectionindex] = {
                 ...updated[sectionindex],
                 title: "",
-                
+
             }
 
             setlessondata(updated)
 
-            if(fileinput.current[sectionindex]){
+            if (fileinput.current[sectionindex]) {
                 fileinput.current[sectionindex] = null;
             }
 
@@ -199,7 +199,7 @@ const Sessionlesson = () => {
         }
     }
 
-    if(loading) return <Loadingscrenn/>
+    if (loading) return <Loadingscrenn />
     return (
 
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto p-6">
@@ -236,111 +236,118 @@ const Sessionlesson = () => {
 
             </div>
 
-           <div className="h-[80vh] overflow-y-auto" style={{scrollbarWidth:"none"}}>
+            <div className="h-[80vh] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
                 {
-                sections?.map((section) => (
-                    <motion.div key={section.index} className="mb-6 p-4 border rounded-2xl " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} >
-                        {deleteing === section.index && (
-                            <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
-                                <span className="loading loading-bars loading-lg text-primary">
+                    sections?.map((section) => (
+                        <motion.div key={section.index} className="mb-6 p-4 border rounded-2xl " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} >
+                            {deleteing === section.index && (
+                                <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
+                                    <span className="loading loading-bars loading-lg text-primary">
 
-                                </span>
-                            </div>
-                        )}
-
-                        <div className="flex justify-between">
-                            <h3 className="font-semibold text-lg mb-2 ">{section.title}</h3>
-                            <div>
-                                <button type="submit" className="btn btn-dash   btn-sm mr-2 " onClick={() => navigate(`/edit-section/${courseid}/${section.index}`)}  >Edit section</button>
-                                <button type="submit" className="btn btn-error   btn-sm " onClick={() => deletsection(section.index)}  >Delete section</button>
-
-                            </div>
-
-                        </div>
-    <div className="overflow-y-auto h-[6vh]" style={{scrollbarWidth:"none"}}>
-        <ul className="list-disc ml-5 ">
-                            {section?.lessons?.map((lesson) => (
-                                <li key={lesson.id}>
-
-                                    <p> {lesson.title}</p>
-                                    <div className="relative right-3">
-                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => deletelesson(section.index, lesson.id)}  >Delete lesson</button>
-                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => navigate(`/edit-lesson/${courseid}/${section.index}/${lesson.id}`)} >Edit lesson</button>
-                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
-                                            setlec(true)
-                                            setsectionindex(section.index)
-                                            setlessonid(lesson.id)
-                                        }} >Add Lecture</button>
-                                        <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
-                                            dellecture(courseid, section.index, lesson.id)
-                                        }} >Remove Lecture</button>
-                                    </div>
-
-
-                                </li>
-
-
-                            ))}
-                        </ul>
-    </div>
-                      
-
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            addlesson(section.index, lessondata[section.index])
-                        }} className="mt-4 space-y-4" >
-                            <motion.input type="text" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3 }} className="input w-full " onChange={(e) => {
-                                const updated = [...lessondata]
-                                updated[section.index] = {
-                                    ...updated[section.index],
-                                    title: e.target.value
-                                }
-                                setlessondata(updated)
-                            }} value={lessondata[section.index]?.title} ref={inputref} required />
-
-                            {uploadsectionindex === section.index && uploadprogress > 0 && (
-                                <motion.div className="w-full bg-base-100 p-4 rounded-lg shadow-md mt-4"
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <div className="flex items-center gap-4">
-
-                                        <span className="loading loading-spinner loading-md text-primary" />
-                                        <p className="text-primary font-semibold">
-                                            Uploading...
-                                        </p>
-
-                                    </div>
-                                    <progress className="progress progress-primary w-full mt-3 " value={uploadprogress} max="100" />
-                                </motion.div>
+                                    </span>
+                                </div>
                             )}
 
-                            <motion.input type="file" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3 }} accept="video/*" className="file-input w-full" onChange={(e) => {
-                                {
+                            <div className="flex justify-between">
+                                <h3 className="font-semibold text-lg mb-2 ">{section.title}</h3>
+                                <div>
+                                    <button type="submit" className="btn btn-dash   btn-sm mr-2 " onClick={() => navigate(`/edit-section/${courseid}/${section.index}`)}  >Edit section</button>
+                                    <button type="submit" className="btn btn-error   btn-sm " onClick={() => deletsection(section.index)}  >Delete section</button>
+
+                                </div>
+
+                            </div>
+                            <div className="overflow-y-auto h-[6vh]" style={{ scrollbarWidth: "none" }}>
+                                <ul className="list-disc ml-5 ">
+                                    {section?.lessons?.map((lesson) => (
+                                        <li key={lesson.id}>
+
+                                            <p> {lesson.title}</p>
+                                            <div className="relative right-3">
+                                                <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => deletelesson(section.index, lesson.id)}  >Delete lesson</button>
+                                                <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => navigate(`/edit-lesson/${courseid}/${section.index}/${lesson.id}`)} >Edit lesson</button>
+                                                <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
+                                                    setlec(true)
+                                                    setsectionindex(section.index)
+                                                    setlessonid(lesson.id)
+                                                }} >Add Lecture</button>
+                                                <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
+                                                    dellecture(courseid, section.index, lesson.id)
+                                                }} >Remove Lecture</button>
+                                                
+                                                      <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => navigate(`/quizes`,{
+                                                         state: { lessonid: lesson.id, courseid: courseid, sectionindex: section.index }
+                                                      })} >Manage Quizes</button>
+                                                
+                                            </div>
+
+
+
+
+                                        </li>
+
+
+                                    ))}
+                                </ul>
+                            </div>
+
+
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                addlesson(section.index, lessondata[section.index])
+                            }} className="mt-4 space-y-4" >
+                                <motion.input type="text" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3 }} className="input w-full " onChange={(e) => {
                                     const updated = [...lessondata]
                                     updated[section.index] = {
                                         ...updated[section.index],
-                                        videourl: e.target.files[0]
+                                        title: e.target.value
                                     }
                                     setlessondata(updated)
-                                }
-                            }} ref={(el) => (fileinput.current[section.index] = el)} required />
-                            <button type="submit" className="btn btn-accent w-full">Add lesson</button>
-                        </form>
+                                }} value={lessondata[section.index]?.title} ref={inputref} required />
+
+                                {uploadsectionindex === section.index && uploadprogress > 0 && (
+                                    <motion.div className="w-full bg-base-100 p-4 rounded-lg shadow-md mt-4"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <div className="flex items-center gap-4">
+
+                                            <span className="loading loading-spinner loading-md text-primary" />
+                                            <p className="text-primary font-semibold">
+                                                Uploading...
+                                            </p>
+
+                                        </div>
+                                        <progress className="progress progress-primary w-full mt-3 " value={uploadprogress} max="100" />
+                                    </motion.div>
+                                )}
+
+                                <motion.input type="file" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3 }} accept="video/*" className="file-input w-full" onChange={(e) => {
+                                    {
+                                        const updated = [...lessondata]
+                                        updated[section.index] = {
+                                            ...updated[section.index],
+                                            videourl: e.target.files[0]
+                                        }
+                                        setlessondata(updated)
+                                    }
+                                }} ref={(el) => (fileinput.current[section.index] = el)} required />
+                                <button type="submit" className="btn btn-accent w-full">Add lesson</button>
+                            </form>
 
 
 
 
-                    </motion.div>
+                        </motion.div>
 
 
 
-                ))
-            }
-           </div>
-           
+                    ))
+                }
+            </div>
+
         </motion.div>
     )
 }
