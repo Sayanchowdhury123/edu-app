@@ -1,22 +1,30 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
+import axiosinstance from "../api";
+import { Authcontext } from "../context/Authcontext";
+
 
 const RenderQuiz = () => {
     const questions = [];
     const location = useLocation()
-    const { course } = location.state || {};
+    const { course, lessonid } = location.state || {};
     const [score, setscore] = useState(0)
     const [clickcount, setclickcount] = useState(0)
     const [showresult, setshowresult] = useState(false)
+    const { user } = useContext(Authcontext)
+    const navigate = useNavigate()
+    const[quizresults,setquizresults] = useState([])
 
-    course.sections.forEach((section) =>
-        section.lessons.forEach((lesson) =>
-            lesson.quiz.forEach((q) => questions.push(q))
-        )
-    );
+    
+
+    course.sections.forEach((section) => {
+        const l = section.lessons.find((lesson) => lesson.id === lessonid)
+        l?.quiz.forEach((q) => questions.push(q))
+    });
+
 
     const [current, setCurrent] = useState(0);
     const q = questions[current];
@@ -37,7 +45,7 @@ const RenderQuiz = () => {
     };
 
 
-    const handleAnswer = (option) => {
+    const handleAnswer = async (option) => {
 
         if (option === q.ans) {
             setscore((prev) => prev + 1)
@@ -48,25 +56,71 @@ const RenderQuiz = () => {
         setclickcount((prev) => prev + 1)
 
         if (questions?.length - 1 === current) {
-            setshowresult(true)
-            confetti({
-                particleCount: 200,
-                spread: 100,
-                origin: { y: 0.6 }
-            })
 
-            try {
-                
-            } catch (error) {
-                
-            }
+            setTimeout(async () => {
+                setshowresult(true)
+
+                confetti({
+                    particleCount: 200,
+                    spread: 100,
+                    origin: { y: 0.6 }
+                })
+
+                try {
+
+                    const res = await axiosinstance.post(`/quiz/result/${course._id}/lessons/${lessonid}`, { score: score + 1 }, {
+                        headers: {
+                            Authorization: `Bearer ${user.user.token}`
+                        }
+                    })
+
+                    console.log(res.data);
+
+
+
+                } catch (error) {
+                    console.log(error);
+                    toast.error("Result Already Submitted")
+                }
+            }, 2000);
+
+
         }
 
 
 
     };
 
+const fetchquizresult = async () => {
+    
+        try {
+            const res = await axiosinstance.get(`/quiz/result/${course._id}`,{
+                   headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+            setquizresults(res.data)
+        
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    useEffect(() => {
+         fetchquizresult()
+         
+          
+    },[])
+
+
+
+
+
+
+
+
+  
+    
 
 
     return (
@@ -80,10 +134,10 @@ const RenderQuiz = () => {
                 className="bg-base-200 rounded-xl shadow-lg p-8 w-full max-w-xl"
             >
 
-                {showresult ? (<motion.div initial={{opacity:0,scale: 0.9}} animate={{opacity:1,scale:1}} transition={{duration:0.4}} className="bg-success/10 text-success border border-success rounded-xl shadow-lg p-6 max-w-xl text-center space-y-4">
-                <h2 className="text-3xl font-bold">Quiz Completed</h2>
-                <p className="text-xl font-semibold">Your Total Score is <span className="text-success">{score}</span></p>
-                  <button className="btn btn-accent" onClick={() => window.location.reload()}>Retry Quiz </button>
+                {showresult ? (<motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} className="bg-success/10 text-success border border-success rounded-xl shadow-lg p-6 max-w-xl text-center space-y-4">
+                    <h2 className="text-3xl font-bold">Quiz Completed</h2>
+                    <p className="text-xl font-semibold">Your Total Score is <span className="text-success">{score}</span></p>
+                    <button className="btn btn-accent" onClick={() => navigate(`/course/${course._id}`)}>Course Page</button>
                 </motion.div>
                 ) :
                     (

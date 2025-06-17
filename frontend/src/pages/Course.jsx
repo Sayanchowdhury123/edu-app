@@ -27,7 +27,7 @@ const Course = () => {
     const [uploading, setuploading] = useState(false)
     const [loading, setloading] = useState(false)
     const [completelesson, setcompletelesson] = useState(false)
-
+    const[quizresults,setquizresult] = useState([])
 
     useEffect(() => {
         socket.emit("join-update", courseid)
@@ -269,16 +269,17 @@ const Course = () => {
     const alllessoncompleted = completedlessonlength === totallessons;
 
 
+    
+
 
 
     if (loading) return <Loadingscrenn />
-
     return (
 
         <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
 
             {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement} />)}
-
+            
             {alllessoncompleted && <Congratulation courseid={course._id} />}
 
 
@@ -347,7 +348,8 @@ const Course = () => {
                                                         {s?.lessons?.map((l, i) => {
                                                             const coursep = courseprogress?.find(c => c.course === courseid)
                                                             const iscompleted = coursep?.completedlesson?.includes(l.id)
-
+                                                             
+                                                             
                                                             return (
 
                                                                 <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
@@ -356,8 +358,8 @@ const Course = () => {
                                                                         {iscompleted && (<TiTick className="text-primary" />)}
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
                                                                         {l.lecture && (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>)}
-                                                                        {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate("/render-quiz",{
-                                                                            state: {course: course}
+                                                                        {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`,{
+                                                                            state: {course: course, lessonid : l.id}
                                                                         })}>Give a quiz</button>)}
                                                                     </div>
 

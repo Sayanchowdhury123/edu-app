@@ -76,10 +76,10 @@ const Quizes = () => {
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto p-6">
 
             <h2 className="text-2xl font-bold mb-4">Manage Quizes</h2>
-            <div className="h-[80vh] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+            <div className="h-[90vh] overflow-y-auto  flex flex-col rounded-2xl gap-6" style={{ scrollbarWidth: "none" }}>
                 {
                     course?.sections?.map((section, index) => (
-                        <motion.div key={index} className="mb-6 p-4 bg-base-200 shadow-lg rounded-2xl " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} >
+                        <motion.div key={index} className="mb-6 bg-base-300 rounded-2xl  h-[200px] overflow-y-auto   " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} style={{scrollbarWidth:"none"}} >
 
                             {deleteing === index && (
                                 <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
@@ -90,21 +90,19 @@ const Quizes = () => {
                             )}
 
 
-                            <div className="h-[20vh]" style={{ scrollbarWidth: "none" }}>
+                            <div className="" style={{ scrollbarWidth: "none" }}>
                                 {section?.lessons?.length === 0 ? (
-                                    <div className="flex flex-col items-center relative top-9 gap-3">
+                                    <div className="flex flex-col items-center relative   top-16 gap-3">
                                      <p className="text-error">No lesson Added Yet</p>
                                      <button className="btn btn-sm btn-outline btn-accent" onClick={() => navigate(`/session-lesson/${course._id}`)}>Create Lesson</button>
                                 </div>
-                                   
-                                    
-                                    ) : ""}
-                                <ul className="list ml-2">
+                             ) : ""}
+                                <ul className="list ml-2 flex gap-9 p-4  rounded-2xl ">
                                     {section?.lessons?.map((lesson) => (
 
-                                        <li key={lesson.id}>
-                                            <div className="flex justify-between items-center">
-                                                <h3 className="font-semibold text-lg mb-1 ">{lesson.title}</h3>
+                                        <li key={lesson.id} className=" h-[148px]  ">
+                                            <div className="flex justify-between items-center mb-4 ">
+                                                <h3 className="font-semibold text-lg mb-1 ">{lesson.title} / {section.title}</h3>
                                                 <button onClick={() => navigate(`/quiz`, {
                                                     state: { courseid: courseid, sectionindex: index, lessonid: lesson.id }
                                                 })} className="btn btn-primary btn-outline btn-sm">  Add Quiz</button>
@@ -117,10 +115,10 @@ const Quizes = () => {
                                                        
                                                     </div>
                                                 ) : (
-                                                    <div className="h-[13vh] mt-2 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+                                                    <div className="h-[13vh]  overflow-y-auto" style={{ scrollbarWidth: "none" }}>
                                                         {
                                                             lesson?.quiz?.map((q) => (
-                                                                <div key={q._id} className="flex flex-col  bg-base-100 p-4 rounded-xl gap-3 mb-2">
+                                                                <div key={q._id} className="flex flex-col   bg-base-200 p-4 rounded-xl gap-3 mb-2">
                                                                     <p>{q.title}</p>
                                                                     <div className="flex gap-2 ">
 

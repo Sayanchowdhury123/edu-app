@@ -53,8 +53,8 @@ const courseschema = new mongoose.Schema({
   },
 
   announcement: {
-   text: {type:String,default:""},
-   date: {type:Date}
+   text: String,
+   date: Date,
   },
 });
 

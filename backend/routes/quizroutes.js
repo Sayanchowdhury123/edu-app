@@ -4,12 +4,12 @@ const router = express.Router();
 const Course = require("../models/course");
 const Quizresult = require("../models/quizresults")
 
-router.get("/quizresult/:courseid",protect,async (req,res) => {
+router.get("/result/:courseid",protect,async (req,res) => {
     const { courseid } = req.params;
-           
+           console.log(courseid);
     try {
         const qr =  await Quizresult.find({
-            courseid,
+            courseid: courseid,
             userid: req.user._id
            })
 
@@ -64,12 +64,14 @@ router.put("/:courseid/sections/:sectionindex/lessons/:lessonid",protect,isinstr
 })
 
 
-router.put("quizresult/:courseid/lessons/:lessonid",protect,async (req,res) => {
+router.post("/result/:courseid/lessons/:lessonid",protect,async (req,res) => {
     const {score} = req.body;
         const { courseid } = req.params;
            const { lessonid } = req.params;
+          console.log(score,courseid,lessonid);
+          
     try {
-         if (!score) {
+         if (typeof score !== "number" || isNaN(score)) {
              return res.status(400).json({ msg: "invalid score" });
            }
 
@@ -93,7 +95,7 @@ router.put("quizresult/:courseid/lessons/:lessonid",protect,async (req,res) => {
            await newquizresult.save()
      
         
-           res.status(200).json({msg:"quiz result saved"})
+           res.status(200).json(newquizresult)
     } catch (error) {
              console.log(error);
       res.status(500).json({ msg: "failed to save quiz result" });

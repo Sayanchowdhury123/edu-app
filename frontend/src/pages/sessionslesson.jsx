@@ -19,7 +19,7 @@ const Sessionlesson = () => {
     const [sections, setsections] = useState([])
     const [lessondata, setlessondata] = useState([])
     const navigate = useNavigate();
-    const [uploadsectionindex, setuploadsectionindex] = useState(0)
+    const [uploadsectionindex, setuploadsectionindex] = useState(null)
     const [uploadprogress, setuploadprogress] = useState(null)
     const [lec, setlec] = useState(false)
     const [lectext, setlectext] = useState("")
@@ -79,11 +79,13 @@ const Sessionlesson = () => {
         formdata.append("video", data.videourl)
         console.log(data);
 
-        setuploadprogress(0)
-        setuploadsectionindex(sectionindex)
+        
+     
 
 
         try {
+               setuploadsectionindex(sectionindex)
+               
 
             const res = await axiosinstance.post(`/courses/${courseid}/sections/${sectionindex}/upload-video`, formdata, {
                 headers: {
@@ -94,6 +96,7 @@ const Sessionlesson = () => {
                 onUploadProgress: (ProgressEvent) => {
                     const percent = Math.round((ProgressEvent.loaded * 100) / ProgressEvent.total)
                     setuploadprogress(percent)
+                    console.log(uploadprogress);
                 }
             })
 
@@ -112,14 +115,16 @@ const Sessionlesson = () => {
                 fileinput.current[sectionindex] = null;
             }
 
-            setuploadprogress(0)
-            setuploadsectionindex(null)
-
+        
+        
             fetchvideos();
             toast.success("Lesson added and video uploaded")
         } catch (error) {
             console.log(error);
             toast.error("failed to add lesson and upload video")
+        }finally{
+               setuploadsectionindex(null)
+                
         }
 
 
@@ -305,7 +310,7 @@ const Sessionlesson = () => {
                                     setlessondata(updated)
                                 }} value={lessondata[section.index]?.title} ref={inputref} required />
 
-                                {uploadsectionindex === section.index && uploadprogress > 0 && (
+                                {uploadsectionindex === section.index && (
                                     <motion.div className="w-full bg-base-100 p-4 rounded-lg shadow-md mt-4"
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
