@@ -15,7 +15,7 @@ const Loadingscrenn = () => {
          
       </span>
        <p className="text-lg font-semibold animate-pulse">
-            Loading ,Please wait...
+            Loading , Please wait...
           </p>
       </motion.div>
 

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axiosinstance from "../api";
 import { Authcontext } from "../context/Authcontext";
@@ -10,6 +10,7 @@ import Congratulation from "./Congratulation";
 import AnnouncementBanner from "./AnnouncementBanner";
 import io from "socket.io-client"
 import Loadingscrenn from "./Loadingscreen";
+import toast from "react-hot-toast";
 
 const socket = io("http://localhost:5000")
 
@@ -27,7 +28,11 @@ const Course = () => {
     const [uploading, setuploading] = useState(false)
     const [loading, setloading] = useState(false)
     const [completelesson, setcompletelesson] = useState(false)
-    const[quizresults,setquizresult] = useState([])
+    const [quizresults, setquizresult] = useState([])
+    const [reviews, setreviews] = useState([])
+    const messageendref = useRef(null)
+    const reviewcontainer = useRef(null)
+
 
     useEffect(() => {
         socket.emit("join-update", courseid)
@@ -54,8 +59,12 @@ const Course = () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
+
+            
+
             setcourse(res.data)
-            console.log(res.data);
+           
+            
             //  console.log(user.user);
         } catch (error) {
             console.log(error);
@@ -63,6 +72,18 @@ const Course = () => {
             setloading(false)
         }
     }
+
+
+    useEffect(() => {
+
+       // messageendref.current?.scrollIntoView({ behavior: "smooth" })
+
+        reviewcontainer.current?.scrollTo({
+            top: reviewcontainer.current.scrollHeight,
+            behavior:"smooth"
+        })
+
+    }, [reviews.length])
 
     const fetchuser = async () => {
         try {
@@ -120,9 +141,10 @@ const Course = () => {
             })
             seten(true)
             fetchcourse();
-            alert("you are enrolled")
+            toast.success("you are enrolled")
         } catch (error) {
             console.log(error);
+            toast.error("failed to enroll")
         } finally {
             setuploading(false)
         }
@@ -138,9 +160,10 @@ const Course = () => {
             })
 
             fetchcourse();
-            alert("you are unenrolled")
+            toast.success("you are unenrolled")
         } catch (error) {
             console.log(error);
+            toast.error("failed to unenroll")
         } finally {
             setuploading(false)
         }
@@ -156,10 +179,11 @@ const Course = () => {
             })
 
             fetchuser();
-            alert("added to wishlist")
+            toast.success("added to wishlist")
 
         } catch (error) {
             console.log(error);
+            toast.error("failed to add to wishlist")
         } finally {
             setuploading(false)
         }
@@ -175,29 +199,53 @@ const Course = () => {
             })
 
             fetchuser();
-            alert("removed from wishlist")
+            toast.success("removed from wishlist")
 
         } catch (error) {
             console.log(error);
+            toast.error("failed to remove from wishlist")
         } finally {
             setuploading(false)
         }
     }
 
-    const addreview = async (e) => {
-        e.preventDefault();
+
+    const fetchreview = async () => {
         try {
-            const res = await axiosinstance.post(`/r/${courseid}`, { rating, comment }, {
+               const res = await axiosinstance.get(`/r/${courseid}`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
-            fetchcourse();
-            alert("review added")
+
+             setreviews(res.data.reviews)
+             console.log(res.data.reviews);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+      fetchreview()
+    },[])
+
+    const addreview = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axiosinstance.post(`/r/${courseid}/${user.user.id}`, { rating, comment }, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            setreviews((prev) => [...prev, res.data])
+            // fetchcourse();
+            toast.success("review added")
             setrating("")
             setcomment("")
         } catch (error) {
             console.log(error);
+            toast.error("failed to add review")
         }
     }
 
@@ -208,10 +256,14 @@ const Course = () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
-            fetchcourse();
-            alert("review deleted")
+            const id = res.data;
+            console.log(id);
+            setreviews((prev) => prev.filter(r => r._id?.toString() !== id?.toString()))
+            // fetchcourse();
+            toast.success("review deleted")
         } catch (error) {
             console.log(error);
+            toast.error("failed to delete review")
         }
     }
 
@@ -222,7 +274,7 @@ const Course = () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
-            console.log(rating);
+            // console.log(res.data);
             setsim(res.data)
         } catch (error) {
             console.log(error);
@@ -269,7 +321,7 @@ const Course = () => {
     const alllessoncompleted = completedlessonlength === totallessons;
 
 
-    
+
 
 
 
@@ -279,7 +331,7 @@ const Course = () => {
         <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
 
             {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement} />)}
-            
+
             {alllessoncompleted && <Congratulation courseid={course._id} />}
 
 
@@ -305,7 +357,7 @@ const Course = () => {
 
                 <div className="card-body">
 
-                    <p className="card-title text-2xl font-semibold">{course.title}</p>
+                    <p className="card-title text-2xl font-bold">{course.title}</p>
                     <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
                     <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
                     <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
@@ -327,15 +379,16 @@ const Course = () => {
                     </div>
 
                     <div className="mt-6">
+                         <h1 className="text-2xl font-bold mb-4">Sections</h1>
                         {
                             course.enrolledusers?.includes(user.user.id) ? (
-                                <div>
-                                    <p className="text-lg font-semibold mb-2">sections</p>
+                                <div className="max-h-[260px] overflow-y-auto"   style={{ scrollbarWidth: "none" }}>
+                                
 
                                     {course?.sections?.length === 0 ? (
                                         <p className="text-gray-500">No Sections Added Yet</p>
                                     ) : (
-                                        <div>
+                                        <div style={{scrollbarWidth:"none"}}>
                                             {course?.sections?.map((s, index) => (
                                                 <motion.div key={index} className="collapse collapse-arrow bg-base-200 mb-2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: index * 0.1 }}>
 
@@ -348,8 +401,8 @@ const Course = () => {
                                                         {s?.lessons?.map((l, i) => {
                                                             const coursep = courseprogress?.find(c => c.course === courseid)
                                                             const iscompleted = coursep?.completedlesson?.includes(l.id)
-                                                             
-                                                             
+
+
                                                             return (
 
                                                                 <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
@@ -358,8 +411,8 @@ const Course = () => {
                                                                         {iscompleted && (<TiTick className="text-primary" />)}
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
                                                                         {l.lecture && (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>)}
-                                                                        {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`,{
-                                                                            state: {course: course, lessonid : l.id}
+                                                                        {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
+                                                                            state: { course: course, lessonid: l.id }
                                                                         })}>Give a quiz</button>)}
                                                                     </div>
 
@@ -385,13 +438,13 @@ const Course = () => {
 
 
 
-                    <motion.div className="space-y-10" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                    <motion.div className="space-y-4 mt-4" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                         {course.enrolledusers?.includes(user.user.id) ? (
-                            <div className="space-y-4">
-                                <h1 className="text-2xl font-bold">Add Review</h1>
+                            <div className="">
+                                <h1 className="text-2xl font-bold mb-2">Add Review</h1>
                                 <form onSubmit={addreview} className="">
                                     <textarea type="text" className="textarea w-full" placeholder="Write your comment" onChange={(e) => setcomment(e.target.value)} value={comment} />
-                                    <div className="starability-slot mt-4">
+                                    <div className="starability-slot mt-2">
 
                                         <input type="radio" id="rate1" value="1" name="rating" onChange={(e) => setrating(e.target.value)} />
                                         <label htmlFor="rate1" title="terrible">1 stars</label>
@@ -412,7 +465,7 @@ const Course = () => {
 
 
                                     </div>
-                                    <button type="submit" className="btn btn-sm btn-info ">Add</button>
+                                    <button type="submit" className="btn btn-sm btn-info relative bottom-5">Add</button>
 
                                 </form>
                             </div>
@@ -425,14 +478,19 @@ const Course = () => {
                         <div>
                             <h1 className="text-2xl font-bold mb-4">Reviews</h1>
 
-                            {course?.reviews?.length === 0 ? (
+                            {reviews?.length === 0 ? (
                                 <p className="text-gray-500">No Reviews yet</p>
                             ) : (
-                                <div className="max-h-64 overflow-y-auto space-y-3 p-2 bg-base-200 rounded shadow-inner scroll-smooth" style={{ scrollbarWidth: "none" }}>
-                                    {course?.reviews?.map((r) => (
-                                        <div key={r._id} className="bg-base-100 p-4 rounded shadow flex flex-col gap-2">
+                                <div className="max-h-89 overflow-y-auto space-y-3 p-2 bg-base-200 rounded-2xl shadow-xl scroll-smooth  " style={{ scrollbarWidth: "none" }} ref={reviewcontainer}>
+                                    {Array.isArray(reviews) && reviews?.map((r) => (
+                                        <div key={r._id} className="bg-base-100 p-4 rounded-2xl shadow flex flex-col gap-2">
+                                        <div className="flex gap-2">
+                                          <img src={r?.user?.avatar} alt=""  className="object-cover h-7 w-7 rounded-full "/>
+                                            <p>{r?.user?.name}</p>
+                                        </div>
+                                            
                                             <div className="starability-result" data-rating={r.rating}></div>
-                                            <p>Comment: <strong>{r.comment}  </strong></p>
+                                            <p>Comment : <strong>{r.comment}  </strong></p>
 
 
                                             {course?.enrolledusers?.includes(user.user.id) && (
@@ -444,6 +502,7 @@ const Course = () => {
                                             )}
                                         </div>
                                     ))}
+                                  
                                 </div>
                             )}
 
@@ -451,28 +510,39 @@ const Course = () => {
                     </motion.div>
 
 
-                    <div>
+                    <div className="mt-4">
                         <h1 className="text-2xl font-bold mb-4 ">Similar Courses</h1>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
-                            {sim?.map((s, i) => (
-                                <motion.div key={s._id} className="card bg-base-100 shadow-lg" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.03 }} transition={{ duration: 0.4, delay: i * 0.1 }}>
-                                    <figure>
-                                        <img src={s.thumbnail} alt="thumnail" className="w-full object-cover " />
-                                    </figure>
-                                    <div className="card-body">
-                                        <p className="card-title text-lg ">{s.title}</p>
-                                        <p className="text-sm text-gray-500">Price : ₹{course.price}</p>
-                                        <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
-                                        <Link className="btn btn-primary btn-sm" to={`/course/${s._id}`}>
-                                            View Course
-                                        </Link>
-                                    </div>
+                        {sim?.length === 0 ? (
+                            <div className="text-center space-y-2" >
+                                <p className="text-error">No similar courses found</p>
+                                <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm"> Home Page</button>
+                            </div>
+                        ) : (
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"  >
+                                {sim?.map((w, i) => (
+                                    <motion.div key={w._id} className="card bg-base-100 shadow-xl "
+                                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.4, delay: i * 0.1 }} >
+                                        <figure>
+                                            <img src={w?.thumbnail} alt="thumbnail" className="h-48 w-full object-cover" />
+                                        </figure>
 
+                                        <div className="card-body">
+                                            <p className="card-title text-xl font-semibold text-primary">{w.title}</p>
+                                            <p className="text-lg text-gray-700">Price : ₹{w.price}</p>
+                                            <p className="text-sm text-gray-500">Author : {w.instructor?.name}</p>
+                                        </div>
 
-                                </motion.div>
-                            ))}
-                        </div>
+                                        <div className="card-actions  mt-4 pr-3 pb-6">
+                                            <button className="btn btn-primary btn-sm w-full" onClick={() => navigate(`/course/${w._id}`)} >View Course</button>
+
+                                        </div>
+
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                 </div>

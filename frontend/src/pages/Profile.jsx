@@ -27,7 +27,7 @@ const Profile = () => {
     const [uploading, setuploading] = useState(false)
     const [newname, setnewname] = useState("")
     const [modal, setmodal] = useState(false)
-     const[loading,setloading] = useState(false)
+    const [loading, setloading] = useState(false)
 
 
     const become_ins = async () => {
@@ -114,7 +114,7 @@ const Profile = () => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
-        }finally{
+        } finally {
             setloading(false)
         }
     }
@@ -196,7 +196,7 @@ const Profile = () => {
         }
     }
 
-    if(loading) return <Loadingscrenn/>
+    if (loading) return <Loadingscrenn />
     return (
         <motion.div className=' min-h-screen p-8' initial={{ opacity: 1, y: 50 }}
             animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}  >
@@ -230,7 +230,7 @@ const Profile = () => {
 
                 <div>
                     <Link className="btn btn-primary" to={"/home"}>
-                    <IoIosHome/>  Home Page
+                        <IoIosHome />  Home Page
                     </Link>
 
 
@@ -240,14 +240,14 @@ const Profile = () => {
                     {user?.user?.role === "instructor" ? "" : <button onClick={become_ins} className="btn btn-primary">Become instructor</button>}
 
                     <button className="btn btn-error " onClick={logout}>
-                       <IoIosLogOut className="relative "/> 
-                       <p className="inline-block relative bottom-[1px]">Logout</p>
-                       </button>
+                        <IoIosLogOut className="relative " />
+                        <p className="inline-block relative bottom-[1px]">Logout</p>
+                    </button>
 
                     {
                         user?.user?.role === "instructor" && (
                             <Link className="btn btn-accent" to={"/instructor-dasshboard"}>
-                              <MdDashboard/>   <p className="inline-block relative bottom-[1px]">Instructor Dashboard</p>
+                                <MdDashboard />   <p className="inline-block relative bottom-[1px]">Instructor Dashboard</p>
                             </Link>
                         )
                     }
@@ -279,7 +279,7 @@ const Profile = () => {
 
 
                 <p className="text-xl font-semibold mt-4 inline-block">{profile?.user?.name}</p>
-                <motion.div className="inline-block relative left-1 bottom-[3px]" whileHover={{scale:1.2}}>
+                <motion.div className="inline-block relative left-1 bottom-[3px]" whileHover={{ scale: 1.2 }}>
                     <FaEdit className="inline-block " onClick={() => {
                         setmodal(true)
 
@@ -293,12 +293,12 @@ const Profile = () => {
 
 
             <div className=" mb-8">
-                <p className="text-2xl font-semibold mb-2 inline-block">Course Progress</p>  
+                <p className="text-2xl font-semibold mb-2 inline-block">Course Progress</p>
                 <div>
                     {courseprogress?.length === 0 ? (
                         <div className="text-center space-y-2">
                             <p className="text-error">you have to watch course videos</p>
-                            <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome/>  Home Page</button>
+                            <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome />  Home Page</button>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:grid-cols-2 gap-6 ">
@@ -339,7 +339,7 @@ const Profile = () => {
 
                     <div className="text-center space-y-2">
                         <p className="text-error">you are not enrolled in any courses</p>
-                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome/>  Home Page</button>
+                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome />  Home Page</button>
                     </div>
 
                 ) : (
@@ -381,7 +381,7 @@ const Profile = () => {
                 {wl?.wishlist?.length === 0 ? (
                     <div className="text-center space-y-2" >
                         <p className="text-error">you have add to courses to wishlist</p>
-                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome/>  Home Page</button>
+                        <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm">  <IoIosHome />  Home Page</button>
                     </div>
                 ) : (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"  >

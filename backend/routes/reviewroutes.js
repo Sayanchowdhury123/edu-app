@@ -5,10 +5,7 @@ const router = express.Router();
 
 router.get("/:courseid", async (req, res) => {
   try {
-    const course = await Course.findById(req.params.courseid).populate(
-      "reviews.user",
-      "name "
-    );
+    const course = await Course.findById(req.params.courseid).populate("reviews.user");
     res.status(200).json({ reviews: course.reviews });
   } catch (error) {
     console.log(error);
@@ -17,7 +14,9 @@ router.get("/:courseid", async (req, res) => {
   }
 });
 
-router.post("/:courseid", protect, async (req, res) => {
+
+
+router.post("/:courseid/:userid", protect, async (req, res) => {
   try {
     const { rating, comment } = req.body;
     const course = await Course.findById(req.params.courseid);
@@ -26,14 +25,18 @@ router.post("/:courseid", protect, async (req, res) => {
     }
 
     course.reviews.push({
-      user: req.user._id,
+      user: req.params.userid,
       rating: Number(rating),
       comment: comment,
     });
 
     await course.save();
 
-    res.status(200).json({ msg: "review added" });
+
+    const updatedcourse = await Course.findById(req.params.courseid).populate("reviews.user")
+    const addedreview = updatedcourse.reviews[course.reviews.length - 1]
+    
+    res.status(200).json(addedreview);
   } catch (error) {
     console.log(error);
 
@@ -59,7 +62,7 @@ router.put("/:courseid/reviews/:reviewid", protect, async (req, res) => {
     review.rating = newrating;
 
     await course.save(); 
-    res.status(200).json({ msg: "review edited" });
+    res.status(200).json(course.reviews);
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: " failed to edit review " });
@@ -76,7 +79,7 @@ router.delete("/:courseid/reviews/:reviewid", protect, async (req, res) => {
   course.reviews =  course.reviews.filter((r) => r._id.toString()  !== req.params.reviewid.toString());
 
     await course.save();
-    res.status(200).json({ msg: "review deleted" });
+    res.status(200).json(req.params.reviewid);
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: " failed to delete review " });

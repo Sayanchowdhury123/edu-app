@@ -26,7 +26,7 @@ router.get("/similar/:cat/:courseid", protect,async (req,res) => {
     try {
         const courses = await Course.find({category:cat,
           _id: {$ne: courseid}
-        }).limit(3)
+        }).limit(3).populate("instructor", "name")
         res.status(200).json(courses)
     } catch (error) {
          console.log(error);
