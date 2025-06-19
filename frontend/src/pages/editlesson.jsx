@@ -85,7 +85,7 @@ const Editlesson = () => {
 
                 <motion.input type="file" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3 }} accept="video/*" className="file-input w-full" onChange={(e) => {
                     setvideourl(e.target.files[0])
-                }} required />
+                }}  />
                 <button type="submit" className="btn btn-accent w-full">Edit lesson</button>
             </form>
         </motion.div>

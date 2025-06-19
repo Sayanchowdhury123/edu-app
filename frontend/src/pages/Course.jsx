@@ -219,7 +219,7 @@ const Course = () => {
             })
 
              setreviews(res.data.reviews)
-             console.log(res.data.reviews);
+            // console.log(res.data.reviews);
         } catch (error) {
             console.log(error);
         }
@@ -316,9 +316,16 @@ const Course = () => {
     }
 
     const coursep = courseprogress?.find(c => c.course === courseid)
+    
     const completedlessonlength = coursep?.completedlesson?.length;
-    const totallessons = course?.sections?.reduce((acc, section) => acc + section?.lessons?.length, 0)
-    const alllessoncompleted = completedlessonlength === totallessons;
+  
+    const totallessons = course?.sections?.reduce((acc, section) => acc + section.lessons.length, 0)
+  
+    const alllessoncompleted = (
+       course?.enrolledusers?.includes(user.user.id) && completedlessonlength === totallessons
+    )
+   
+   
 
 
 
@@ -352,8 +359,8 @@ const Course = () => {
                     <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
 
-                <button className="btn" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
-
+                <button className="btn " onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
+                <button className="btn" onClick={() => navigate(`/forum/${courseid}`)}>Discussion forum</button>
 
                 <div className="card-body">
 

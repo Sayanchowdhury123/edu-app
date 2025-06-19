@@ -4,14 +4,13 @@ const router = express.Router();
 const Course = require("../models/course");
 const Quizresult = require("../models/quizresults")
 
-router.get("/result/:courseid",protect,async (req,res) => {
-    const { courseid } = req.params;
-           console.log(courseid);
+router.get("/result",protect,async (req,res) => {
+    
+          
     try {
         const qr =  await Quizresult.find({
-            courseid: courseid,
             userid: req.user._id
-           })
+           }).populate("courseid")
 
             if (!qr) {
              return res.status(400).json({ msg: "quiz result not found" });
@@ -86,7 +85,7 @@ router.post("/result/:courseid/lessons/:lessonid",protect,async (req,res) => {
            }
 
            const newquizresult = new Quizresult({
-              courseid: courseid,
+              courseid: req.params.courseid,
               userid: req.user._id,
               score: score,
               lessonid: lessonid

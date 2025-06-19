@@ -13,7 +13,7 @@ router.post(
   async (req, res) => {
     try {
       const { title, isfreepreview } = req.body;
-    
+
       const { courseid } = req.params;
       const { sectionindex } = req.params;
 
@@ -23,10 +23,10 @@ router.post(
 
       const file = req.files.video;
 
-      const result = await cloudinary.uploader.upload(file.tempFilePath,{
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
         folder: "lecture/videos",
-        resource_type:"video",
-      })
+        resource_type: "video",
+      });
 
       const course = await Course.findById(courseid);
       if (!course) {
@@ -68,11 +68,12 @@ router.put(
       const { courseid } = req.params;
       const { sectionindex } = req.params;
       const { lessonid } = req.params;
-      
 
-      if (!title || !req.files.video) {
+      if (!title) {
         return res.status(400).json({ msg: "missing required fields" });
       }
+
+      const file = req.files?.video;
 
       const course = await Course.findById(courseid);
       if (!course) {
@@ -91,22 +92,22 @@ router.put(
 
       if (title) lesson.title = title;
       if (isfreepreview !== undefined) lesson.isfreepreview = isfreepreview;
-      if (req.files.video) {
+
+      if (file) {
         if (lesson.cloudinaryid) {
           await cloudinary.uploader.destroy(lesson.cloudinaryid, {
             resource_type: "video",
           });
         }
 
-         const result = await cloudinary.uploader.upload(file.tempFilePath,{
-        folder: "lecture/videos",
-        resource_type:"video",
-      })
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: "lecture/videos",
+          resource_type: "video",
+        });
 
-       lesson.videourl = result.secure_url;
-      lesson.cloudinaryid = result.public_id;
+        lesson.videourl = result.secure_url;
+        lesson.cloudinaryid = result.public_id;
       }
-     
 
       await course.save();
 
@@ -169,16 +170,16 @@ router.patch(
   isinstructor,
   async (req, res) => {
     try {
-      if(!req.files.thumbnail){
+      if (!req.files.thumbnail) {
         return res.status(400).json({ msg: "missing required fields" });
       }
       const { courseid } = req.params;
 
       const course = await Course.findById(courseid);
-        const file = req.files.thumbnail;
-       const result = await cloudinary.uploader.upload(file.tempFilePath,{
+      const file = req.files.thumbnail;
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
         folder: "lecture/photos",
-    })
+      });
 
       course.thumbnail = result.secure_url;
       await course.save();

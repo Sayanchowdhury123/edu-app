@@ -42,7 +42,7 @@ const Sessionlesson = () => {
             });
 
             setsections(res.data.sections)
-            //console.log(res.data.sections);
+            console.log(res.data.sections);
         } catch (error) {
             console.log(error);
             toast.error("failed to fetch sections")
@@ -152,6 +152,7 @@ const Sessionlesson = () => {
 
     const deletsection = async (sectionindex) => {
         try {
+            console.log(sectionindex);
             setdeleting(sectionindex)
             const res = await axiosinstance.delete(`/course/${courseid}/sections/${sectionindex}`, {
                 headers: {
@@ -243,7 +244,7 @@ const Sessionlesson = () => {
 
             <div className="h-[80vh] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
                 {
-                    sections?.map((section) => (
+                    sections?.map((section,index) => (
                         <motion.div key={section.index} className="mb-6 p-4 border rounded-2xl " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} >
                             {deleteing === section.index && (
                                 <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
@@ -257,15 +258,15 @@ const Sessionlesson = () => {
                                 <h3 className="font-semibold text-lg mb-2 ">{section.title}</h3>
                                 <div>
                                     <button type="submit" className="btn btn-dash   btn-sm mr-2 " onClick={() => navigate(`/edit-section/${courseid}/${section.index}`)}  >Edit section</button>
-                                    <button type="submit" className="btn btn-error   btn-sm " onClick={() => deletsection(section.index)}  >Delete section</button>
+                                    <button type="submit" className="btn btn-error   btn-sm " onClick={() => deletsection(index)}  >Delete section</button>
 
                                 </div>
 
                             </div>
-                            <div className="overflow-y-auto h-[6vh]" style={{ scrollbarWidth: "none" }}>
-                                <ul className="list-disc ml-5 ">
+                            <div className="overflow-y-auto max-h-[10vh] " style={{ scrollbarWidth: "none" }}>
+                                <ul className="list-none  ">
                                     {section?.lessons?.map((lesson) => (
-                                        <li key={lesson.id}>
+                                        <li key={lesson.id} className="bg-base-200 p-3 rounded-xl  mb-2">
 
                                             <p> {lesson.title}</p>
                                             <div className="relative right-3">

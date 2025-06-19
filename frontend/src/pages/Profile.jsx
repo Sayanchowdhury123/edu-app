@@ -14,6 +14,7 @@ import { FaBarsProgress } from "react-icons/fa6";
 import { RiProgress3Fill } from "react-icons/ri";
 import Loadingscrenn from "./Loadingscreen";
 
+
 const Profile = () => {
     const { login, user, logout } = useContext(Authcontext)
     const location = useLocation();
@@ -28,6 +29,7 @@ const Profile = () => {
     const [newname, setnewname] = useState("")
     const [modal, setmodal] = useState(false)
     const [loading, setloading] = useState(false)
+    const [qr, setqr] = useState([])
 
 
     const become_ins = async () => {
@@ -111,7 +113,7 @@ const Profile = () => {
             })
 
             setprofile(res.data)
-            console.log(res.data);
+            //console.log(res.data);
         } catch (error) {
             console.log(error);
         } finally {
@@ -195,6 +197,29 @@ const Profile = () => {
             toast.error("failed to update profile")
         }
     }
+
+
+    const fetchqr = async () => {
+
+        try {
+            const res = await axiosinstance.get(`/quiz/result`, {
+                headers: {
+                    Authorization: `Bearer ${user?.user?.token}`
+                }
+            })
+
+
+            console.log(res.data);
+            setqr(res.data)
+            //  console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchqr()
+    }, [])
 
     if (loading) return <Loadingscrenn />
     return (
@@ -319,6 +344,57 @@ const Profile = () => {
 
                                         </div>
                                         <Cp percentage={percentage} />
+
+
+                                    </motion.div>
+                                )
+                            })}
+                        </div>
+                    )}
+
+                </div>
+            </div>
+
+
+            <div className=" mb-8">
+                <p className="text-2xl font-semibold mb-2 inline-block">Quiz Results</p>
+                <div>
+                    {qr?.length === 0 ? (
+                        <div className="text-center space-y-2">
+                            <p className="text-error">you have to solve quizes</p>
+                            <button onClick={() => navigate(`/home/${qr.courseid}`)} className="btn btn-primary btn-sm"> Course Page</button>
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:grid-cols-2 gap-6 ">
+                            {qr?.map((q, i) => {
+                                const course = profile?.enrolledcourses?.find(c => c._id === q.courseid._id)
+                                const lesson = course?.sections
+                                    ?.flatMap(s => s.lessons)
+                                    ?.find(l => l.id === q.lessonid)
+
+                                const ql = lesson?.quiz?.length;
+                                const qn = lesson?.quiz?.map((n) => n.title);
+
+                                const percentage = ql ? Math.floor((q.score / ql) * 100) : 0;
+
+
+                                return (
+                                    <motion.div key={i} className="card bg-base-100 shadow-xl transition-all hover:scale-[1.02]"
+                                        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                                    >
+                                        <div className="card-body ">
+                                            <h1 className="card-title text-primary">{lesson?.title} - {course?.title}</h1>
+                                            
+                                            <p className="text-sm text-gray-500">Quizes: <span className="font-medium">{ql}</span> </p>
+
+                                            <p className="text-sm text-gray-500" > <span className="font-medium">{percentage}%</span> Answered ({q.score} / {ql} Quizes)</p>
+                                            <p className="text-sm text-gray-500" >Attempted on: <span className="font-medium">{new Date(q.submittedAt).toLocaleDateString()}</span>  </p>
+
+                                            <progress max="100" value={percentage} className="w-full progress progress-primary">
+
+                                            </progress>
+                                        </div>
+
 
 
                                     </motion.div>

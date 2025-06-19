@@ -16,10 +16,13 @@ console.log(announcement);
 
   return (
     <motion.div
-      className={`alert alert-info   z-10000  shadow-lg ${show === false ? "hidden": ""} `}
-      initial={{ opacity: 0, y: -30 }}
-      animate={{ opacity: 1, y: 0 }}
+      className={`alert alert-info w-[450px]  right-6 z-50 absolute  p-4 rounded-xl border border-white/20 
+        shadow-lg backdrop-blur-md bg-white/10 text-white
+        ${show === false ? "hidden": ""} `}
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 6 }}
       transition={{ duration: 0.6 }}
+      
        
     >
       <svg
@@ -36,7 +39,7 @@ console.log(announcement);
           />
       </svg>
       <p className="font-medium">{announcement.text}</p>
-      <p className="text-sm text-black "> Posted on : {new Date(announcement.date).toLocaleDateString()}</p>
+      <p className="text-sm  "> Posted on : {new Date(announcement.date).toLocaleDateString()}</p>
       <button className="btn btn-sm" onClick={(e) => setshow(false)}><IoMdClose/></button>
     </motion.div>
   );

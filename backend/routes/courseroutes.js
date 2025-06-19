@@ -91,7 +91,7 @@ router.delete(
   async (req, res) => {
     try {
       
-      const {sectionindex} = req.params.sectionindex;
+
       const course = await Course.findById(req.params.courseid);
       if (!course) {
         return res.status(400).json({ msg: "course not found" });
@@ -101,8 +101,9 @@ router.delete(
         return res.status(400).json({msg:'invalid section index'})
       }
 
-        course.sections.splice(sectionindex,1)
-        await course.save();
+         course.sections = course.sections.filter((_,index) => index !== parseInt(req.params.sectionindex))
+
+         await course.save()
 
          res.status(200).json({ msg: "section deleted" });
         

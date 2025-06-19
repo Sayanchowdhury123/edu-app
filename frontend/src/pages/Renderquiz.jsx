@@ -91,26 +91,7 @@ const RenderQuiz = () => {
 
     };
 
-const fetchquizresult = async () => {
-    
-        try {
-            const res = await axiosinstance.get(`/quiz/result/${course._id}`,{
-                   headers: {
-                    Authorization: `Bearer ${user.user.token}`
-                }
-            })
-            setquizresults(res.data)
-        
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
-    useEffect(() => {
-         fetchquizresult()
-         
-          
-    },[])
 
 
 

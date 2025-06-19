@@ -28,6 +28,7 @@ import Quiz from './pages/Quiz'
 import Quizes from './pages/Quizes'
 import Editquiz from './pages/Editquiz'
 import RenderQuiz from './pages/Renderquiz'
+import Discussionforum from './pages/Discussionform'
 
 function App() {
  
@@ -62,6 +63,7 @@ function App() {
          <Route path='/quizes' element={<Privateroute><Quizes/></Privateroute>} />
          <Route path='/edit-quiz' element={<Privateroute><Editquiz/></Privateroute>} />
          <Route path='/render-quiz' element={<Privateroute><RenderQuiz/></Privateroute>} />
+         <Route path='/forum/:courseid' element={<Privateroute><Discussionforum/></Privateroute>} />
       </Routes>
     </Router>
     

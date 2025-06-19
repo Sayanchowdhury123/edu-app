@@ -87,17 +87,18 @@ router.post("/:courseid/create", protect, async (req, res) => {
   }
 });
 
-router.put("/thread/:threadid", protect, async (req, res) => {
-  const { threadid } = req.params;
+router.put("/thread/:tid", protect, async (req, res) => {
+  const { tid } = req.params;
   const { title, question } = req.body;
+  console.log(req.params.tid);
   try {
     if (!title || !question) {
       return res.status(400).json("data missing");
     }
 
-    const thread = await Discussion.findById(threadid);
+    const thread = await Discussion.findById(req.params.tid);
     if (!thread) {
-      return res.status(440).json("thread not found");
+      return res.status(404).json("thread not found");
     }
 
      if(req.user._id !== thread.user.toString() && req.user.role !== "instructor" ){
@@ -178,8 +179,19 @@ router.put(
 router.delete("/thread/:threadid", protect, async (req, res) => {
   const { threadid } = req.params;
   try {
-    const thread = await Discussion.findByIdAndDelete(threadid);
-    res.status(200).json("thread deleted");
+    const thread = await Discussion.findById(threadid);
+      if (!thread) {
+        return res.status(404).json("thread not found");
+      }
+
+      if(req.user._id !== thread.user.toString() && req.user.role !== "instructor" ){
+        return res.status(403).json("you are not allowed to delete this thread")
+      }
+
+
+      await Discussion.findByIdAndDelete(threadid)
+
+    res.status(202).json("thread deleted");
   } catch (error) {
     console.log(error);
     res.status(500).json("server error");
@@ -198,15 +210,23 @@ router.delete(
         return res.status(400).json("thread not found");
       }
 
+      const comment = thread.comment.find(c => c._id.toString() === commentid)
+      
+      if(req.user._id !== comment.user.toString() && req.user.role !== "instructor" ){
+        return res.status(403).json("you are not allowed to delete this comment")
+      }
+
       thread.comment = thread.comment.filter(
         (c) => c._id.toString() !== commentid
       );
       await thread.save();
 
-      res.status(204).json("comment deleted");
+      res.status(202).json("comment deleted");
     } catch (error) {
       console.log(error);
       res.status(500).json("server error");
     }
   }
 );
+
+module.exports = router;

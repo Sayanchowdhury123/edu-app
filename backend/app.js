@@ -39,7 +39,7 @@ app.use("/api/lecture", require("./routes/lectureroutes"))
 app.use("/api/livekit", livekitroute)
 app.use("/api/courseupdate", require("./routes/updatesroute"))
 app.use("/api/quiz", require("./routes/quizroutes"))
-
+app.use("/api/dis", require("./routes/discussion"))
 
 
 
