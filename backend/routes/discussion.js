@@ -10,7 +10,8 @@ router.get("/:courseid", protect, async (req, res) => {
   try {
     const threads = await Discussion.find({
       course: courseid,
-    });
+    }).populate("user")
+
     if (threads.length === 0) {
       return res.status(400).json("threads not found");
     }
@@ -22,9 +23,9 @@ router.get("/:courseid", protect, async (req, res) => {
 });
 
 router.get("/thread/:theadid", protect, async (req, res) => {
-  const { threadid } = req.params;
+  
   try {
-    const thread = await Discussion.findById(threadid);
+    const thread = await Discussion.findById(req.params.theadid).populate("user comment.user")
     if (!thread) {
       return res.status(400).json("thread not found");
     }
@@ -35,9 +36,10 @@ router.get("/thread/:theadid", protect, async (req, res) => {
   }
 });
 
-router.post("/thread/:threadid/comment", protect, async (req, res) => {
+router.put("/thread/:threadid/comment", protect, async (req, res) => {
   const { threadid } = req.params;
   const { text } = req.body;
+  console.log(threadid,text);
   try {
     if (!text) {
       return res.status(400).json("text is missing");
@@ -54,8 +56,11 @@ router.post("/thread/:threadid/comment", protect, async (req, res) => {
 
     await thread.save();
 
-    const newcomment = thread.comment[thread.comment.length - 1];
+  await thread.populate("comment.user");
 
+   const newcomment = thread.comment[thread.comment.length - 1];
+    
+    
     res.status(201).json(newcomment);
   } catch (error) {
     console.log(error);
@@ -77,9 +82,12 @@ router.post("/:courseid/create", protect, async (req, res) => {
       title: title,
       question: question,
       comment: [],
-    });
+    })
 
-    await newdiscussion.save();
+       await newdiscussion.save()
+
+    await newdiscussion.populate("user")
+
     res.status(200).json(newdiscussion);
   } catch (error) {
     console.log(error);
@@ -109,6 +117,8 @@ router.put("/thread/:tid", protect, async (req, res) => {
     thread.question = question;
 
     await thread.save();
+
+    await thread.populate("user")
 
     res.status(200).json(thread);
   } catch (error) {
@@ -142,6 +152,7 @@ router.put(
     const { threadid } = req.params;
     const { commentid } = req.params;
     const { text } = req.body;
+    console.log(commentid,text);
     try {
     
         
@@ -155,9 +166,7 @@ router.put(
         return res.status(400).json("thread not found");
       }
 
-      const newcomment = thread.comment.find(
-        (c) => c._id.toString() === commentid
-      );
+      const newcomment = thread.comment.find((c) => c._id.toString() === commentid);
       if (!newcomment) {
         return res.status(400).json("comment not found");
       }
@@ -204,6 +213,7 @@ router.delete(
   async (req, res) => {
     const { threadid } = req.params;
     const { commentid } = req.params;
+    
     try {
       const thread = await Discussion.findById(threadid);
       if (!thread) {

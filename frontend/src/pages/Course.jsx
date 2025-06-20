@@ -488,7 +488,7 @@ const Course = () => {
                             {reviews?.length === 0 ? (
                                 <p className="text-gray-500">No Reviews yet</p>
                             ) : (
-                                <div className="max-h-89 overflow-y-auto space-y-3 p-2 bg-base-200 rounded-2xl shadow-xl scroll-smooth  " style={{ scrollbarWidth: "none" }} ref={reviewcontainer}>
+                                <div className="max-h-89 overflow-y-auto space-y-3 p-2 bg-base-200 rounded-2xl shadow-xl scroll-smooth  " style={{ scrollbarWidth: "none" }} ref={reviewcontainer} >
                                     {Array.isArray(reviews) && reviews?.map((r) => (
                                         <div key={r._id} className="bg-base-100 p-4 rounded-2xl shadow flex flex-col gap-2">
                                         <div className="flex gap-2">
