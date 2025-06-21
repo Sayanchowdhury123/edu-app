@@ -127,10 +127,11 @@ router.put("/thread/:tid", protect, async (req, res) => {
   }
 });
 
-router.put("/thread/:threadid", protect, isinstructor, async (req, res) => {
-  const { threadid } = req.params;
+router.put("/thread/:tid/resolve", protect, isinstructor, async (req, res) => {
+  const { tid } = req.params;
+  
   try {
-    const thread = await Discussion.findById(threadid);
+    const thread = await Discussion.findById(tid);
     if (!thread) {
       return res.status(400).json("thread not found");
     }
@@ -138,7 +139,26 @@ router.put("/thread/:threadid", protect, isinstructor, async (req, res) => {
     thread.isresolved = true;
     await thread.save();
 
-    res.status(200).json("thread is resloved");
+    res.status(200).json(thread);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("server error");
+  }
+});
+
+router.put("/thread/:tid/unresolve", protect, isinstructor, async (req, res) => {
+  const { tid } = req.params;
+  
+  try {
+    const thread = await Discussion.findById(tid);
+    if (!thread) {
+      return res.status(400).json("thread not found");
+    }
+
+    thread.isresolved = false;
+    await thread.save();
+
+    res.status(200).json(thread);
   } catch (error) {
     console.log(error);
     res.status(500).json("server error");
@@ -238,5 +258,52 @@ router.delete(
     }
   }
 );
+
+
+router.put("/thread/:tid/inlike", protect, async (req, res) => {
+  const { tid } = req.params;
+  
+  
+  try {
+    const thread = await Discussion.findById(tid);
+    if (!thread) {
+      return res.status(400).json("thread not found");
+    }
+
+    thread.likes.push(req.user._id)
+    await thread.save();
+
+    res.status(200).json(thread);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("server error");
+  }
+});
+
+router.put("/thread/:tid/delike", protect, async (req, res) => {
+  const { tid } = req.params;
+  
+  
+  try {
+    const thread = await Discussion.findById(tid);
+    if (!thread) {
+      return res.status(400).json("thread not found");
+    }
+
+    thread.likes = thread.likes.filter((t) => t !== req.user._id.toString())
+    await thread.save();
+    console.log(thread.likes);
+    res.status(200).json(thread);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("server error");
+  }
+});
+
+
+
+
+
+
 
 module.exports = router;

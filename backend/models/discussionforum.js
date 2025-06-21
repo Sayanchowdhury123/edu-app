@@ -14,8 +14,8 @@ const discussionschema = new mongoose.Schema({
     question: {type:  String, required: true},
     comment: [commentschema],
     isresolved: {type: Boolean, default: false},
-     createdAt: {type: Date, default: Date.now}
-
+     createdAt: {type: Date, default: Date.now},
+     likes: [String],
 
 })
 

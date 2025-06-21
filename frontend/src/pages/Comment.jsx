@@ -21,7 +21,7 @@ const Comments = () => {
     const [commentid, setcommentid] = useState("")
     const commentcontainer = useRef(null)
     const inputref = useRef(null)
-    const[ctext,setctext] = useState("")
+    const [ctext, setctext] = useState("")
     const fetchthreads = async () => {
         try {
             setloading(true)
@@ -136,13 +136,13 @@ const Comments = () => {
         }
     }
 
-     useEffect(() => {
+    useEffect(() => {
 
-       // messageendref.current?.scrollIntoView({ behavior: "smooth" })
+        // messageendref.current?.scrollIntoView({ behavior: "smooth" })
 
         commentcontainer.current?.scrollTo({
             top: commentcontainer.current.scrollHeight,
-            behavior:"smooth"
+            behavior: "smooth"
         })
 
     }, [thread?.comment?.length])
@@ -150,11 +150,11 @@ const Comments = () => {
 
     if (loading) return <Loadingscrenn />
     return (
-        <div className="w-full mx-auto px-4 py-10 bg-base-200  space-y-6">
+        <div className="w-full h-[100vh]  mx-auto px-4 py-10 bg-base-200  space-y-6">
 
-            <div className=" max-w-4xl mx-auto  space-y-6">
+            <div className=" max-w-4xl h-[80vh]  mx-auto  space-y-6">
 
-                <div className="flex-grow space-y-6 " style={{scrollbarWidth:"none"}}>
+                <div className="flex-grow space-y-6 " style={{ scrollbarWidth: "none" }}>
                     <motion.div className="bg-base-100 p-6 rounded-xl shadow-lg  " initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }} >
                         <div className="flex items-center space-x-4">
                             <img src={thread?.user?.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover ring ring-primary ring-offset-base-100 ring-offset-2" />
@@ -184,7 +184,7 @@ const Comments = () => {
                                 <p className="text-center   text-gray-400">No comments added yet</p>
                             </div>
                         ) : (
-                            <div className="space-y-2 max-h-[26vh] overflow-y-auto" style={{scrollbarWidth:"none"}} ref={commentcontainer}>
+                            <div className="space-y-2 h-[50vh] overflow-y-auto" style={{ scrollbarWidth: "none" }} ref={commentcontainer}>
                                 {thread?.comment?.map((c, i) => (
                                     <motion.div key={i} className="bg-base-200  p-4 rounded-2xl  flex justify-between items-start" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: i * 0.1 }} >
                                         <div className="flex items-start space-x-4">
@@ -215,16 +215,17 @@ const Comments = () => {
                     </motion.div>
                 </div>
 
-
-
-                <motion.div className="bg-base-100 sticky bottom-0 z-10 rounded-xl p-4 shadow-xl"
+                <motion.div className=" z-10 rounded-xl "
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
                 >
-                    <h4 className="text-xl font-semibold  text-primary mb-2">{showedit ? "Edit" : "Add"} Comment</h4>
-                    <textarea name="" rows="4" id="" className="textarea textarea-bordered w-full mb-4" placeholder="Type your comment..." onChange={(e) => settext(e.target.value)} value={text} ref={inputref}  ></textarea>
-                    <button className="btn btn-primary " onClick={showedit ? editc : addc}>{showedit ? "Update" : "Post"} Comment</button>
-                    {showedit && (<button className="btn btn-outline ml-2" onClick={() => setshowedit(false)} >Cancel</button>)}
+                    <div className=" flex  gap-2">
+                        <input name="" id="" className="input input-primary w-full mb-4" placeholder="Type your comment..." onChange={(e) => settext(e.target.value)} value={text} ref={inputref}  ></input>
+                        <button className="btn btn-primary " onClick={showedit ? editc : addc}>{showedit ? "Update" : "Post"} Comment</button>
+                        {showedit && (<button className="btn btn-outline ml-2" onClick={() => setshowedit(false)} >Cancel</button>)}
+                    </div>
+
                 </motion.div>
+
 
 
             </div>
