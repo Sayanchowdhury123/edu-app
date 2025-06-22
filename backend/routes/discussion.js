@@ -300,6 +300,46 @@ router.put("/thread/:tid/delike", protect, async (req, res) => {
   }
 });
 
+router.put("/thread/:tid/adddis", protect, async (req, res) => {
+  const { tid } = req.params;
+  
+  
+  try {
+    const thread = await Discussion.findById(tid);
+    if (!thread) {
+      return res.status(400).json("thread not found");
+    }
+
+    thread.dislikes.push(req.user._id)
+    await thread.save();
+
+    res.status(200).json(thread);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("server error");
+  }
+});
+
+router.put("/thread/:tid/removedis", protect, async (req, res) => {
+  const { tid } = req.params;
+  
+  
+  try {
+    const thread = await Discussion.findById(tid);
+    if (!thread) {
+      return res.status(400).json("thread not found");
+    }
+
+     thread.dislikes = thread.dislikes.filter((t) => t !== req.user._id.toString())
+    await thread.save();
+
+    res.status(200).json(thread);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("server error");
+  }
+});
+
 
 
 

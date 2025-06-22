@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
 const cloudinary = require("cloudinary").v2;
+const Courseprogress = require("../models/courseprogress");
 
 router.post(
   "/courses/:courseid/sections/:sectionindex/upload-video",
@@ -154,6 +155,8 @@ router.delete(
 
       await course.save();
 
+      await Courseprogress.findOneAndDelete({course: courseid})
+
       res.status(200).json({
         msg: " lesson deleted",
       });
@@ -183,6 +186,8 @@ router.patch(
 
       course.thumbnail = result.secure_url;
       await course.save();
+
+      
 
       res.status(200).json({
         msg: "thumbnail uploaded and saved to course",

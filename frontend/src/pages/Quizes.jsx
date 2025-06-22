@@ -119,7 +119,7 @@ const Quizes = () => {
                                                         {
                                                             lesson?.quiz?.map((q) => (
                                                                 <div key={q._id} className="flex flex-col   bg-base-200 p-4 rounded-xl gap-3 mb-2">
-                                                                    <p>{q.title}</p>
+                                                                    <p>{q.que}</p>
                                                                     <div className="flex gap-2 ">
 
                                                                         <button type="submit" className="btn-error btn-outline btn mb-1   btn-sm " onClick={() => deletequiz(index, lesson.id, q._id)}  >Delete Quiz</button>

@@ -30,6 +30,7 @@ import Editquiz from './pages/Editquiz'
 import RenderQuiz from './pages/Renderquiz'
 import Discussionforum from './pages/Discussionform'
 import Comments from './pages/Comment'
+import Landing from './pages/Landing'
 
 function App() {
  
@@ -39,6 +40,7 @@ function App() {
     <Router>
       <Toaster/>
       <Routes>
+        <Route path='/' element={<Landing/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/home' element={<Homepage/>} />
@@ -66,6 +68,7 @@ function App() {
          <Route path='/render-quiz' element={<Privateroute><RenderQuiz/></Privateroute>} />
          <Route path='/forum/:courseid' element={<Privateroute><Discussionforum/></Privateroute>} />
          <Route path='/thread/:threadid' element={<Privateroute><Comments/></Privateroute>}  />
+
       </Routes>
     </Router>
     

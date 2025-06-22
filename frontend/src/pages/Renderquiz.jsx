@@ -29,7 +29,7 @@ const RenderQuiz = () => {
     const [current, setCurrent] = useState(0);
     const q = questions[current];
 
-
+  console.log(q);
 
     const next = () => {
         if (current < questions.length - 1) setCurrent(current + 1);
@@ -68,7 +68,7 @@ const RenderQuiz = () => {
 
                 try {
 
-                    const res = await axiosinstance.post(`/quiz/result/${course._id}/lessons/${lessonid}`, { score: score + 1 }, {
+                    const res = await axiosinstance.post(`/quiz/result/${course._id}/lessons/${lessonid}`, { score: score + 1 ,qid: q._id}, {
                         headers: {
                             Authorization: `Bearer ${user.user.token}`
                         }

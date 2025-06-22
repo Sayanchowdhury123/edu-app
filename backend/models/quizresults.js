@@ -6,6 +6,7 @@ const quizresultschema = new mongoose.Schema({
   submittedAt: { type: Date, default: Date.now },
   courseid: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
   lessonid: { type: String },
+  qid: {type: String}
   
 });
 

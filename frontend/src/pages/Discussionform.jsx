@@ -10,6 +10,8 @@ import { AiOutlineLike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
 import { AiFillDislike } from "react-icons/ai";
 import { AiOutlineDislike } from "react-icons/ai";
+import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 
 const Discussionforum = () => {
     const [threads, setthreads] = useState([])
@@ -48,7 +50,7 @@ const Discussionforum = () => {
 
     useEffect(() => {
         fetchthreads()
-     
+
     }, [courseid])
 
 
@@ -197,6 +199,17 @@ const Discussionforum = () => {
 
         try {
 
+            const thread = threads.find((t) => t._id)
+            if (thread?.dislikes?.includes(user.user.id)) {
+                const res = await axiosinstance.put(`/dis/thread/${tid}/removedis`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${user.user.token}`
+                    }
+                })
+
+                setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, dislikes: res.data.dislikes } : t))
+            }
+
             const res = await axiosinstance.put(`/dis/thread/${tid}/inlike`, {}, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
@@ -221,26 +234,74 @@ const Discussionforum = () => {
         try {
 
 
-       
+
+            const res = await axiosinstance.put(`/dis/thread/${tid}/delike`, {}, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, likes: res.data.likes } : t))
+
+            console.log(res.data);
+
+
+
+
+            //  console.log(user.user);
+        } catch (error) {
+            console.log(error.response.data);
+            toast.error("failed to like")
+        } finally {
+
+        }
+    }
+
+    const adddislike = async (tid) => {
+
+        try {
+            const thread = threads.find((t) => t._id)
+            if (thread?.likes?.includes(user.user.id)) {
                 const res = await axiosinstance.put(`/dis/thread/${tid}/delike`, {}, {
                     headers: {
                         Authorization: `Bearer ${user.user.token}`
                     }
                 })
 
-
-
-
                 setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, likes: res.data.likes } : t))
-                console.log(res.data);
+            }
 
+            const res = await axiosinstance.put(`/dis/thread/${tid}/adddis`, {}, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
 
-            
+            console.log(res.data.likes.length);
+            setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, dislikes: res.data.dislikes } : t))
+        } catch (error) {
+            console.log(error.response.data);
+            toast.error("failed to add dislike")
+        }
+    }
+
+    const removedislike = async (tid) => {
+
+        try {
+
+            const res = await axiosinstance.put(`/dis/thread/${tid}/removedis`, {}, {
+                headers: {
+                    Authorization: `Bearer ${user.user.token}`
+                }
+            })
+
+            setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, dislikes: res.data.dislikes } : t))
+            console.log(res.data);
 
             //  console.log(user.user);
         } catch (error) {
             console.log(error.response.data);
-            toast.error("failed to like")
+            toast.error("failed to remove dislike")
         } finally {
 
         }
@@ -321,7 +382,7 @@ const Discussionforum = () => {
             }
 
 
-            <div className=" max-w-4xl mx-auto px-4 py-6 space-y-6">
+            <div className=" max-w-4xl mx-auto px-4 py-2 space-y-2">
                 <div className="flex justify-between items-center">
                     <h1 className="text-3xl font-bold text-primary  ">Threads</h1>
                     <button className="btn btn-primary" onClick={() => setcreatethrread(true)}>Add Thread</button>
@@ -332,47 +393,72 @@ const Discussionforum = () => {
                         <p>no threads created yet</p>
                     </div>
                 ) : (
-                    <div>
+                    <div className="h-[79vh] overflow-y-auto" style={{scrollbarWidth:"none"}}>
 
                         {Array.isArray(threads) && threads?.map((t, i) => (
-                            <motion.div className="bg-base-100 p-5 rounded-lg shadow-md border border-base-300 mb-4 space-y-4" key={t._id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.03 }} transition={{ duration: 0.4, delay: i * 0.1 }} >
-                                <div className="flex justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <img src={t?.user?.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover ring ring-primary ring-offset-base-100 ring-offset-2" />
-                                        <p className="font-semibold text-lg text-base-content ">{t?.user?.name}</p>
-                                        <Link to={`/thread/${t._id}`} className="text-sm text-info hover:underline">{t?.comment?.length || 0} comment(s)</Link>
+                            <motion.div className="bg-base-100 p-5 rounded-lg shadow-md border border-base-300 mb-4 space-y-4  " key={t._id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}  transition={{ duration: 0.4, delay: i * 0.1 }} >
+                                <div className="flex justify-between items-center space-x-4">
+
+
+                                    <div className="flex items-center gap-2">
+                                        <img src={t?.user?.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover " />
+                                        <div>
+                                            <p className="font-semibold text-lg  ">{t?.user?.name}  {user.user.role === "instructor" && (<span>(Instructor)</span>)}</p>
+                                            <p className="text-sm text-gray-500">Posted on: {new Date(t?.createdAt).toLocaleDateString()}</p>
+                                        </div>
+
                                     </div>
 
-                                    <div>
-                                        <p className="text-sm text-gray-400">Posted on: {new Date(t?.createdAt).toLocaleDateString()}</p>
-                                        <p>{t.isresolved === true ? "Resolved" : "Not Resolved"}</p>
+
+                                    <div className="flex items-center gap-2">
+                                        <Link to={`/thread/${t._id}`} className="text-sm text-info hover:underline">{t?.comment?.length || 0} comment(s)</Link>
+                                        {t.isresolved === true ? <IoCheckmarkDoneCircle className="mt-[5px]" /> : <IoCheckmarkDoneCircleOutline className="mt-[5px]" />}
                                     </div>
                                 </div>
 
 
                                 <div className="ml-2">
-                                    <h2 className="text-xl font-bold text-secondary">{t.title}</h2>
+                                    <h2 className="text-2xl font-bold">{t.title}</h2>
                                     <p className="text-base text-gray-600">{t.question}</p>
                                 </div>
 
                                 {user.user.id === t.user._id || user.user.role === "instructor" ? (
-                                    <div className="flex justify-between gap-2">
+                                    <div className="flex justify-between items-center gap-2">
 
-                                        <div className="flex items-center gap-1" onClick={() => {
+                                        <div className="flex gap-2">
+                                            <div className="flex items-center gap-1" onClick={() => {
 
-                                            if (t?.likes?.includes(user.user.id)) {
-                                                removelike(t._id)
-                                            } else {
-                                                addlike(t._id)
-                                            }
-                                        }}>
-                                          
-                                            {t.likes.includes(user.user.id) ? <AiFillLike/> : <AiOutlineLike/>}
-                                            <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
+                                                if (t?.likes?.includes(user.user.id)) {
+                                                    removelike(t._id)
+                                                } else {
+                                                    addlike(t._id)
+                                                }
+                                            }} >
 
-                                                {t.likes.length}
-                                            </motion.p>
+                                                {t.likes.includes(user.user.id) ? <AiFillLike /> : <AiOutlineLike />}
+                                                <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
+
+                                                    {t.likes.length}
+                                                </motion.p>
+                                            </div>
+
+                                            <div className="flex items-center gap-1" onClick={() => {
+
+                                                if (t?.dislikes?.includes(user.user.id)) {
+                                                    removedislike(t._id)
+                                                } else {
+                                                    adddislike(t._id)
+                                                }
+                                            }}>
+
+                                                {t?.dislikes?.includes(user.user.id) ? <AiFillDislike /> : <AiOutlineDislike />}
+                                                <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
+
+                                                    {t.dislikes.length}
+                                                </motion.p>
+                                            </div>
                                         </div>
+
 
                                         <div className="space-x-2">
                                             <button className="btn btn-success btn-sm" onClick={() => {

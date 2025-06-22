@@ -65,6 +65,7 @@ router.put("/:courseid/sections/:sectionindex/lessons/:lessonid",protect,isinstr
 
 router.post("/result/:courseid/lessons/:lessonid",protect,async (req,res) => {
     const {score} = req.body;
+    const {qid} = req.body;
         const { courseid } = req.params;
            const { lessonid } = req.params;
           console.log(score,courseid,lessonid);
@@ -77,7 +78,8 @@ router.post("/result/:courseid/lessons/:lessonid",protect,async (req,res) => {
            const existing = await Quizresult.findOne({
             courseid,
             lessonid,
-            userid: req.user._id
+            userid: req.user._id,
+            qid
            })
 
            if(existing){
@@ -88,7 +90,8 @@ router.post("/result/:courseid/lessons/:lessonid",protect,async (req,res) => {
               courseid: req.params.courseid,
               userid: req.user._id,
               score: score,
-              lessonid: lessonid
+              lessonid: lessonid,
+              qid: qid
            })
 
            await newquizresult.save()
@@ -178,6 +181,10 @@ router.delete("/:courseid/sections/:sectionindex/lessons/:lessonid/q/:quizid",pr
       lesson.quiz = lesson.quiz.filter(q => q._id.toString() !== quizid)
 
            await course.save();
+
+           await Quizresult.findOneAndDelete({
+            qid: quizid
+           })
 
            res.status(200).json({msg:"quiz deleted"})
      } catch (error) {

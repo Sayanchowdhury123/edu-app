@@ -358,7 +358,7 @@ const Profile = () => {
 
             <div className=" mb-8">
                 <p className="text-2xl font-semibold mb-2 inline-block">Quiz Results</p>
-                <div>
+                <div >
                     {qr?.length === 0 ? (
                         <div className="text-center space-y-2">
                             <p className="text-error">you have to solve quizes</p>
@@ -379,25 +379,32 @@ const Profile = () => {
 
 
                                 return (
-                                    <motion.div key={i} className="card bg-base-100 shadow-xl transition-all hover:scale-[1.02]"
-                                        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                                    >
-                                        <div className="card-body ">
-                                            <h1 className="card-title text-primary">{lesson?.title} - {course?.title}</h1>
-                                            
-                                            <p className="text-sm text-gray-500">Quizes: <span className="font-medium">{ql}</span> </p>
+                                    <div key={i}>
+                                 {ql === 0 ? "" : (
+                                     <motion.div key={i} className="card bg-base-100 shadow-xl transition-all hover:scale-[1.02]"
+                                            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                                        >
 
-                                            <p className="text-sm text-gray-500" > <span className="font-medium">{percentage}%</span> Answered ({q.score} / {ql} Quizes)</p>
-                                            <p className="text-sm text-gray-500" >Attempted on: <span className="font-medium">{new Date(q.submittedAt).toLocaleDateString()}</span>  </p>
+                                            <div className="card-body ">
+                                                <h1 className="card-title text-primary">{lesson?.title} </h1>
 
-                                            <progress max="100" value={percentage} className="w-full progress progress-primary">
+                                                <p className="text-sm text-gray-500">Quizes: <span className="font-medium">{ql}</span> </p>
 
-                                            </progress>
-                                        </div>
+                                                <p className="text-sm text-gray-500" > <span className="font-medium">{percentage}%</span> Answered ({q.score} / {ql} Quizes)</p>
+                                                <p className="text-sm text-gray-500" >Attempted on: <span className="font-medium">{new Date(q.submittedAt).toLocaleDateString()}</span>  </p>
+
+                                                <progress max="100" value={percentage} className="w-full progress progress-primary">
+
+                                                </progress>
+                                            </div>
 
 
 
-                                    </motion.div>
+                                        </motion.div>
+                                 )}
+                                      
+                                    </div>
+
                                 )
                             })}
                         </div>
