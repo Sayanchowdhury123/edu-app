@@ -8,11 +8,11 @@ const Nav = () => {
 
 
     return (
-        <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ">
-           <motion.div initial={{ y: -80, opacity: 0 }}
+    
+           <motion.nav initial={{ y: -80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 70, damping: 12 }}
-            className=" bg-white/20 border border-white/20 shadow-md px-6 py-3 sticky top-0 z-50 backdrop-blur-md"
+            className=" bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-md px-6 py-3 sticky top-0 z-50 backdrop-blur-lg"
         >
             <div className="container mx-auto flex items-center justify-between ">
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
@@ -54,7 +54,7 @@ const Nav = () => {
 
             {isopen && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} transition={{ duration: 0.4 }}
-                    className="md:hidden px-4 py-4 space-y-2 bg-indigo-600/70 backdrop-blur rounded-b-lg shadow-md mt-2"
+                    className="md:hidden px-4 py-4 space-y-2  bg-white/20 border-b border-white/20 backdrop-blur-lg rounded-b-lg shadow-md mt-2"
                 >
                     {navlinks.map((link, index) => (
                         <motion.div key={link} initial={{ opacity: 0, y:-10 }} animate={{ opacity: 1,y:1 }} transition={{ delay:  0.3 + index * 0.1 }}  >
@@ -65,8 +65,8 @@ const Nav = () => {
                     ))}
                 </motion.div>
             )}
-        </motion.div>
-        </div>
+        </motion.nav>
+        
 
         
       

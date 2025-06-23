@@ -31,10 +31,13 @@ exports.getcourses = async (req,res) => {
 
 exports.getcoursebyid = async (req,res) => {
     try {
-        
+        console.log(req.params.courseid);
         const course = await Course.findById(req.params.courseid).populate("instructor", "name")
-        
+        if(!course){
+            return res.status(404).json("course not found")
+        }
         res.json(course)
+        
     } catch (error) {
         console.log(error)
         res.status(500).json({msg:"failed to fetch cousre"})

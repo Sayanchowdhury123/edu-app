@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import axiosinstance from "../api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, noop } from "framer-motion";
 import { Authcontext } from "../context/Authcontext";
 import { IoSearch } from "react-icons/io5";
@@ -19,7 +19,7 @@ const Homepage = () => {
    const {theme,toggletheme} = useContext(Themecontext)
    const {user} = useContext(Authcontext)
     const [courses, setcourses] = useState([])
-    const [selectcategory, setselectcategory] = useState("")
+
     const [filtered, setfiltered] = useState([])
     const [category, setcategory] = useState([])
     const [profile, setprofile] = useState()
@@ -27,10 +27,12 @@ const Homepage = () => {
     const [searcharray,setsercharray] = useState([])
     const [searchtext,setsearchtext] = useState("")
      const[loading,setloading] = useState(false)
+     const location = useLocation()
+    const [selectcategory, setselectcategory] = useState("All") 
+   
 
-    useEffect(() => {
-        fetchcourses();
-    }, [])
+    
+ 
 
     const fetchcourses = async () => {
         try {
@@ -55,12 +57,37 @@ const Homepage = () => {
         }
     }
 
+       useEffect(() => {
+        fetchcourses();
+    }, [])
+
+    const catc = async () => {
+        try {
+            const res = await axiosinstance.get(`/course/category/${location.state?.cat}`)
+            setfiltered(res.data)
+            setselectcategory(location.state?.cat)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+ useEffect(() => {
+      if( location.state?.cat){
+         console.log(location.state?.cat);
+        if(location.state?.cat){
+          catc();
+        }
+      }
+     },[location.state])
+
 
 
     useEffect(() => {
         if (selectcategory === "All") {
             setfiltered(courses)
+            
         } else {
+            console.log(selectcategory);
             const filter = courses.filter((c) => c.category === selectcategory)
             setfiltered(filter)
         }
@@ -76,7 +103,7 @@ const Homepage = () => {
             })
 
             setprofile(res.data)
-            console.log(res.data);
+//console.log(res.data);
         } catch (error) {
             console.log(error);
         }

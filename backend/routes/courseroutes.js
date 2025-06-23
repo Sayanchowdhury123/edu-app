@@ -12,11 +12,24 @@ const router = express.Router();
 const Course = require("../models/course");
 
 router.get("/", getcourses);
+
+router.get("/category/:cat", async(req,res) => {
+  const {cat} = req.params;
+  console.log(cat);
+     try {
+        const courses = await Course.find({category:cat}).populate("instructor", "name")
+        res.status(200).json(courses)
+    } catch (error) {
+         console.log(error);
+           res.status(500).json({ msg: "failed to fetch" });
+    }
+})
 router.get("/:courseid", protect,getcoursebyid);
 router.get("/:courseid/videos", protect, getcoursevideos);
 router.post("/", protect, isinstructor, createcourse);
 router.put("/:courseid",protect,isinstructor, updatecourse)
 router.delete("/:courseid",protect,isinstructor, deletecourse)
+
 
 
 router.get("/similar/:cat/:courseid", protect,async (req,res) => {

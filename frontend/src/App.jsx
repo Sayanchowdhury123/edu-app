@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import './App.css'
-import { BrowserRouter as Router , Routes,Route } from 'react-router-dom'
+import { BrowserRouter as Router , Routes,Route, useNavigate, Navigate } from 'react-router-dom'
 import Signup from './pages/auth/signup'
 import Login from './pages/auth/login'
 import Privateroute from './pages/Privateroute'
@@ -31,9 +31,12 @@ import RenderQuiz from './pages/Renderquiz'
 import Discussionforum from './pages/Discussionform'
 import Comments from './pages/Comment'
 import Landing from './pages/Landing'
+import { Authcontext } from './context/Authcontext'
 
 function App() {
  
+
+
 
   return (
     <>

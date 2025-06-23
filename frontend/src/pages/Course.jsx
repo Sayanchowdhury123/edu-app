@@ -63,7 +63,7 @@ const Course = () => {
             
 
             setcourse(res.data)
-           
+             console.log(res.data);
             
             //  console.log(user.user);
         } catch (error) {
@@ -121,6 +121,7 @@ const Course = () => {
 
     useEffect(() => {
         fetchcourse();
+       // console.log(courseid);
 
     }, [courseid])
 
