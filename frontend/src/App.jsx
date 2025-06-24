@@ -32,6 +32,8 @@ import Discussionforum from './pages/Discussionform'
 import Comments from './pages/Comment'
 import Landing from './pages/Landing'
 import { Authcontext } from './context/Authcontext'
+import Back from './pages/Backtotop'
+import Pricing from './pages/Pricing'
 
 function App() {
  
@@ -44,6 +46,7 @@ function App() {
       <Toaster/>
       <Routes>
         <Route path='/' element={<Landing/>} />
+          <Route  path='/Pricing' element={<Pricing/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/home' element={<Homepage/>} />
@@ -71,9 +74,10 @@ function App() {
          <Route path='/render-quiz' element={<Privateroute><RenderQuiz/></Privateroute>} />
          <Route path='/forum/:courseid' element={<Privateroute><Discussionforum/></Privateroute>} />
          <Route path='/thread/:threadid' element={<Privateroute><Comments/></Privateroute>}  />
-
+       
       </Routes>
     </Router>
+       <Back/>
     
     </>
   )

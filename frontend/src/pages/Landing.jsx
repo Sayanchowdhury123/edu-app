@@ -1,4 +1,7 @@
 
+import Back from "./Backtotop";
+import Calltoaction from "./Callto";
+import Footer from "./Footer";
 import Hero from "./Hero";
 import Howitworks from "./Howitworks";
 import Marquees from "./Marquee";
@@ -11,14 +14,16 @@ const Landing = () => {
 
 
     return(
-        <div >
+        <div  style={{scrollbarWidth:"none"}} >
          <Nav/>
          <Hero/>
          <Marquees/>
          <Howitworks/>
          <Popularcat/>
          <Testimonial/>
-
+         <Calltoaction/>
+         <Footer/>
+       
         </div>
     )
 }
