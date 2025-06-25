@@ -34,6 +34,9 @@ import Landing from './pages/Landing'
 import { Authcontext } from './context/Authcontext'
 import Back from './pages/Backtotop'
 import Pricing from './pages/Pricing'
+import About from './pages/About'
+import Contacts from './pages/Contact'
+import Courses from './pages/Courses'
 
 function App() {
  
@@ -46,7 +49,10 @@ function App() {
       <Toaster/>
       <Routes>
         <Route path='/' element={<Landing/>} />
-          <Route  path='/Pricing' element={<Pricing/>} />
+        <Route path='/courses' element={<Courses/>} />
+        <Route path='/about' element={<About/>} />
+        <Route path='/contact' element={<Contacts/>} />
+         <Route  path='/Pricing' element={<Pricing/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/home' element={<Homepage/>} />

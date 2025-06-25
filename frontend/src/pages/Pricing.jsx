@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom";
 import Nav from "./Nav";
-
+import { TiTick } from "react-icons/ti";
 
 const pricingPlans = [
     {
@@ -73,7 +73,7 @@ const Pricing = () => {
                         <ul className="mb-6 space-y-2">
                            {plan.features.map((f,idx) => (
                             <li key={idx} >
-                               <span>{f}</span>
+                            <TiTick className="inline-block text-green-600"/>   <span>{f}</span>
                             </li>
                            ))}
                         </ul>

@@ -22,7 +22,7 @@ const Nav = () => {
                 <div className="hidden md:flex space-x-6">
                     {navlinks.map((link, index) => (
                         <motion.div key={link} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + index * 0.1 }}   >
-                            <Link to={`/${link.toLocaleLowerCase()}`} className="text-base font-medium hover:underline transition duration-300">
+                            <Link to={link === "Home" ? "/" : `/${link.toLocaleLowerCase()}`} className="text-base font-medium hover:underline transition duration-300">
                                 {link}
                             </Link>
                         </motion.div>
