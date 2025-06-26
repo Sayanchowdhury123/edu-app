@@ -31,7 +31,7 @@ const Courses = () => {
         fetchcourses();
     }, [])
 
-      if(loading) return <Loadingscrenn/>
+    //  if(loading) return <Loadingscrenn/>
     return (
         <div>
             <Nav />

@@ -135,8 +135,9 @@ const Cousremanagementpage = () => {
             </motion.h1>
 
 
-            <div>
-                <button className="btn rounded-xl font-semibold" onClick={() => navigate("/course-updates")}>Course Updates</button>
+            <div className="space-x-2">
+              <button onClick={() => navigate('/create-course')} className="btn btn-primary ">Create Course</button>
+                <button className="btn btn-neutral  font-semibold" onClick={() => navigate("/course-updates")}>Course Updates</button>
             </div>
       </div>
           
@@ -147,7 +148,7 @@ const Cousremanagementpage = () => {
                 {course?.length === 0 ? (
                     <div className=" h-[87vh] flex flex-col items-center justify-center gap-2">
                         <p className="text-error">No Courses Created Yet</p>
-                        <button onClick={() => navigate('/create-course')} className="btn btn-primary btn-sm">Create Course</button>
+
                     </div>
                 ) : (
                     <motion.div className="grid grid-cols-1  md:grid-cols-3 gap-6" variants={containerVariants}>

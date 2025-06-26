@@ -58,7 +58,7 @@ const Nav = () => {
                 >
                     {navlinks.map((link, index) => (
                         <motion.div key={link} initial={{ opacity: 0, y:-10 }} animate={{ opacity: 1,y:1 }} transition={{ delay:  0.3 + index * 0.1 }}  >
-                            <Link to={`/${link.toLocaleLowerCase()}`} className="block text-base hover:underline" onClick={() => {setisopen((prev) => !prev)}}>
+                            <Link to={link === "Home" ? "/" : `/${link.toLocaleLowerCase()}`} className="block text-base hover:underline" onClick={() => {setisopen((prev) => !prev)}}>
                                 {link}
                             </Link>
                         </motion.div>

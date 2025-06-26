@@ -5,11 +5,11 @@ import axiosinstance from "../../api"
 import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { Authcontext } from "../../context/Authcontext"
-
-
+import { motion } from "framer-motion"
+import toast from "react-hot-toast"
 
 const loginschema = Yup.object().shape({
-    
+
     email: Yup.string().email("invalid email").required("Email is required"),
     password: Yup.string().min(6, "Minimum 6 characters").required("password is required")
 
@@ -17,9 +17,9 @@ const loginschema = Yup.object().shape({
 
 const Login = () => {
 
-    const {login} = useContext(Authcontext)
+    const { login } = useContext(Authcontext)
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handlesubmit = async (values, { setSubmitting, resetForm }) => {
         try {
@@ -27,11 +27,11 @@ const navigate = useNavigate();
             console.log(res.data);
             login(res.data)
             resetForm();
-            alert("Login successsfully")
+            toast.success("Login successsfully")
             navigate("/home")
         } catch (error) {
             console.log(error);
-            alert("Login failed")
+            toast.error("Login failed")
         } finally {
             setSubmitting(false)
         }
@@ -40,34 +40,34 @@ const navigate = useNavigate();
 
     return (
         <div className=" min-h-screen flex flex-col justify-center items-center ">
-                  <div className="w-md mx-auto   p-6 bg-base-300 rounded shadow">
-            <h2 className=" text-2xl font-bold mb-4 text-center">Login</h2>
-            <Formik initialValues={{  email: "", password: "" }}
-                validationSchema={loginschema}
-                onSubmit={handlesubmit}
-            >
-                {({ isSubmitting }) => (
-                    <Form className="space-y-4 ">
-                    
+            <motion.div initial={{ opacity: 0, y: 20,scale:0.9 }} animate={{ opacity: 1, y: 0,scale:1 }} transition={{duration:0.5}} className="w-md mx-auto   p-8  bg-base-200 rounded-2xl shadow">
+                <h2 className=" text-2xl font-bold mb-4 text-center">Login</h2>
+                <Formik initialValues={{ email: "", password: "" }}
+                    validationSchema={loginschema}
+                    onSubmit={handlesubmit}
+                >
+                    {({ isSubmitting }) => (
+                        <Form className="space-y-4 ">
 
-                        <div>
-                               <label className="block mb-1">Email</label>
-                            <Field name="email" type="email" className="input w-full input-b" />
-                            <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
-                        </div>
 
-                          <div>
-                               <label className="block mb-1">Password</label>
-                            <Field name="password" type="password" className="input w-full input-b" />
-                            <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
-                           </div>
-                           <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
-                              {isSubmitting ? "Logging in...": "Login"}
-                           </button>
-                    </Form>
-                )}
-            </Formik>
-        </div>
+                            <div>
+                                <label className="block mb-1">Email</label>
+                                <Field name="email" type="email" className="input w-full input-b" />
+                                <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
+                            </div>
+
+                            <div>
+                                <label className="block mb-1">Password</label>
+                                <Field name="password" type="password" className="input w-full input-b" />
+                                <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+                            </div>
+                            <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
+                                {isSubmitting ? "Logging in..." : "Login"}
+                            </button>
+                        </Form>
+                    )}
+                </Formik>
+            </motion.div>
         </div>
 
     )

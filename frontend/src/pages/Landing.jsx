@@ -14,7 +14,7 @@ const Landing = () => {
 
 
     return(
-        <div  style={{scrollbarWidth:"none"}} >
+        <div className="scroll-smooth" >
          <Nav/>
          <Hero/>
          <Marquees/>
