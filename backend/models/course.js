@@ -56,6 +56,13 @@ const courseschema = new mongoose.Schema({
    text: String,
    date: Date,
   },
+    screenshots: [{
+      url: String,
+       uploadedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+       uploadedat: {type:Date, default: Date.now()}
+
+    }],
+
 });
 
 module.exports = mongoose.model("Course", courseschema);

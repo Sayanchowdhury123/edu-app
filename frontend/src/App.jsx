@@ -37,6 +37,7 @@ import Pricing from './pages/Pricing'
 import About from './pages/About'
 import Contacts from './pages/Contact'
 import Courses from './pages/Courses'
+import Buycourse from './pages/Buycourse'
 
 function App() {
  
@@ -80,7 +81,7 @@ function App() {
          <Route path='/render-quiz' element={<Privateroute><RenderQuiz/></Privateroute>} />
          <Route path='/forum/:courseid' element={<Privateroute><Discussionforum/></Privateroute>} />
          <Route path='/thread/:threadid' element={<Privateroute><Comments/></Privateroute>}  />
-       
+         <Route  path='/buy-course' element={<Privateroute><Buycourse/></Privateroute>} />
       </Routes>
     </Router>
        <Back/>

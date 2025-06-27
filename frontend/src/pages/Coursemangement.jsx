@@ -197,6 +197,10 @@ const Cousremanagementpage = () => {
                                             Manage Course
                                         </button>
 
+                                        <button className="btn btn-sm btn-accent btn-outline">
+                                          Payment Approval
+                                        </button>
+
                                     </div>
 
 

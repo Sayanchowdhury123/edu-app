@@ -199,4 +199,38 @@ router.patch(
   }
 );
 
+router.put("/courses/screenshot/:courseid",protect ,async (req,res) => {
+
+  try {
+     if(!req.files || !req.files.screenshot){
+        return res.status(400).json({msg:"no screenshot uploaded"})
+    }
+
+    const file = req.files.screenshot;
+
+    const result = await cloudinary.uploader.upload(file.tempFilePath,{
+        folder: "screenshots",
+    })
+
+      const course = await Course.findById(req.params.courseid);
+        if (!course) {
+        return res.status(404).json({ msg: "course not found" });
+      }
+      const newscreenshot = {
+        url: result.secure_url,
+         uploadedby: req.user._id
+      }
+
+      course.screenshots.push(newscreenshot)
+      
+      await course.save()
+
+         res.status(200).json(course.screenshots);
+
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "failed to upload screenshot" });
+  }
+})
+
 module.exports = router;

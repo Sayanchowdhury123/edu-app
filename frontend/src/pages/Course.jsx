@@ -369,10 +369,10 @@ const Course = () => {
                     <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
                     <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
                     <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
-                    <div className="mt-4">
+                    <div className="flex gap-3">
                         {course.enrolledusers?.includes(user.user.id) ? (
-                            <button className="btn btn-primary mr-4" onClick={() => unenrolled(course._id)}> Unenroll</button>
-                        ) : (<button className="btn btn-secondary mr-4" onClick={() => enrolled(course._id)}> Enroll</button>)
+                            <button className="btn btn-primary " onClick={() => unenrolled(course._id)}> Unenroll</button>
+                        ) : (<button className="btn btn-secondary " onClick={() => enrolled(course._id)}> Enroll</button>)
                         }
 
 
@@ -381,6 +381,10 @@ const Course = () => {
                             <button className="btn btn-outline btn-accent  " onClick={() => removewishlist(course._id)}> Remove From Wishlist</button>)
                             : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
                         }
+
+                        <button className="btn btn-outline btn-primary" onClick={() => navigate(`/buy-course`,{
+                            state: { course: course}
+                        })}>Buy</button>
 
 
                         {alllessoncompleted && (<button className="btn btn-success ml-4" onClick={Downloadcertificate} >Download Certificate</button>)}

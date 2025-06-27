@@ -98,6 +98,8 @@ router.patch("/upload-avatar",protect,async (req,res) => {
 })
 
 
+
+
 router.post("/wishlist/:courseid", protect, async (req, res) => {
   try {
     const userid = req.user._id;
