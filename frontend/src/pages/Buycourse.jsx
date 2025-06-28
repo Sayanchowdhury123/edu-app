@@ -9,14 +9,14 @@ const Buycourse = () => {
   const {user} = useContext(Authcontext)
     const location = useLocation()
    const {course} = location.state || {};
-   
+   const [loading,setloading] = useState(false)
      const upiid = "sayanchoudhury123@ybl"
      const title = course.title;
      const price = course.price;
 
      const uplLink = `upi://pay?pa=${upiid}&pn=${title}&am=${price}&cu=INR&tn=Course%20urchase`;
 
-     const [file,setfile] = useState("")
+     const [file,setfile] = useState(null)
 
   const filechange = async () => {
         
@@ -25,6 +25,7 @@ const Buycourse = () => {
             formdata.append("screenshot", file)
 
             try {
+              setloading(true)
                 
                 const res = await axiosinstance.put(`/courses/screenshot/${course._id}`, formdata, {
                     headers: {
@@ -35,18 +36,27 @@ const Buycourse = () => {
                 })
                 console.log(res.data);
                 toast.success("Screenshot sent")
-
+               setfile(null)
             } catch (error) {
                 console.log(error);
                 toast.error("failed to send screenshot")
             } finally {
-                
+                setloading(false)
             }
         }
 
     }
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white px-4">
+            {
+                loading && (
+                    <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center z-1000">
+                        <span className="loading loading-bars loading-lg text-primary">
+
+                        </span>
+                    </div>
+                )
+            }
           <motion.h1 initial={{y:-50,opacity:0}} animate={{y:0,opacity:1}}  transition={{type:"spring",duration:0.6}} className="text-4xl font-bold text-white mb-6">Scan to pay</motion.h1>
         
         <div className="">

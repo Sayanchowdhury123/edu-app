@@ -38,6 +38,7 @@ import About from './pages/About'
 import Contacts from './pages/Contact'
 import Courses from './pages/Courses'
 import Buycourse from './pages/Buycourse'
+import Approval from './pages/Approval'
 
 function App() {
  
@@ -82,6 +83,7 @@ function App() {
          <Route path='/forum/:courseid' element={<Privateroute><Discussionforum/></Privateroute>} />
          <Route path='/thread/:threadid' element={<Privateroute><Comments/></Privateroute>}  />
          <Route  path='/buy-course' element={<Privateroute><Buycourse/></Privateroute>} />
+         <Route path='/approval/:courseid' element={<Privateroute><Approval/></Privateroute>} />
       </Routes>
     </Router>
        <Back/>

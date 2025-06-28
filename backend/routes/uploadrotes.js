@@ -218,9 +218,11 @@ router.put("/courses/screenshot/:courseid",protect ,async (req,res) => {
       }
       const newscreenshot = {
         url: result.secure_url,
-         uploadedby: req.user._id
+         uploadedby: req.user._id,
+         course: req.params.courseid
       }
 
+  console.log(newscreenshot);    
       course.screenshots.push(newscreenshot)
       
       await course.save()

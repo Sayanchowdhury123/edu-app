@@ -60,11 +60,11 @@ const Course = () => {
                 }
             })
 
-            
+
 
             setcourse(res.data)
-             console.log(res.data);
-            
+            console.log(res.data);
+
             //  console.log(user.user);
         } catch (error) {
             console.log(error);
@@ -76,11 +76,11 @@ const Course = () => {
 
     useEffect(() => {
 
-       // messageendref.current?.scrollIntoView({ behavior: "smooth" })
+        // messageendref.current?.scrollIntoView({ behavior: "smooth" })
 
         reviewcontainer.current?.scrollTo({
             top: reviewcontainer.current.scrollHeight,
-            behavior:"smooth"
+            behavior: "smooth"
         })
 
     }, [reviews.length])
@@ -121,7 +121,7 @@ const Course = () => {
 
     useEffect(() => {
         fetchcourse();
-       // console.log(courseid);
+        // console.log(courseid);
 
     }, [courseid])
 
@@ -213,13 +213,13 @@ const Course = () => {
 
     const fetchreview = async () => {
         try {
-               const res = await axiosinstance.get(`/r/${courseid}`, {
+            const res = await axiosinstance.get(`/r/${courseid}`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
 
-             setreviews(res.data.reviews)
+            setreviews(res.data.reviews)
             // console.log(res.data.reviews);
         } catch (error) {
             console.log(error);
@@ -227,8 +227,8 @@ const Course = () => {
     }
 
     useEffect(() => {
-      fetchreview()
-    },[])
+        fetchreview()
+    }, [])
 
     const addreview = async (e) => {
         e.preventDefault();
@@ -317,18 +317,20 @@ const Course = () => {
     }
 
     const coursep = courseprogress?.find(c => c.course === courseid)
-    
+
     const completedlessonlength = coursep?.completedlesson?.length;
-  
+
     const totallessons = course?.sections?.reduce((acc, section) => acc + section.lessons.length, 0)
-  
+
     const alllessoncompleted = (
-       course?.enrolledusers?.includes(user.user.id) && completedlessonlength === totallessons
+        course?.enrolledusers?.includes(user.user.id) && completedlessonlength === totallessons
     )
-   
-   
 
 
+
+    const screenshot = course.screenshots?.find((s) => s.uploadedby === user.user.id)
+    const approval = screenshot?.approval;
+    console.log(approval);
 
 
 
@@ -370,10 +372,16 @@ const Course = () => {
                     <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
                     <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
                     <div className="flex gap-3">
-                        {course.enrolledusers?.includes(user.user.id) ? (
-                            <button className="btn btn-primary " onClick={() => unenrolled(course._id)}> Unenroll</button>
-                        ) : (<button className="btn btn-secondary " onClick={() => enrolled(course._id)}> Enroll</button>)
-                        }
+
+                        {approval && (
+                            <div>
+                                {course.enrolledusers?.includes(user.user.id) ? (
+                                    <button className="btn btn-primary " onClick={() => unenrolled(course._id)}> Unenroll</button>
+                                ) : (<button className="btn btn-secondary " onClick={() => enrolled(course._id)}> Enroll</button>)
+                                }
+
+                            </div>
+                        )}
 
 
 
@@ -381,9 +389,9 @@ const Course = () => {
                             <button className="btn btn-outline btn-accent  " onClick={() => removewishlist(course._id)}> Remove From Wishlist</button>)
                             : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
                         }
-
-                        <button className="btn btn-outline btn-primary" onClick={() => navigate(`/buy-course`,{
-                            state: { course: course}
+                        
+                        <button className={`btn btn-outline btn-primary ${approval ? "hidden" : ""}`} onClick={() => navigate(`/buy-course`, {
+                            state: { course: course }
                         })}>Buy</button>
 
 
@@ -391,16 +399,16 @@ const Course = () => {
                     </div>
 
                     <div className="mt-6">
-                         <h1 className="text-2xl font-bold mb-4">Sections</h1>
+                        <h1 className="text-2xl font-bold mb-4">Sections</h1>
                         {
                             course.enrolledusers?.includes(user.user.id) ? (
-                                <div className="max-h-[260px] overflow-y-auto"   style={{ scrollbarWidth: "none" }}>
-                                
+                                <div className="max-h-[260px] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+
 
                                     {course?.sections?.length === 0 ? (
                                         <p className="text-gray-500">No Sections Added Yet</p>
                                     ) : (
-                                        <div style={{scrollbarWidth:"none"}}>
+                                        <div style={{ scrollbarWidth: "none" }}>
                                             {course?.sections?.map((s, index) => (
                                                 <motion.div key={index} className="collapse collapse-arrow bg-base-200 mb-2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: index * 0.1 }}>
 
@@ -496,11 +504,11 @@ const Course = () => {
                                 <div className="max-h-89 overflow-y-auto space-y-3 p-2 bg-base-200 rounded-2xl shadow-xl scroll-smooth  " style={{ scrollbarWidth: "none" }} ref={reviewcontainer} >
                                     {Array.isArray(reviews) && reviews?.map((r) => (
                                         <div key={r._id} className="bg-base-100 p-4 rounded-2xl shadow flex flex-col gap-2">
-                                        <div className="flex gap-2">
-                                          <img src={r?.user?.avatar} alt=""  className="object-cover h-7 w-7 rounded-full "/>
-                                            <p>{r?.user?.name}</p>
-                                        </div>
-                                            
+                                            <div className="flex gap-2">
+                                                <img src={r?.user?.avatar} alt="" className="object-cover h-7 w-7 rounded-full " />
+                                                <p>{r?.user?.name}</p>
+                                            </div>
+
                                             <div className="starability-result" data-rating={r.rating}></div>
                                             <p>Comment : <strong>{r.comment}  </strong></p>
 
@@ -514,7 +522,7 @@ const Course = () => {
                                             )}
                                         </div>
                                     ))}
-                                  
+
                                 </div>
                             )}
 

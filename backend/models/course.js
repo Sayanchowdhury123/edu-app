@@ -59,9 +59,12 @@ const courseschema = new mongoose.Schema({
     screenshots: [{
       url: String,
        uploadedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-       uploadedat: {type:Date, default: Date.now()}
+       uploadedat: {type:Date, default: Date.now()},
+       course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+       approval: {type: Boolean,default: false},
 
     }],
+ 
 
 });
 

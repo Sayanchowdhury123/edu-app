@@ -41,6 +41,7 @@ const Cousremanagementpage = () => {
                 }
             })
             setcousre(res.data.courses)
+            console.log(res.data.courses);
             //console.log(res.data.courses);
         } catch (error) {
             console.log("failed to fetch");
@@ -197,8 +198,10 @@ const Cousremanagementpage = () => {
                                             Manage Course
                                         </button>
 
-                                        <button className="btn btn-sm btn-accent btn-outline">
-                                          Payment Approval
+                                        <button className="btn btn-sm btn-accent btn-outline" onClick={() => navigate(`/approval/${c._id}`,{
+                                            state: {course: c}
+                                        })}>
+                                          Payments 
                                         </button>
 
                                     </div>
