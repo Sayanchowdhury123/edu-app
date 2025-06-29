@@ -373,7 +373,7 @@ const Course = () => {
                     <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
                     <div className="flex gap-3">
 
-                        {approval && (
+                        {approval || user.user.role === "instructor" ? (
                             <div>
                                 {course.enrolledusers?.includes(user.user.id) ? (
                                     <button className="btn btn-primary " onClick={() => unenrolled(course._id)}> Unenroll</button>
@@ -381,7 +381,7 @@ const Course = () => {
                                 }
 
                             </div>
-                        )}
+                         ): (<div></div>)}
 
 
 
@@ -390,12 +390,12 @@ const Course = () => {
                             : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
                         }
                         
-                        <button className={`btn btn-outline btn-primary ${approval ? "hidden" : ""}`} onClick={() => navigate(`/buy-course`, {
+                        <button className={`btn btn-outline btn-primary ${approval || user.user.role === "instructor" ? "hidden" : ""}`} onClick={() => navigate(`/buy-course`, {
                             state: { course: course }
                         })}>Buy</button>
 
 
-                        {alllessoncompleted && (<button className="btn btn-success ml-4" onClick={Downloadcertificate} >Download Certificate</button>)}
+                        {alllessoncompleted && (<button className="btn btn-success " onClick={Downloadcertificate} >Download Certificate</button>)}
                     </div>
 
                     <div className="mt-6">
@@ -426,11 +426,15 @@ const Course = () => {
                                                             return (
 
                                                                 <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
-                                                                    <span className="text-sm font-medium">{l.title}</span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-sm font-medium">{l.title}</span>
+                                                                      {iscompleted && (<TiTick className="text-primary" />)}
+                                                                    </div>
+                                                                 
                                                                     <div className="flex gap-2 items-center">
-                                                                        {iscompleted && (<TiTick className="text-primary" />)}
+                                                                      
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
-                                                                        {l.lecture && (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>)}
+                                                                        {l.lecture && l.lecture.data.length > 0 ?  (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
                                                                         {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
                                                                             state: { course: course, lessonid: l.id }
                                                                         })}>Give a quiz</button>)}

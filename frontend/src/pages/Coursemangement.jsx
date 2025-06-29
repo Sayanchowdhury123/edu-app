@@ -185,12 +185,13 @@ const Cousremanagementpage = () => {
                                     </div>
 
                                     <div className="card-actions">
-                                        <Link to={`/instructor/edit-course/${c._id}`} className="btn btn-primary btn-sm mb-4 ml-6">Edit</Link>
+                                       
+                                        <Link to={`/instructor/edit-course/${c._id}`} className="btn btn-primary btn-sm mb-4 ml-6 btn-outline">Edit</Link>
                                         <button onClick={(e) => {
                                             e.stopPropagation()
                                             deletecourse(c._id)
-                                        }} className="btn btn-error btn-sm mb-4">Delete</button>
-                                        <button onClick={handlefile} className="btn btn-neutral btn-sm mb-4">Add thumbnail</button>
+                                        }} className="btn btn-error btn-outline btn-sm mb-4">Delete</button>
+                                        <button onClick={handlefile} className="btn btn-secondary btn-sm mb-4 btn-outline ">Add thumbnail</button>
 
                                         <button className="btn btn-sm btn-outline" onClick={() => navigate(`/session-lesson/${c._id}`, {
                                             state: { coursename: c.title }
@@ -198,7 +199,7 @@ const Cousremanagementpage = () => {
                                             Manage Course
                                         </button>
 
-                                        <button className="btn btn-sm btn-accent btn-outline" onClick={() => navigate(`/approval/${c._id}`,{
+                                        <button className="btn btn-sm btn-success btn-outline" onClick={() => navigate(`/approval/${c._id}`,{
                                             state: {course: c}
                                         })}>
                                           Payments 

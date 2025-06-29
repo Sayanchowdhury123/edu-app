@@ -140,6 +140,10 @@ const Sessionlesson = () => {
                 }
             })
 
+           
+
+
+
             fetchvideos();
             toast.success("lesson deleted")
         } catch (error) {
@@ -180,7 +184,15 @@ const Sessionlesson = () => {
                 }
             })
 
-            fetchvideos()
+             setsections((prev) => prev.map((section,i) => {
+              if(i !== sectionindex) return section;
+              return {
+                ...section,
+                lessons: section.lessons.map((l) => l._id === lessonid ? l.lecture = lectext : l)
+              }
+          }))
+
+            //fetchvideos()
             toast.success("lecture added")
         } catch (error) {
             console.log(error);
@@ -197,7 +209,15 @@ const Sessionlesson = () => {
                 }
             })
 
-            fetchvideos()
+          setsections((prev) => prev.map((section,i) => {
+              if(i !== sectionindex) return section;
+              return {
+                ...section,
+                lessons: section.lessons.map((l) => l._id === lessonid ? l.lecture = "": l)
+              }
+          }))
+
+           // fetchvideos()
             toast.success("lecture removed")
         } catch (error) {
             console.log(error);
@@ -277,6 +297,7 @@ const Sessionlesson = () => {
                                                     setsectionindex(section.index)
                                                     setlessonid(lesson.id)
                                                 }} >Add Lecture</button>
+                                                 <a className="btn btn-link btn-sm mb-1" href={`http://localhost:5000/api/lecture/${courseid}/sections/${section.index}/lessons/${lesson.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>
                                                 <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
                                                     dellecture(courseid, section.index, lesson.id)
                                                 }} >Remove Lecture</button>
