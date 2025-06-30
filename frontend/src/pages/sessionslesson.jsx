@@ -297,7 +297,7 @@ const Sessionlesson = () => {
                                                     setsectionindex(section.index)
                                                     setlessonid(lesson.id)
                                                 }} >Add Lecture</button>
-                                                 <a className="btn btn-link btn-sm mb-1" href={`http://localhost:5000/api/lecture/${courseid}/sections/${section.index}/lessons/${lesson.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>
+                                                 <a className="btn btn-link btn-sm mb-1" href={`http://localhost:5000/api/lecture/${courseid}/sections/${section.index}/lessons/${lesson.id}/preview`} target="_blank" rel="noopener noreferrer">View Lecture PDF</a>
                                                 <button type="submit" className="btn-link btn mb-1   btn-sm " onClick={() => {
                                                     dellecture(courseid, section.index, lesson.id)
                                                 }} >Remove Lecture</button>

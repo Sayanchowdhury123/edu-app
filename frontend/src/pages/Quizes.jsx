@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import Loadingscrenn from "./Loadingscreen"
 import toast from "react-hot-toast"
-
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 
 const Quizes = () => {
@@ -55,10 +55,23 @@ const Quizes = () => {
                 }
             })
 
+            setcourse((prev) => {
+                return {
+                    ...prev, sections: prev.sections.map((s, i) => {
+                        if (i === sectionindex) {
+                            return {
+                                ...s, lessons: s.lessons.map((l) => l.id === lessonid ? { ...l, quiz: l.quiz.filter((q) => q._id !== quizid) } : l),
+                            }
+                        }
+                        return s;
+                    })
+                }
+            })
+
 
             toast.success("quiz removed")
             console.log(res.data.course);
-            fetchcourse()
+            
 
         } catch (error) {
             console.log(error);
@@ -74,12 +87,20 @@ const Quizes = () => {
 
 
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl mx-auto p-6">
-
+           <div className="flex justify-between mb-4">
             <h2 className="text-2xl font-bold mb-4">Manage Quizes</h2>
+
+            <div>
+              
+                <button className="btn btn-primary" onClick={() => navigate(`/session-lesson/${courseid}`)}>  <IoMdArrowRoundBack/>Back</button>
+            </div>
+           
+           </div>
+           
             <div className="h-[90vh] overflow-y-auto  flex flex-col rounded-2xl gap-6" style={{ scrollbarWidth: "none" }}>
                 {
                     course?.sections?.map((section, index) => (
-                        <motion.div key={index} className="mb-6 bg-base-300 rounded-2xl  h-[200px] overflow-y-auto   " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} style={{scrollbarWidth:"none"}} >
+                        <motion.div key={index} className="mb-6 bg-base-300 rounded-2xl  h-[200px] overflow-y-auto   " initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: section.index * 0.1 }} style={{ scrollbarWidth: "none" }} >
 
                             {deleteing === index && (
                                 <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl" >
@@ -93,10 +114,10 @@ const Quizes = () => {
                             <div className="" style={{ scrollbarWidth: "none" }}>
                                 {section?.lessons?.length === 0 ? (
                                     <div className="flex flex-col items-center relative   top-16 gap-3">
-                                     <p className="text-error">No lesson Added Yet</p>
-                                     <button className="btn btn-sm btn-outline btn-accent" onClick={() => navigate(`/session-lesson/${course._id}`)}>Create Lesson</button>
-                                </div>
-                             ) : ""}
+                                        <p className="text-error">No lesson Added Yet</p>
+                                        <button className="btn btn-sm btn-outline btn-accent" onClick={() => navigate(`/session-lesson/${course._id}`)}>Create Lesson</button>
+                                    </div>
+                                ) : ""}
                                 <ul className="list ml-2 flex gap-9 p-4  rounded-2xl ">
                                     {section?.lessons?.map((lesson) => (
 
@@ -112,7 +133,7 @@ const Quizes = () => {
                                                 {lesson?.quiz?.length === 0 ? (
                                                     <div className=" ">
                                                         <p className="text-error">you have to add quiz</p>
-                                                       
+
                                                     </div>
                                                 ) : (
                                                     <div className="h-[13vh]  overflow-y-auto" style={{ scrollbarWidth: "none" }}>
