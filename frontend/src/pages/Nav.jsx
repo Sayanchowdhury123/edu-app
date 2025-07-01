@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Nav = () => {
     const [isopen, setisopen] = useState(false)
-    const navlinks = ["Home", "Courses", "Pricing", "About", "Contact"]
+    const navlinks = [ "Courses", "Pricing", "About", "Contact","Login"]
 
 
     return (

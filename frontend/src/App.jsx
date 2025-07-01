@@ -39,9 +39,10 @@ import Contacts from './pages/Contact'
 import Courses from './pages/Courses'
 import Buycourse from './pages/Buycourse'
 import Approval from './pages/Approval'
+import Homeroute from './pages/Homeroute'
 
 function App() {
- 
+ const {user} = useContext(Authcontext)
 
 
 
@@ -50,7 +51,7 @@ function App() {
     <Router>
       <Toaster/>
       <Routes>
-        <Route path='/' element={<Landing/>} />
+        <Route path='/' element={user ? <Navigate to="/home" /> : <Landing/>} />
         <Route path='/courses' element={<Courses/>} />
         <Route path='/about' element={<About/>} />
         <Route path='/contact' element={<Contacts/>} />

@@ -362,7 +362,7 @@ const Profile = () => {
                     {qr?.length === 0 ? (
                         <div className="text-center space-y-2">
                             <p className="text-error">you have to solve quizes</p>
-                            <button onClick={() => navigate(`/home/${qr.courseid}`)} className="btn btn-primary btn-sm"> Course Page</button>
+                            <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm"> Home Page</button>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:grid-cols-2 gap-6 ">

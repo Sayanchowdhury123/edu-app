@@ -11,13 +11,15 @@ import AnnouncementBanner from "./AnnouncementBanner";
 import io from "socket.io-client"
 import Loadingscrenn from "./Loadingscreen";
 import toast from "react-hot-toast";
+import { Themecontext } from "../context/Themecontext";
+import { Sun, Moon } from "lucide-react"
 
 const socket = io("http://localhost:5000")
 
 const Course = () => {
+      const {user} = useContext(Authcontext)
     const { courseid } = useParams()
     const [course, setcourse] = useState({})
-    const { user } = useContext(Authcontext)
     const [en, seten] = useState(false)
     const [u, setu] = useState({})
     const [rating, setrating] = useState("")
@@ -32,7 +34,7 @@ const Course = () => {
     const [reviews, setreviews] = useState([])
     const messageendref = useRef(null)
     const reviewcontainer = useRef(null)
-
+      const { theme, toggletheme } = useContext(Themecontext)
 
     useEffect(() => {
         socket.emit("join-update", courseid)
@@ -61,11 +63,11 @@ const Course = () => {
             })
 
 
-
+           console.log(user);
             setcourse(res.data)
-            console.log(res.data);
-
-            //  console.log(user.user);
+          //  console.log(res.data);
+               
+        console.log(user);
         } catch (error) {
             console.log(error);
         } finally {
@@ -93,6 +95,7 @@ const Course = () => {
                 }
             })
             setu(res.data)
+         
 
             //console.log(res.data);
         } catch (error) {
@@ -330,13 +333,15 @@ const Course = () => {
 
     const screenshot = course.screenshots?.find((s) => s.uploadedby === user.user.id)
     const approval = screenshot?.approval;
-    console.log(approval);
+   // console.log(approval);
 
 
 
 
     if (loading) return <Loadingscrenn />
     return (
+    <div>
+          
 
         <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
 
@@ -362,8 +367,9 @@ const Course = () => {
                     <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
                 </figure>
 
-                <button className="btn " onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
-                <button className="btn" onClick={() => navigate(`/forum/${courseid}`)}>Discussion forum</button>
+
+
+
 
                 <div className="card-body">
 
@@ -371,7 +377,7 @@ const Course = () => {
                     <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
                     <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
                     <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 mt-4">
 
                         {approval || user.user.role === "instructor" ? (
                             <div>
@@ -381,7 +387,7 @@ const Course = () => {
                                 }
 
                             </div>
-                         ): (<div></div>)}
+                        ) : (<span></span>)}
 
 
 
@@ -389,14 +395,33 @@ const Course = () => {
                             <button className="btn btn-outline btn-accent  " onClick={() => removewishlist(course._id)}> Remove From Wishlist</button>)
                             : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
                         }
-                        
-                        <button className={`btn btn-outline btn-primary ${approval || user.user.role === "instructor" ? "hidden" : ""}`} onClick={() => navigate(`/buy-course`, {
-                            state: { course: course }
-                        })}>Buy</button>
+
+                        {
+                            approval || user.user.role === "instructor" ? "" : (
+                                <button className={`btn btn-outline btn-primary `} onClick={() => navigate(`/buy-course`, {
+                                    state: { course: course }
+                                })}>Buy</button>
+                            )
+                        }
 
 
-                        {alllessoncompleted && (<button className="btn btn-success " onClick={Downloadcertificate} >Download Certificate</button>)}
+
+
+                        {alllessoncompleted && (<button className="btn btn-success btn-outline" onClick={Downloadcertificate} >Download Certificate</button>)}
                     </div>
+
+
+            
+                        <div className="mt-6">
+                            <h1 className="text-2xl font-bold mb-4">Chat Room and Discussion Forum</h1>
+
+                            <div className="flex gap-3">
+                                <button className="btn btn-outline" onClick={() => navigate(`/chat/${courseid}`, { state: { courseid: course._id } })}>{user.user.role === "instructor" ? "Chat With Students" : "Chat With Instructor"}</button>
+                                <button className="btn  btn-outline" onClick={() => navigate(`/forum/${courseid}`)}>Discussion forum</button>
+
+                            </div>
+                        </div>
+                    
 
                     <div className="mt-6">
                         <h1 className="text-2xl font-bold mb-4">Sections</h1>
@@ -428,13 +453,13 @@ const Course = () => {
                                                                 <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
                                                                     <div className="flex items-center gap-2">
                                                                         <span className="text-sm font-medium">{l.title}</span>
-                                                                      {iscompleted && (<TiTick className="text-primary" />)}
+                                                                        {iscompleted && (<TiTick className="text-primary" />)}
                                                                     </div>
-                                                                 
+
                                                                     <div className="flex gap-2 items-center">
-                                                                      
+
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
-                                                                        {l.lecture && l.lecture.data.length > 0 ?  (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
+                                                                        {l.lecture && l.lecture.data.length > 0 ? (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
                                                                         {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
                                                                             state: { course: course, lessonid: l.id }
                                                                         })}>Give a quiz</button>)}
@@ -572,6 +597,8 @@ const Course = () => {
                 </div>
             </div>
         </motion.div>
+    </div>
+       
     )
 }
 

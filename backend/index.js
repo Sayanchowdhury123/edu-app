@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
       
 
          await newmessage.save();
-          await newmessage.populate("sender","name")
+          await newmessage.populate("sender","name role")
 
          io.to(courseid).emit("receive-message", {
             sender: newmessage.sender,

@@ -7,7 +7,8 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-
+import { MdCancel } from "react-icons/md";
+import toast from "react-hot-toast";
 
 
 const socket = io("http://localhost:5000")
@@ -81,6 +82,7 @@ const Chatbox = () => {
             })
 
             setmessages(res.data)
+            console.log(res.data);
            // console.log(res.data);
         } catch (error) {
             console.log(error);
@@ -96,10 +98,12 @@ const Chatbox = () => {
 
 
     const sendmessage = () => {
-        const data = { sender: user?.user?.id, message, courseid }
+        const data = { sender: user?.user?.id, message, courseid  }
         socket.emit("send-message", { data })
 
         setmessage("")
+        toast.success("Message sent")
+        
     }
 
     const formattime = (timestamp) => {
@@ -128,11 +132,12 @@ const Chatbox = () => {
                 fetchmessgaes()
                 setmodal(false)
                 socket.emit("del", {messageid,courseid})
-                 alert("msg deleted")
+                 toast.success("Message deleted")
             
 
         } catch (error) {
             console.log(error);
+            toast.error("Failed to delete message")
         }
     }
 
@@ -152,23 +157,24 @@ const Chatbox = () => {
               
                 setshowedit(false)
                  setmessages((prev) => prev.map((msg) => msg?._id === textupdated?._id ? textupdated : msg))
-                 alert("msg edited")
+                toast.success("Message edited")
             
 
         } catch (error) {
             console.log(error);
+             toast.error("Failed to edit message")
         }
     }
 
     return (
         <div className="max-w-5xl mx-auto mt-10 p-6 bg-base-200 rounded-2xl shadow-xl">
             {modal && (
-                <motion.div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center rounded-t-xl gap-4"
+                <motion.div className="absolute z-10  inset-0 backdrop-blur-sm flex items-center justify-center rounded-t-xl gap-4"
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 >
 
                     {!showedit ? (
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 ">
                         <button className="btn btn-error" onClick={(e) => {
                             e.stopPropagation()
                             delmsg()
@@ -176,6 +182,7 @@ const Chatbox = () => {
                         <button className="btn btn-info" onClick={() => {
                             setshowedit(true)
                         }}><FaEdit className="" />Edit</button>
+                        <button className="btn btn-secondary" onClick={() => setmodal(false)}><MdCancel/>Cancel</button>
                     </div>
                  ) : (
                     
@@ -216,6 +223,8 @@ const Chatbox = () => {
                     }}  >
                         <div className="chat-header font-semibold text-secondary"  >
                             {msg.sender?._id?.toString() === user.user.id ? "You" : msg.sender.name}
+                            {msg.sender?.role === "instructor" ? <span>(Instructor)</span> : ""}
+                            
                             <time className="text-xs ml-1 text-gray-500">
                                 {formattime(msg.timestamp)}
                             </time>

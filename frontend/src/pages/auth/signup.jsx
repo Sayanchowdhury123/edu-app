@@ -2,7 +2,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import axiosinstance from "../../api"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 const pageVariants = {
@@ -73,6 +73,10 @@ const Signup = () => {
                             <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
                                 {isSubmitting ? "Registering..." : "Register"}
                             </button>
+                           <div className="text-center text-primary">
+                              <Link to="/login" className="">Already have a account , login</Link>
+                           </div>
+                          
                         </Form>
                     )}
                 </Formik>
