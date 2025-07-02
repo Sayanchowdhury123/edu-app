@@ -294,7 +294,7 @@ const Course = () => {
 
     const handleplay = (lesson) => {
         navigate(`/video/${lesson.id}`, {
-            state: { videourl: lesson.videourl, title: lesson.title, courseid: courseid, lessonid: lesson.id }
+            state: { videourl: lesson.videourl, title: lesson.title, courseid: courseid, lessonid: lesson.id, resolutions: lesson.resolutions,lesson: lesson }
         })
     }
 

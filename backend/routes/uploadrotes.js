@@ -27,6 +27,13 @@ router.post(
       const result = await cloudinary.uploader.upload(file.tempFilePath, {
         folder: "lecture/videos",
         resource_type: "video",
+        eager: [
+          { width: 1280, crop: "scale", format: "mp4" },
+          { width: 854, crop: "scale", format: "mp4" },
+          { width: 640, crop: "scale", format: "mp4" },
+          { width: 256, crop: "scale", format: "mp4" },
+        ],
+        eager_async: false,
       });
 
       const course = await Course.findById(courseid);
@@ -39,12 +46,22 @@ router.post(
         return res.status(404).json({ msg: "section not found" });
       }
 
+      const resolutions = {
+        "720p": result.eager?.[0]?.secure_url,
+        "480p": result.eager?.[1]?.secure_url,
+        "360p": result.eager?.[2]?.secure_url,
+        "144p": result.eager?.[3]?.secure_url,
+      };
+
+      console.log(resolutions);
+
       section.lessons.push({
         id: uuidv4(),
         title: title,
         videourl: result.secure_url,
         cloudinaryid: result.public_id,
         isfreepreview: isfreepreview === "true",
+        resolutions: resolutions,
       });
 
       await course.save();
@@ -75,12 +92,10 @@ router.put(
       }
 
       const file = req.files?.video;
-
       const course = await Course.findById(courseid);
       if (!course) {
         return res.status(404).json({ msg: "course not found" });
       }
-
       const section = course.sections[sectionindex];
       if (!section) {
         return res.status(404).json({ msg: "section not found" });
@@ -104,10 +119,25 @@ router.put(
         const result = await cloudinary.uploader.upload(file.tempFilePath, {
           folder: "lecture/videos",
           resource_type: "video",
+          eager: [
+            { width: 1280, crop: "scale", format: "mp4" },
+            { width: 854, crop: "scale", format: "mp4" },
+            { width: 640, crop: "scale", format: "mp4" },
+            { width: 256, crop: "scale", format: "mp4" },
+          ],
+          eager_async: false,
         });
+
+        const resolutions = {
+          "720p": result.eager?.[0]?.secure_url,
+          "480p": result.eager?.[1]?.secure_url,
+          "360p": result.eager?.[2]?.secure_url,
+          "144p": result.eager?.[3]?.secure_url,
+        };
 
         lesson.videourl = result.secure_url;
         lesson.cloudinaryid = result.public_id;
+        lesson.resolutions = resolutions;
       }
 
       await course.save();
@@ -155,7 +185,7 @@ router.delete(
 
       await course.save();
 
-      await Courseprogress.findOneAndDelete({course: courseid})
+      await Courseprogress.findOneAndDelete({ course: courseid });
 
       res.status(200).json({
         msg: " lesson deleted",
@@ -187,8 +217,6 @@ router.patch(
       course.thumbnail = result.secure_url;
       await course.save();
 
-      
-
       res.status(200).json({
         msg: "thumbnail uploaded and saved to course",
       });
@@ -199,40 +227,38 @@ router.patch(
   }
 );
 
-router.put("/courses/screenshot/:courseid",protect ,async (req,res) => {
-
+router.put("/courses/screenshot/:courseid", protect, async (req, res) => {
   try {
-     if(!req.files || !req.files.screenshot){
-        return res.status(400).json({msg:"no screenshot uploaded"})
+    if (!req.files || !req.files.screenshot) {
+      return res.status(400).json({ msg: "no screenshot uploaded" });
     }
 
     const file = req.files.screenshot;
 
-    const result = await cloudinary.uploader.upload(file.tempFilePath,{
-        folder: "screenshots",
-    })
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: "screenshots",
+    });
 
-      const course = await Course.findById(req.params.courseid);
-        if (!course) {
-        return res.status(404).json({ msg: "course not found" });
-      }
-      const newscreenshot = {
-        url: result.secure_url,
-         uploadedby: req.user._id,
-         course: req.params.courseid
-      }
+    const course = await Course.findById(req.params.courseid);
+    if (!course) {
+      return res.status(404).json({ msg: "course not found" });
+    }
+    const newscreenshot = {
+      url: result.secure_url,
+      uploadedby: req.user._id,
+      course: req.params.courseid,
+    };
 
-  console.log(newscreenshot);    
-      course.screenshots.push(newscreenshot)
-      
-      await course.save()
+    console.log(newscreenshot);
+    course.screenshots.push(newscreenshot);
 
-         res.status(200).json(course.screenshots);
+    await course.save();
 
+    res.status(200).json(course.screenshots);
   } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: "failed to upload screenshot" });
+    console.log(error);
+    res.status(500).json({ msg: "failed to upload screenshot" });
   }
-})
+});
 
 module.exports = router;

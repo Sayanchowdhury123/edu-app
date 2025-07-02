@@ -2,29 +2,32 @@ const mongoose = require("mongoose");
 
 const lessonschema = new mongoose.Schema({
   _id: false,
-  id: {type:String,required:true},
-  title: {type:String},
-  videourl: {type: String},
-  isfreeprivew:{type: Boolean, default: false},
-  cloudinaryid: {type: String},
-  lecture: {type:Buffer},
+  id: { type: String, required: true },
+  title: { type: String },
+  videourl: { type: String },
+  isfreeprivew: { type: Boolean, default: false },
+  cloudinaryid: { type: String },
+  lecture: { type: Buffer },
   quiz: [
     {
-      que: {type: String,required: true},
-      ans: {type:String,required:true},
-      options: [{type:String,required:true}],
-      title: {type: String,required: true}
-
-    }
+      que: { type: String, required: true },
+      ans: { type: String, required: true },
+      options: [{ type: String, required: true }],
+      title: { type: String, required: true },
+    },
   ],
-
-
-})
+  resolutions: {
+    "720p": { type: String },
+    "480p": { type: String },
+    "360p": { type: String },
+    "144p": { type: String },
+  },
+});
 
 const sectionschema = new mongoose.Schema({
   title: String,
-  lessons: [lessonschema]
-})
+  lessons: [lessonschema],
+});
 
 const courseschema = new mongoose.Schema({
   title: String,
@@ -53,19 +56,18 @@ const courseschema = new mongoose.Schema({
   },
 
   announcement: {
-   text: String,
-   date: Date,
+    text: String,
+    date: Date,
   },
-    screenshots: [{
+  screenshots: [
+    {
       url: String,
-       uploadedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-       uploadedat: {type:Date, default: Date.now()},
-       course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-       approval: {type: Boolean,default: false},
-
-    }],
- 
-
+      uploadedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      uploadedat: { type: Date, default: Date.now() },
+      course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+      approval: { type: Boolean, default: false },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Course", courseschema);
