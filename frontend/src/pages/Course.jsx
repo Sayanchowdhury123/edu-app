@@ -292,10 +292,11 @@ const Course = () => {
 
     }, [course])
 
-    const handleplay = (lesson) => {
-        navigate(`/video/${lesson.id}`, {
-            state: { videourl: lesson.videourl, title: lesson.title, courseid: courseid, lessonid: lesson.id, resolutions: lesson.resolutions,lesson: lesson }
+    const handleplay = (i,s) => {
+        navigate(`/video/${i}`, {
+            state: {  courseid: courseid,  alllessons: s.lessons }
         })
+        
     }
 
 
@@ -458,7 +459,7 @@ const Course = () => {
 
                                                                     <div className="flex gap-2 items-center">
 
-                                                                        <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(l)}>Watch video</button>
+                                                                        <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(i ,s)}>Watch video</button>
                                                                         {l.lecture && l.lecture.data.length > 0 ? (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
                                                                         {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
                                                                             state: { course: course, lessonid: l.id }

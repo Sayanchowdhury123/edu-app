@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link, useNavigate, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useContext, useEffect, useRef, useState } from "react";
 import screenfull from "screenfull";
@@ -16,16 +16,17 @@ import { IoMdSettings } from "react-icons/io";
 import { IoIosSkipForward } from "react-icons/io";
 import { IoIosSkipBackward } from "react-icons/io";
 import toast from "react-hot-toast"
-
+import Next from "./Next";
+import Spinner from "./Spinner";
 
 const Videoplayer = () => {
     const { user } = useContext(Authcontext)
     const location = useLocation();
-    const { videourl, title, courseid, lessonid, resolutions, lesson } = location.state || {};
+    const { courseid, alllessons } = location.state || {};
     const playerref = useRef(null)
     const playercontainerref = useRef(null)
-    const [playing, setplaying] = useState(false)
-    const [muted, setmuted] = useState(false)
+    const [playing, setplaying] = useState(true)
+    const [muted, setmuted] = useState(true)
     const [volume, setvolume] = useState(0.8)
     const [played, setplayed] = useState(0)
     const [v, setv] = useState(false)
@@ -35,17 +36,41 @@ const Videoplayer = () => {
     const [courseprogress, setcourseprogress] = useState([])
     const [res, setres] = useState(null)
     const [qbox, setqbox] = useState(false)
-    const [quality, setquality] = useState(videourl)
     const [control, setcontrol] = useState(false)
     const [showskip, setshowskip] = useState(false)
     const timeref = useRef(null)
+    const { id } = useParams();
+    const [lesson, setlesson] = useState(null)
+    const [quality, setquality] = useState("")
+    const [shownextbanner, setshownextbanner] = useState(false)
+    const resumetimeref = useRef(null)
+    const [showspinner,setshowspinner] = useState(false)
+    const[forclick,setforclick] = useState(false)
+     const[backclick,setbackclick] = useState(false)
 
 
+    useEffect(() => {
+     setshowspinner(true)
+    },[])
+
+    useEffect(() => {
+        if (alllessons && id !== undefined) {
+            const currentlesson = alllessons[id];
+            setlesson(currentlesson)
+            setquality(currentlesson?.resolutions["720p"])
+        }
+        console.log(id);
+
+    }, [id, alllessons])
+
+
+  
 
 
 
     const progressc = async () => {
         try {
+            
             const res = await axiosinstance.get(`/progress`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
@@ -54,6 +79,8 @@ const Videoplayer = () => {
 
             setcourseprogress(res.data)
             //  console.log(resolutions);
+            // console.log(alllessons);
+            //console.log(id);
 
         } catch (error) {
             console.log(error);
@@ -69,38 +96,60 @@ const Videoplayer = () => {
     const handleprogress = (state) => {
         setplayed(state.played)
         // console.log(played);
-        const coursep = courseprogress?.find((c) => c.course === courseid)
-        const iscompleted = coursep?.completedlesson?.includes(lessonid)
-        if (!iscompleted && state.played === 1) {
 
-            progress();
-            console.log(lessonid);
-
-        }
     }
+
+
 
     const progress = async () => {
         try {
-            const res = await axiosinstance.post(`/progress/${courseid}/complete`, { lessonid: lessonid }, {
+            const res = await axiosinstance.post(`/progress/${courseid}/complete`, { lessonid: alllessons[id].id }, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
 
-            toast.success(`${title} is completed`)
+            toast.success(`${lesson?.title} is completed`)
         } catch (error) {
             console.log(error);
         }
     }
 
+    const ended = () => {
+        const nextindex = parseInt(id) + 1;
+        const coursep = courseprogress?.find((c) => c.course === courseid)
+        const iscompleted = coursep?.completedlesson?.includes(alllessons[id].id)
+        console.log(iscompleted);
+        if (!iscompleted) {
+
+            progress();
+
+
+        }
+
+        setshownextbanner(true)
+
+        setTimeout(() => {
+            setshownextbanner(false)
+            if (nextindex < alllessons.length) {
+                navigate(`/video/${nextindex}`, {
+                    state: { courseid: courseid, alllessons: alllessons }
+                })
+            } else {
+                toast.success("All videos are finished")
+            }
+        }, 5000);
+
+    }
+
     const togglefullscrenn = () => {
         if (screenfull.isEnabled) {
-            if(screenfull.isFullscreen){
+            if (screenfull.isFullscreen) {
                 screenfull.exit()
-            } else{
+            } else {
                 screenfull.request(playercontainerref.current)
             }
-           
+
         }
     }
 
@@ -128,11 +177,30 @@ const Videoplayer = () => {
 
 
     const handlequality = (e) => {
-        setquality(resolutions[e.target.value])
-        console.log(resolutions[e.target.value]);
-       
+     
+        resumetimeref.current = playerref.current.getCurrentTime();
+        setquality(lesson?.resolutions[e.target.value])
+           setshowspinner(true)
+        // console.log(resolutions[e.target.value]);
+    
+
 
     }
+
+    useEffect(() => {
+      if(playerref.current && resumetimeref.current > 0){
+             
+               playerref.current.seekTo(resumetimeref.current)
+               resumetimeref.current = 0
+            
+      }
+
+      const timeout = setTimeout(() => {
+       setshowspinner(false)
+      },500)
+
+      return () => clearTimeout(timeout) 
+    },[quality])
 
 
     const skipforward = () => {
@@ -180,6 +248,25 @@ const Videoplayer = () => {
     }, [])
 
 
+   useEffect(() => {
+    const timeout = setTimeout(() => {
+        setforclick(false)
+    }, 300);
+
+    return () => clearTimeout(timeout)
+   },[forclick])
+
+   
+   useEffect(() => {
+    const timeout = setTimeout(() => {
+        setbackclick(false)
+    }, 300);
+
+    return () => clearTimeout(timeout)
+   },[backclick])
+
+
+
     return (
 
         <div className="bg-base-200 h-screen  p-6">
@@ -204,51 +291,74 @@ const Videoplayer = () => {
 
 
                 <div className="w-full max-w-4xl relative flex flex-col justify-center  " ref={playercontainerref} >
-                   <h1 className={`text-3xl ${control ? "opacity-100" : "opacity-0"} transition-all duration-500 font-bold text-center mb-1`}>{title || "Video Lesson"}</h1>
+                    <h1 className={`text-3xl ${control ? "opacity-100" : "opacity-0"} transition-all duration-500 font-bold text-center mb-2`}>{lesson?.title || "Video Lesson"}</h1>
                     <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-lg  "  >
 
 
 
 
-                        {videourl ? (
+                        {lesson?.videourl ? (
                             <div className=""  >
 
 
 
                                 <div className="relative" onClick={playclick}>
 
-                                   {showskip ? (<div className="absolute inset-0 flex justify-center items-center transition-all duration-500 ">
+                                    {showskip ? (<div className="absolute inset-0 flex justify-center items-center transition-all duration-500 ">
                                         <div className="flex justify-between w-full sm:px-20 lg:px-70 " >
-                                            <motion.div whileTap={{ scale: 0.9 }} onClick={(e) => {
+                                            <motion.div className="flex flex-col items-center"   whileHover={{scale:1.1}}  whileTap={{ scale: 0.9 }} onClick={(e) => {
                                                 e.stopPropagation()
                                                 skipbackward()
+                                                
+                                                
                                             }}  >
                                                 <IoIosSkipBackward size={60} fill="black" />
+                                                 <p className={`  text-gray-500 text-sm mt-1`} > Skip Backward</p>
 
                                             </motion.div>
 
-                                            <motion.div whileTap={{ scale: 0.9 }} onClick={(e) => {
+                                            <motion.div className="flex flex-col items-center"  whileHover={{scale:1.1}}   whileTap={{ scale: 0.9 }} onClick={(e) => {
                                                 e.stopPropagation()
                                                 skipforward()
+                                                
 
                                             }}>
-                                                <IoIosSkipForward size={60} fill="black" />
+                                                <IoIosSkipForward size={60} fill="black"  />
+                                                 <p className={`  text-gray-500 text-sm mt-1`} >Skip Forward</p>
                                             </motion.div>
 
 
                                         </div>
                                     </div>) : ""}
 
-                                    <ReactPlayer url={quality} width={"100%"} height={"100%"} ref={(player) => playerref.current = player} playing={playing} volume={volume} muted={muted} onProgress={handleprogress} controls={false} className="pointer-events-none"
+                                    <ReactPlayer url={quality} width={"100%"} height={"100%"} ref={(player) => playerref.current = player} playing={playing} volume={volume} muted={muted} onProgress={handleprogress}  controls={false} onEnded={ended} onReady={() => setshowspinner(false)} className="pointer-events-none"
                                         onDuration={(d) => setduration(d)}
                                     />
 
-                                     
+                                    {shownextbanner && id !== alllessons.length - 1 &&(
+                                       <motion.div
+                                            className="absolute bottom-1/35 right-1/35 bg-black text-white text-lg px-6 py-3 rounded-md shadow-xl z-50"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.5 }}
+                                            
+                                        >
+                                            Next video starting in <span><Next from={6} to={1} /> </span>seconds...
+                                        </motion.div>
+                                    )}
+                                       
+                                    
+                                      
+                                
+
+
+
                                 </div>
 
-                                
+
                                 <AnimatePresence>
-                                     
+
 
                                     {showicon && (
                                         <motion.div key={showicon} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.5 }} className="absolute inset-0 flex  justify-center items-center bg-black/20">
@@ -261,12 +371,21 @@ const Videoplayer = () => {
                                     )}
                                 </AnimatePresence>
 
-
+                              {
+                                showspinner && (
+                                      <div className="absolute inset-0 flex justify-center items-center">
+                                    <Spinner/>
+                                </div>
+                                )
+                              }
                                
 
 
 
-                              
+
+
+
+
 
 
 
