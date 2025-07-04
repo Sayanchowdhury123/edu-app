@@ -129,11 +129,11 @@ const Approval = () => {
 
                         <div className="card-body bg-base-200 rounded-xl shadow-lg">
                             <div className="flex items-center gap-2">
-                             <img src={s.uploadedby.avatar} alt="avatar" className="w-8 rounded-full" />
-                            <p className="text-sm"> <span className="">{s.uploadedby.name}</span></p>
+                             <img src={s?.uploadedby?.avatar} alt="avatar" className="w-8 rounded-full" />
+                            <p className="text-sm"> <span className="">{s?.uploadedby?.name}</span></p>
                             </div>
                            
-                            <p className="text-sm"> Uploader Email : <span className="t">{s.uploadedby.email}</span></p>
+                            <p className="text-sm"> Uploader Email : <span className="t">{s?.uploadedby?.email}</span></p>
                             <p>Course : <span>{s?.course?.title}</span></p>
                             <p>Course Price : ₹{s?.course?.price}</p>
 

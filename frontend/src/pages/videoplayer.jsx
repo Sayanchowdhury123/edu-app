@@ -18,6 +18,8 @@ import { IoIosSkipBackward } from "react-icons/io";
 import toast from "react-hot-toast"
 import Next from "./Next";
 import Spinner from "./Spinner";
+import { CgProfile } from "react-icons/cg";
+import { RxDashboard } from "react-icons/rx";
 
 const Videoplayer = () => {
     const { user } = useContext(Authcontext)
@@ -41,36 +43,39 @@ const Videoplayer = () => {
     const timeref = useRef(null)
     const { id } = useParams();
     const [lesson, setlesson] = useState(null)
-    const [quality, setquality] = useState("")
+    const [quality, setquality] = useState("720p")
     const [shownextbanner, setshownextbanner] = useState(false)
     const resumetimeref = useRef(null)
-    const [showspinner,setshowspinner] = useState(false)
-    const[forclick,setforclick] = useState(false)
-     const[backclick,setbackclick] = useState(false)
+    const [showspinner, setshowspinner] = useState(false)
+    
 
 
     useEffect(() => {
-     setshowspinner(true)
-    },[])
+        setshowspinner(true)
+      
+    }, [])
+
+
 
     useEffect(() => {
         if (alllessons && id !== undefined) {
             const currentlesson = alllessons[id];
+        
             setlesson(currentlesson)
-            setquality(currentlesson?.resolutions["720p"])
+
         }
         console.log(id);
 
     }, [id, alllessons])
 
 
-  
+
 
 
 
     const progressc = async () => {
         try {
-            
+
             const res = await axiosinstance.get(`/progress`, {
                 headers: {
                     Authorization: `Bearer ${user.user.token}`
@@ -177,30 +182,53 @@ const Videoplayer = () => {
 
 
     const handlequality = (e) => {
-     
-        resumetimeref.current = playerref.current.getCurrentTime();
-        setquality(lesson?.resolutions[e.target.value])
-           setshowspinner(true)
-        // console.log(resolutions[e.target.value]);
-    
 
+        resumetimeref.current = playerref.current.getCurrentTime();
+        setquality(e.target.value)
+        setshowspinner(true)
+     
+        // console.log(resolutions[e.target.value]);
 
     }
 
+     
+
+    const getResolutionUrl = (baseUrl, resolution) => {
+        if (!baseUrl && !resolution) return "";
+        const resolutions = {
+            "720p": "w_1280,h_720,c_scale",
+            "480p": "w_854,h_480,c_scale",
+            "360p": "w_640,h_360,c_scale",
+            "144p": "w_256,h_144,c_scale",
+        };
+
+        const [prefix, suffix] = baseUrl?.split("/upload/");
+        const transformation = resolutions[resolution];
+
+        return `${prefix}/upload/${transformation}/${suffix}`;
+    };
+
+      const resolutionurl = lesson?.videourl && quality ? getResolutionUrl(lesson.videourl, quality) : "";
+
+   
+
     useEffect(() => {
-      if(playerref.current && resumetimeref.current > 0){
-             
-               playerref.current.seekTo(resumetimeref.current)
-               resumetimeref.current = 0
-            
-      }
 
-      const timeout = setTimeout(() => {
-       setshowspinner(false)
-      },500)
 
-      return () => clearTimeout(timeout) 
-    },[quality])
+         
+        if (playerref.current && resumetimeref.current > 0) {
+
+            playerref.current.seekTo(resumetimeref.current)
+            resumetimeref.current = 0
+
+        }
+
+        const timeout = setTimeout(() => {
+            setshowspinner(false)
+        }, 800)
+
+        return () => clearTimeout(timeout)
+    }, [quality])
 
 
     const skipforward = () => {
@@ -248,22 +276,6 @@ const Videoplayer = () => {
     }, [])
 
 
-   useEffect(() => {
-    const timeout = setTimeout(() => {
-        setforclick(false)
-    }, 300);
-
-    return () => clearTimeout(timeout)
-   },[forclick])
-
-   
-   useEffect(() => {
-    const timeout = setTimeout(() => {
-        setbackclick(false)
-    }, 300);
-
-    return () => clearTimeout(timeout)
-   },[backclick])
 
 
 
@@ -272,12 +284,12 @@ const Videoplayer = () => {
         <div className="bg-base-200 h-screen  p-6">
             <div className="flex justify-between">
                 <div>
-                    <Link to={`/course/${courseid}`} className="btn btn-accent" >Back To Dashboard</Link>
+                    <Link to={`/course/${courseid}`} className="btn btn-accent" ><RxDashboard/>Course Page</Link>
                 </div>
 
                 <button className="btn btn-primary" onClick={() => navigate("/profile", {
                     state: { courseid: courseid }
-                })}>Go To Profile</button>
+                })}><CgProfile/>Go To Profile</button>
 
             </div>
 
@@ -305,52 +317,52 @@ const Videoplayer = () => {
                                 <div className="relative" onClick={playclick}>
 
                                     {showskip ? (<div className="absolute inset-0 flex justify-center items-center transition-all duration-500 ">
-                                        <div className="flex justify-between w-full sm:px-20 lg:px-70 " >
-                                            <motion.div className="flex flex-col items-center"   whileHover={{scale:1.1}}  whileTap={{ scale: 0.9 }} onClick={(e) => {
+                                        <div className="flex justify-between sm:gap-[500px] " >
+                                            <motion.div className="flex flex-col items-center" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => {
                                                 e.stopPropagation()
                                                 skipbackward()
-                                                
-                                                
+
+
                                             }}  >
-                                                <IoIosSkipBackward size={60} fill="black" />
-                                                 <p className={`  text-gray-500 text-sm mt-1`} > Skip Backward</p>
+                                                <IoIosSkipBackward size={60} fill="white" />
+                                                <p className={`  text-white text-sm mt-1`} > Skip Backward</p>
 
                                             </motion.div>
 
-                                            <motion.div className="flex flex-col items-center"  whileHover={{scale:1.1}}   whileTap={{ scale: 0.9 }} onClick={(e) => {
+                                            <motion.div className="flex flex-col items-center" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => {
                                                 e.stopPropagation()
                                                 skipforward()
-                                                
+
 
                                             }}>
-                                                <IoIosSkipForward size={60} fill="black"  />
-                                                 <p className={`  text-gray-500 text-sm mt-1`} >Skip Forward</p>
+                                                <IoIosSkipForward size={60} fill="white" />
+                                                <p className={`  text-white text-sm mt-1`} >Skip Forward</p>
                                             </motion.div>
 
 
                                         </div>
                                     </div>) : ""}
 
-                                    <ReactPlayer url={quality} width={"100%"} height={"100%"} ref={(player) => playerref.current = player} playing={playing} volume={volume} muted={muted} onProgress={handleprogress}  controls={false} onEnded={ended} onReady={() => setshowspinner(false)} className="pointer-events-none"
+                                    <ReactPlayer url={resolutionurl} width={"100%"} height={"100%"} ref={(player) => playerref.current = player} playing={playing} volume={volume} muted={muted} onProgress={handleprogress} controls={false} onEnded={ended} onReady={() => setshowspinner(false)} className="pointer-events-none"
                                         onDuration={(d) => setduration(d)}
                                     />
 
-                                    {shownextbanner && id !== alllessons.length - 1 &&(
-                                       <motion.div
+                                    {shownextbanner && id !== alllessons.length - 1 && (
+                                        <motion.div
                                             className="absolute bottom-1/35 right-1/35 bg-black text-white text-lg px-6 py-3 rounded-md shadow-xl z-50"
                                             initial={{ opacity: 0, scale: 0.8 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0 }}
                                             transition={{ duration: 0.5 }}
-                                            
+
                                         >
                                             Next video starting in <span><Next from={6} to={1} /> </span>seconds...
                                         </motion.div>
                                     )}
-                                       
-                                    
-                                      
-                                
+
+
+
+
 
 
 
@@ -363,22 +375,22 @@ const Videoplayer = () => {
                                     {showicon && (
                                         <motion.div key={showicon} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.5 }} className="absolute inset-0 flex  justify-center items-center bg-black/20">
                                             {showicon === "play" ? (
-                                                <FaPlay className="text-black text-7xl" />
+                                                <FaPlay className="text-white text-7xl" />
                                             ) : (
-                                                <FaPause className="text-7xl text-black" />
+                                                <FaPause className="text-7xl text-white" />
                                             )}
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
 
-                              {
-                                showspinner && (
-                                      <div className="absolute inset-0 flex justify-center items-center">
-                                    <Spinner/>
-                                </div>
-                                )
-                              }
-                               
+                                {
+                                    showspinner && (
+                                        <div className="absolute inset-0 flex justify-center items-center">
+                                            <Spinner />
+                                        </div>
+                                    )
+                                }
+
 
 
 

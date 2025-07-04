@@ -9,7 +9,7 @@ router.post("/:courseid", protect, async (req, res) => {
   try {
     const userid = req.user._id.toString();
     const { courseid } = req.params;
-    const course = await Course.findById(courseid);
+    const course = await Course.findById(req.params.courseid);
     const user = await User.findById(userid);
     if (!course) {
       return res.status(400).json({ msg: "course not found" });

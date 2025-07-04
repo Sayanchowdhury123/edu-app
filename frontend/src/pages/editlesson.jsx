@@ -25,23 +25,20 @@ const Editlesson = () => {
         formdata.append("title", title)
         formdata.append("video", videourl)
 
-        setuploadprogress(0)
+    
         setuploadsectionindex(true)
         try {
-            const res = await axiosinstance.put(`/courses/${courseid}/sections/${sectionindex}/lessons/${lessonid}`, formdata, {
+            const res = await axiosinstance.put(`/courses/${courseid}/sections/${sectionindex}/lessons/${lessonid}`, formdata,{
                 headers: {
                     Authorization: `Bearer ${user.user.token}`,
                     "Content-Type": "multipart/form-data"
 
-                }, onUploadProgress: (ProgressEvent) => {
-                    const percent = Math.round((ProgressEvent.loaded * 100) / ProgressEvent.total)
-                    setuploadprogress(percent)
                 }
 
+            }
+        )
 
-            })
-
-            setuploadprogress(0)
+            
             setuploadsectionindex(false)
 
             toast.success("lesson edited")
@@ -64,7 +61,7 @@ const Editlesson = () => {
                     settitle(e.target.value)
                 }} required />
 
-                {uploadsectionindex && uploadprogress > 0 && (
+                {uploadsectionindex &&  (
                     <motion.div className="w-full bg-base-100 p-4 rounded-lg shadow-md mt-4"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -75,7 +72,7 @@ const Editlesson = () => {
 
                             <span className="loading loading-spinner loading-md text-primary" />
                             <p className="text-primary font-semibold">
-                                Uploading : {uploadprogress}%
+                                Uploading...
                             </p>
 
                         </div>

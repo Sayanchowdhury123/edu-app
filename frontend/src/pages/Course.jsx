@@ -383,8 +383,8 @@ const Course = () => {
                         {approval || user.user.role === "instructor" ? (
                             <div>
                                 {course.enrolledusers?.includes(user.user.id) ? (
-                                    <button className="btn btn-primary " onClick={() => unenrolled(course._id)}> Unenroll</button>
-                                ) : (<button className="btn btn-secondary " onClick={() => enrolled(course._id)}> Enroll</button>)
+                                    <button className="btn btn-primary btn-outline " onClick={() => unenrolled(course._id)}> Unenroll</button>
+                                ) : (<button className="btn btn-secondary btn-outline " onClick={() => enrolled(course._id)}> Enroll</button>)
                                 }
 
                             </div>

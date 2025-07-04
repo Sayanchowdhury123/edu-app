@@ -27,13 +27,7 @@ router.post(
       const result = await cloudinary.uploader.upload(file.tempFilePath, {
         folder: "lecture/videos",
         resource_type: "video",
-        eager: [
-          { width: 1280, crop: "scale", format: "mp4" },
-          { width: 854, crop: "scale", format: "mp4" },
-          { width: 640, crop: "scale", format: "mp4" },
-          { width: 256, crop: "scale", format: "mp4" },
-        ],
-        eager_async: false,
+      
       });
 
       const course = await Course.findById(courseid);
@@ -46,12 +40,7 @@ router.post(
         return res.status(404).json({ msg: "section not found" });
       }
 
-      const resolutions = {
-        "720p": result.eager?.[0]?.secure_url,
-        "480p": result.eager?.[1]?.secure_url,
-        "360p": result.eager?.[2]?.secure_url,
-        "144p": result.eager?.[3]?.secure_url,
-      };
+     
 
       console.log(resolutions);
 
@@ -61,7 +50,7 @@ router.post(
         videourl: result.secure_url,
         cloudinaryid: result.public_id,
         isfreepreview: isfreepreview === "true",
-        resolutions: resolutions,
+         
       });
 
       await course.save();
@@ -86,12 +75,12 @@ router.put(
       const { courseid } = req.params;
       const { sectionindex } = req.params;
       const { lessonid } = req.params;
-
-      if (!title) {
+      if (!title || !req.files.video) {
         return res.status(400).json({ msg: "missing required fields" });
       }
 
       const file = req.files?.video;
+     
       const course = await Course.findById(courseid);
       if (!course) {
         return res.status(404).json({ msg: "course not found" });
@@ -101,47 +90,44 @@ router.put(
         return res.status(404).json({ msg: "section not found" });
       }
 
-      const lesson = section.lessons.find((l) => l.id === lessonid);
+      const lesson = section.lessons.find((l) => l.id.toString() === lessonid.toString());
+      console.log(lesson);
       if (!lesson) {
         return res.status(404).json({ msg: "lesson not found" });
       }
+      
 
       if (title) lesson.title = title;
       if (isfreepreview !== undefined) lesson.isfreepreview = isfreepreview;
 
       if (file) {
-        if (lesson.cloudinaryid) {
-          await cloudinary.uploader.destroy(lesson.cloudinaryid, {
-            resource_type: "video",
-          });
+        try {
+          if (lesson.cloudinaryid) {
+            await cloudinary.uploader.destroy(lesson.cloudinaryid, {
+              resource_type: "video",
+            });
+
+            console.log("old video destroyed");
+          }
+        } catch (error) {
+          console.log("failed to destroy",error);
         }
 
         const result = await cloudinary.uploader.upload(file.tempFilePath, {
           folder: "lecture/videos",
           resource_type: "video",
-          eager: [
-            { width: 1280, crop: "scale", format: "mp4" },
-            { width: 854, crop: "scale", format: "mp4" },
-            { width: 640, crop: "scale", format: "mp4" },
-            { width: 256, crop: "scale", format: "mp4" },
-          ],
-          eager_async: false,
+         
         });
 
-        const resolutions = {
-          "720p": result.eager?.[0]?.secure_url,
-          "480p": result.eager?.[1]?.secure_url,
-          "360p": result.eager?.[2]?.secure_url,
-          "144p": result.eager?.[3]?.secure_url,
-        };
+    
 
         lesson.videourl = result.secure_url;
         lesson.cloudinaryid = result.public_id;
-        lesson.resolutions = resolutions;
+        
       }
-
+      
       await course.save();
-
+      console.log("video edited");
       res.status(200).json({ msg: "video edited" });
     } catch (error) {
       console.log(error);

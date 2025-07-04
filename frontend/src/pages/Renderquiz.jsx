@@ -5,7 +5,8 @@ import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
 import axiosinstance from "../api";
 import { Authcontext } from "../context/Authcontext";
-
+import { CgProfile } from "react-icons/cg";
+import { RxDashboard } from "react-icons/rx";
 
 const RenderQuiz = () => {
     const questions = [];
@@ -118,7 +119,11 @@ const RenderQuiz = () => {
                 {showresult ? (<motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }} className="bg-success/10 text-success border border-success rounded-xl shadow-lg p-6 max-w-xl text-center space-y-4">
                     <h2 className="text-3xl font-bold">Quiz Completed</h2>
                     <p className="text-xl font-semibold">Your Total Score is <span className="text-success">{score}</span></p>
-                    <button className="btn btn-accent" onClick={() => navigate(`/course/${course._id}`)}>Course Page</button>
+                    <div className="flex justify-center gap-4">
+                          <button className="btn  btn-accent " onClick={() => navigate(`/course/${course._id}`)}><RxDashboard/>Course Page</button>
+                     <button className="btn btn-accent" onClick={() => navigate(`/profile`)}><CgProfile/>Profile</button>
+                    </div>
+                   
                 </motion.div>
                 ) :
                     (
