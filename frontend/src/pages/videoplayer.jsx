@@ -20,6 +20,7 @@ import Next from "./Next";
 import Spinner from "./Spinner";
 import { CgProfile } from "react-icons/cg";
 import { RxDashboard } from "react-icons/rx";
+import Select from "react-select"
 
 const Videoplayer = () => {
     const { user } = useContext(Authcontext)
@@ -43,16 +44,16 @@ const Videoplayer = () => {
     const timeref = useRef(null)
     const { id } = useParams();
     const [lesson, setlesson] = useState(null)
-    const [quality, setquality] = useState("720p")
+    const [quality, setquality] = useState('720p')
     const [shownextbanner, setshownextbanner] = useState(false)
     const resumetimeref = useRef(null)
     const [showspinner, setshowspinner] = useState(false)
-    
+
 
 
     useEffect(() => {
         setshowspinner(true)
-      
+
     }, [])
 
 
@@ -60,7 +61,7 @@ const Videoplayer = () => {
     useEffect(() => {
         if (alllessons && id !== undefined) {
             const currentlesson = alllessons[id];
-        
+
             setlesson(currentlesson)
 
         }
@@ -182,16 +183,16 @@ const Videoplayer = () => {
 
 
     const handlequality = (e) => {
-
+       // console.log(e.value);
         resumetimeref.current = playerref.current.getCurrentTime();
-        setquality(e.target.value)
+        setquality(e.value)
         setshowspinner(true)
-     
+
         // console.log(resolutions[e.target.value]);
 
     }
 
-     
+
 
     const getResolutionUrl = (baseUrl, resolution) => {
         if (!baseUrl && !resolution) return "";
@@ -208,14 +209,14 @@ const Videoplayer = () => {
         return `${prefix}/upload/${transformation}/${suffix}`;
     };
 
-      const resolutionurl = lesson?.videourl && quality ? getResolutionUrl(lesson.videourl, quality) : "";
+    const resolutionurl = lesson?.videourl && quality ? getResolutionUrl(lesson.videourl, quality) : "";
 
-   
+
 
     useEffect(() => {
 
 
-         
+
         if (playerref.current && resumetimeref.current > 0) {
 
             playerref.current.seekTo(resumetimeref.current)
@@ -276,20 +277,26 @@ const Videoplayer = () => {
     }, [])
 
 
+    const options = [
+        { value: '144p', label: '144p' },
+        { value: '360p', label: '360p' },
+        { value: '480p', label: '480p' },
+        { value: '720p', label: '720p' },
+    ];
 
 
 
     return (
 
-        <div className="bg-base-200 h-screen  p-6">
+        <div className="bg-base-300 h-screen  p-6">
             <div className="flex justify-between">
                 <div>
-                    <Link to={`/course/${courseid}`} className="btn btn-accent" ><RxDashboard/>Course Page</Link>
+                    <Link to={`/course/${courseid}`} className="btn btn-accent" ><RxDashboard />Course Page</Link>
                 </div>
 
                 <button className="btn btn-primary" onClick={() => navigate("/profile", {
                     state: { courseid: courseid }
-                })}><CgProfile/>Go To Profile</button>
+                })}><CgProfile />Go To Profile</button>
 
             </div>
 
@@ -362,26 +369,26 @@ const Videoplayer = () => {
 
 
 
+                                    <AnimatePresence>
 
+
+                                        {showicon && (
+                                            <motion.div key={showicon} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.5 }} className="absolute inset-0 flex  justify-center items-center bg-black/20">
+                                                {showicon === "play" ? (
+                                                    <FaPlay className="text-white text-7xl" />
+                                                ) : (
+                                                    <FaPause className="text-7xl text-white" />
+                                                )}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
 
 
 
                                 </div>
 
 
-                                <AnimatePresence>
 
-
-                                    {showicon && (
-                                        <motion.div key={showicon} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.5 }} className="absolute inset-0 flex  justify-center items-center bg-black/20">
-                                            {showicon === "play" ? (
-                                                <FaPlay className="text-white text-7xl" />
-                                            ) : (
-                                                <FaPause className="text-7xl text-white" />
-                                            )}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
 
                                 {
                                     showspinner && (
@@ -444,17 +451,33 @@ const Videoplayer = () => {
 
 
 
-                                            <div className="flex items-center gap-3">
+                                            <div className=" flex items-center gap-3">
 
                                                 {
                                                     qbox && (
-                                                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className=" ">
-                                                            <select name="" id="" className="select" onChange={(e) => handlequality(e)}>
-                                                                <option value="720p"  >720p</option>
-                                                                <option value="480p"   >480p</option>
-                                                                <option value="360p"   >360p</option>
-                                                                <option value="144p" >144p</option>
-                                                            </select>
+                                                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="">
+                                                            <Select
+                                                                options={options}
+                                                                onChange={handlequality}
+                                                                menuPlacement="top"
+                                                                classNamePrefix="react-select"
+                                                                placeholder="Quality"
+                                                                theme={(theme) => ({
+                                                                    ...theme,
+                                                                    borderRadius: 4,
+                                                                    colors: {
+                                                                        ...theme.colors,
+                                                                        primary25: '#333', 
+                                                                        primary: '#555',   
+                                                                        neutral0: '#000',   
+                                                                        neutral80: '#fff', 
+                                                                        neutral20: '#555',  
+                                                                        neutral30: '#888',  
+                                                                    },
+                                                                })}
+
+                                                            />
+
 
                                                         </motion.div>
                                                     )

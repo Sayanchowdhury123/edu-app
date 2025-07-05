@@ -27,7 +27,6 @@ router.post(
       const result = await cloudinary.uploader.upload(file.tempFilePath, {
         folder: "lecture/videos",
         resource_type: "video",
-      
       });
 
       const course = await Course.findById(courseid);
@@ -40,8 +39,6 @@ router.post(
         return res.status(404).json({ msg: "section not found" });
       }
 
-     
-
       console.log(resolutions);
 
       section.lessons.push({
@@ -50,7 +47,6 @@ router.post(
         videourl: result.secure_url,
         cloudinaryid: result.public_id,
         isfreepreview: isfreepreview === "true",
-         
       });
 
       await course.save();
@@ -80,7 +76,7 @@ router.put(
       }
 
       const file = req.files?.video;
-     
+
       const course = await Course.findById(courseid);
       if (!course) {
         return res.status(404).json({ msg: "course not found" });
@@ -90,12 +86,13 @@ router.put(
         return res.status(404).json({ msg: "section not found" });
       }
 
-      const lesson = section.lessons.find((l) => l.id.toString() === lessonid.toString());
-      console.log(lesson);
+      const lesson = section.lessons.find(
+        (l) => l.id.toString() === lessonid.toString()
+      );
+
       if (!lesson) {
         return res.status(404).json({ msg: "lesson not found" });
       }
-      
 
       if (title) lesson.title = title;
       if (isfreepreview !== undefined) lesson.isfreepreview = isfreepreview;
@@ -106,26 +103,23 @@ router.put(
             await cloudinary.uploader.destroy(lesson.cloudinaryid, {
               resource_type: "video",
             });
+            const result = await cloudinary.uploader.upload(file.tempFilePath, {
+              folder: "lecture/videos",
+              resource_type: "video",
+              timeout: 60000,
+            });
 
-            console.log("old video destroyed");
+            lesson.videourl = result.secure_url;
+        lesson.cloudinaryid = result.public_id;
           }
         } catch (error) {
-          console.log("failed to destroy",error);
+          console.log("failed to destroy", error);
+          return res.status(500).json("upload failed", error.message)
         }
 
-        const result = await cloudinary.uploader.upload(file.tempFilePath, {
-          folder: "lecture/videos",
-          resource_type: "video",
-         
-        });
-
-    
-
-        lesson.videourl = result.secure_url;
-        lesson.cloudinaryid = result.public_id;
         
       }
-      
+
       await course.save();
       console.log("video edited");
       res.status(200).json({ msg: "video edited" });
@@ -218,17 +212,25 @@ router.put("/courses/screenshot/:courseid", protect, async (req, res) => {
     if (!req.files || !req.files.screenshot) {
       return res.status(400).json({ msg: "no screenshot uploaded" });
     }
-
     const file = req.files.screenshot;
-
-    const result = await cloudinary.uploader.upload(file.tempFilePath, {
-      folder: "screenshots",
-    });
 
     const course = await Course.findById(req.params.courseid);
     if (!course) {
       return res.status(404).json({ msg: "course not found" });
     }
+
+    const existing = course.screenshots.find(
+      (s) => s.uploadedby.toString() === req.user._id
+    );
+
+    if (existing) {
+      return res.status(404).json("you already made the payment");
+    }
+
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: "screenshots",
+    });
+
     const newscreenshot = {
       url: result.secure_url,
       uploadedby: req.user._id,
