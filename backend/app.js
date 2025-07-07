@@ -15,8 +15,10 @@ const livekitroute = require("./routes/livekit")
 const app = express();
 app.use(cors({
     origin:"https://edu-app-pied.vercel.app",
+    methods:["GET","POST","PUT","PATCH","DELETE"],
     credentials: true,
 }))
+//origin: http://localhost:5173
 app.use(express.json({limit:"100mb"}));
 app.use(express.urlencoded({extended:true, limit:"100mb"}));
 app.use(fileupload({useTempFiles: true}))
