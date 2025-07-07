@@ -14,7 +14,7 @@ const instructorroutes = require("./routes/instructorroutes")
 const livekitroute = require("./routes/livekit")
 const app = express();
 app.use(cors({
-    origin:"https://edu-app-pied.vercel.app/",
+    origin:"https://edu-app-pied.vercel.app",
     credentials: true,
 }))
 app.use(express.json({limit:"100mb"}));
