@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import { Themecontext } from "../context/Themecontext";
 import { Sun, Moon } from "lucide-react"
 
-const socket = io("http://localhost:5000")
+const socket = io(import.meta.env.VITE_BASE_URL)
 
 const Course = () => {
       const {user} = useContext(Authcontext)
@@ -460,7 +460,7 @@ const Course = () => {
                                                                     <div className="flex gap-2 items-center">
 
                                                                         <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(i ,s)}>Watch video</button>
-                                                                        {l.lecture && l.lecture.data.length > 0 ? (<a className="btn btn-xs btn-outline btn-primary relative r" href={`http://localhost:5000/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
+                                                                        {l.lecture && l.lecture.data.length > 0 ? (<a className="btn btn-xs btn-outline btn-primary relative r" href={`${import.meta.env.VITE_BASE_URL}/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
                                                                         {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
                                                                             state: { course: course, lessonid: l.id }
                                                                         })}>Give a quiz</button>)}

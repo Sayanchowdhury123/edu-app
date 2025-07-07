@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: ["https://edu-app-pied.vercel.app"],
-    methods: ["GET", "POST","PUT","PATCH","DELETE"],
+    methods: ["GET","POST","PUT","PATCH","DELETE"],
   },
 });
 

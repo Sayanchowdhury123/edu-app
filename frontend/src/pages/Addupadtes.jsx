@@ -7,7 +7,7 @@ import { Authcontext } from "../context/Authcontext";
 import { motion } from "framer-motion";
 import io from "socket.io-client"
 
-const socket = io("http://localhost:5000")
+const socket = io(import.meta.env.VITE_BASE_URL)
 
 const Addupdates = () => {
 
