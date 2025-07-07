@@ -109,9 +109,7 @@ router.put("/thread/:tid", protect, async (req, res) => {
       return res.status(404).json("thread not found");
     }
 
-     if(req.user._id !== thread.user.toString() && req.user.role !== "instructor" ){
-        return res.status(403).json("you are not allowed to edit thread")
-      }
+    
 
     thread.title = title;
     thread.question = question;
@@ -191,9 +189,7 @@ router.put(
         return res.status(400).json("comment not found");
       }
 
-      if(req.user._id !== newcomment.user.toString() && req.user.role !== "instructor" ){
-        return res.status(403).json("you are not allowed to edit comments")
-      }
+     
       newcomment.text = text;
       await thread.save();
 
@@ -213,9 +209,7 @@ router.delete("/thread/:threadid", protect, async (req, res) => {
         return res.status(404).json("thread not found");
       }
 
-      if(req.user._id !== thread.user.toString() && req.user.role !== "instructor" ){
-        return res.status(403).json("you are not allowed to delete this thread")
-      }
+   
 
 
       await Discussion.findByIdAndDelete(threadid)
@@ -242,9 +236,7 @@ router.delete(
 
       const comment = thread.comment.find(c => c._id.toString() === commentid)
       
-      if(req.user._id !== comment.user.toString() && req.user.role !== "instructor" ){
-        return res.status(403).json("you are not allowed to delete this comment")
-      }
+     
 
       thread.comment = thread.comment.filter(
         (c) => c._id.toString() !== commentid

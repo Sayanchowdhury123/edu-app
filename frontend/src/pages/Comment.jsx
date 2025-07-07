@@ -34,8 +34,8 @@ const Comments = () => {
 
 
             setthread(res.data)
-            console.log(res.data);
-
+            //console.log(res.data);
+            //);
             //  console.log(user.user);
         } catch (error) {
             console.log(error.response.data);
@@ -150,9 +150,9 @@ const Comments = () => {
 
     if (loading) return <Loadingscrenn />
     return (
-        <div className="w-full h-[100vh]  mx-auto px-4 py-10 bg-base-200  space-y-6">
+        <div className="w-full h-[100vh]  mx-auto px-4 py-10 bg-base-200  space-y-6 ">
 
-            <div className=" max-w-4xl h-[80vh]  mx-auto  space-y-6">
+            <div className=" max-w-4xl h-[95vh]  mx-auto  space-y-6 relative">
 
                 <div className="flex-grow space-y-6 " style={{ scrollbarWidth: "none" }}>
                     <motion.div className="bg-base-100 p-6 rounded-xl shadow-lg  " initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }} >
@@ -160,7 +160,7 @@ const Comments = () => {
                             <img src={thread?.user?.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover ring ring-primary ring-offset-base-100 ring-offset-2" />
                             <div className="">
 
-                                <p className="font-semibold text-lg  ">{thread?.user?.name} {user.user.role === "instructor" && (<span>(Instructor)</span>)} </p>
+                                <p className="font-semibold text-lg  ">{thread?.user?.name} {thread?.user.role === "instructor" && (<span>(Instructor)</span>)} </p>
                                 <p className="text-sm text-gray-500">Posted on: {new Date(thread?.createdAt).toLocaleDateString()}</p>
                             </div>
 
@@ -174,7 +174,7 @@ const Comments = () => {
 
                     </motion.div>
 
-                    <motion.div className="bg-base-100 rounded-xl  shadow-lg p-6" initial={{ opacity: 0, y: 20 }}
+                    <motion.div className="bg-base-100 rounded-xl h-[62vh]  shadow-lg p-6" initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
                     >
                         <h1 className="text-xl font-semibold mb-4 text-primary" >Comments {thread?.comment?.length || 0}</h1>
@@ -190,7 +190,7 @@ const Comments = () => {
                                         <div className="flex items-start space-x-4">
                                             <img src={c.user.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover" />
                                             <div>
-                                                <p className="font-semibold">{c.user.name} {user.user.role === "instructor" && (<span>(Instructor)</span>)}</p>
+                                                <p className="font-semibold">{c.user.name} {c.user.role === "instructor" && (<span>(Instructor)</span>)}</p>
                                                 <p className="text-sm text-gray-600">{new Date(c?.createdAt).toLocaleDateString()}</p>
                                                 <p className="mt-1">{c.text}</p>
                                             </div>
@@ -199,14 +199,31 @@ const Comments = () => {
 
 
 
-                                        <div className="space-x-2">
-                                            <button className="btn btn-sm btn-success btn-outline" onClick={() => {
-                                                setshowedit(true)
-                                                setcommentid(c._id)
-                                                inputref.current.focus()
-                                                settext(c.text)
-                                            }} >Edit</button>
-                                            <button className="btn btn-error btn-sm btn-outline" onClick={() => deletec(c._id)}>Delete</button>
+                                        <div >
+                                            
+                                                <div className="space-x-2"  >
+                                                    {user.user.role === c.user.role && (
+                                                       <button className="btn btn-sm btn-success btn-outline" onClick={() => {
+                                                        setshowedit(true)
+                                                        setcommentid(c._id)
+                                                        inputref.current.focus()
+                                                        settext(c.text)
+                                                    }} >Edit</button>
+                                                    )}
+
+                                                    {user.user.role === c.user.role || user.user.role === "instructor" ? (
+                                                      <button className="btn btn-error btn-sm btn-outline" onClick={() => deletec(c._id)}>Delete</button>
+                                                    ) : ""}
+                                                  
+                                                   
+                                                </div>
+
+                                            
+
+
+
+
+
                                         </div>
                                     </motion.div>
                                 ))}
@@ -218,7 +235,7 @@ const Comments = () => {
                 <motion.div className=" z-10 rounded-xl "
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
                 >
-                    <div className=" flex  gap-2">
+                    <div className=" flex  gap-2 absolute bottom-0 w-full">
                         <input name="" id="" className="input input-primary w-full mb-4" placeholder="Type your comment..." onChange={(e) => settext(e.target.value)} value={text} ref={inputref}  ></input>
                         <button className="btn btn-primary " onClick={showedit ? editc : addc}>{showedit ? "Update" : "Post"} Comment</button>
                         {showedit && (<button className="btn btn-outline ml-2" onClick={() => setshowedit(false)} >Cancel</button>)}

@@ -57,7 +57,7 @@ const Chatbox = () => {
         })
 
         socket.on("r-edit", (message) => {
-              console.log(message);
+            //  console.log(message);
             setmessages((prev) => prev.map((msg) => msg?._id === message?._id ? message : msg))
         })
 
@@ -92,7 +92,7 @@ const Chatbox = () => {
     useEffect(() => {
         fetchmessgaes();
         //  console.log(courseid);
-
+         
     }, [courseid])
 
 
@@ -152,6 +152,7 @@ const Chatbox = () => {
                 })
                  
                  const textupdated = res.data;
+                 console.log(textupdated);
                 // console.log(textupdated);
                  socket.emit("edit", {courseid, textupdated} )
               

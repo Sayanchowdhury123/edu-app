@@ -393,17 +393,17 @@ const Discussionforum = () => {
                         <p>no threads created yet</p>
                     </div>
                 ) : (
-                    <div className="h-[79vh] overflow-y-auto" style={{scrollbarWidth:"none"}}>
+                    <div className="h-[79vh] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
 
                         {Array.isArray(threads) && threads?.map((t, i) => (
-                            <motion.div className="bg-base-100 p-5 rounded-lg shadow-md border border-base-300 mb-4 space-y-4  " key={t._id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}  transition={{ duration: 0.4, delay: i * 0.1 }} >
+                            <motion.div className="bg-base-100 p-5 rounded-lg shadow-md border border-base-300 mb-4 space-y-4  " key={t._id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay: i * 0.1 }} >
                                 <div className="flex justify-between items-center space-x-4">
 
 
                                     <div className="flex items-center gap-2">
                                         <img src={t?.user?.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover " />
                                         <div>
-                                            <p className="font-semibold text-lg  ">{t?.user?.name}  {user.user.role === "instructor" && (<span>(Instructor)</span>)}</p>
+                                            <p className="font-semibold text-lg  ">{t?.user?.name}  {t?.user.role === "instructor" && (<span>(Instructor)</span>)}</p>
                                             <p className="text-sm text-gray-500">Posted on: {new Date(t?.createdAt).toLocaleDateString()}</p>
                                         </div>
 
@@ -412,7 +412,7 @@ const Discussionforum = () => {
 
                                     <div className="flex items-center gap-2">
                                         <Link to={`/thread/${t._id}`} className="text-sm text-info hover:underline">{t?.comment?.length || 0} comment(s)</Link>
-                                        {t.isresolved === true ? <IoCheckmarkDoneCircle className="mt-[5px]" /> : <IoCheckmarkDoneCircleOutline className="mt-[5px]" />}
+                                        {t.isresolved === true ? <IoCheckmarkDoneCircle className="mt-[5px]" /> : ""}
                                     </div>
                                 </div>
 
@@ -422,53 +422,57 @@ const Discussionforum = () => {
                                     <p className="text-base text-gray-600">{t.question}</p>
                                 </div>
 
-                                {user.user.id === t.user._id || user.user.role === "instructor" ? (
-                                    <div className="flex justify-between items-center gap-2">
 
-                                        <div className="flex gap-2">
-                                            <div className="flex items-center gap-1" onClick={() => {
+                                <div className="flex justify-between items-center gap-2">
 
-                                                if (t?.likes?.includes(user.user.id)) {
-                                                    removelike(t._id)
-                                                } else {
-                                                    addlike(t._id)
-                                                }
-                                            }} >
+                                    <div className="flex gap-2">
+                                        <div className="flex items-center gap-1" onClick={() => {
 
-                                                {t.likes.includes(user.user.id) ? <AiFillLike /> : <AiOutlineLike />}
-                                                <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
+                                            if (t?.likes?.includes(user.user.id)) {
+                                                removelike(t._id)
+                                            } else {
+                                                addlike(t._id)
+                                            }
+                                        }} >
 
-                                                    {t.likes.length}
-                                                </motion.p>
-                                            </div>
+                                            {t.likes.includes(user.user.id) ? <AiFillLike /> : <AiOutlineLike />}
+                                            <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
 
-                                            <div className="flex items-center gap-1" onClick={() => {
-
-                                                if (t?.dislikes?.includes(user.user.id)) {
-                                                    removedislike(t._id)
-                                                } else {
-                                                    adddislike(t._id)
-                                                }
-                                            }}>
-
-                                                {t?.dislikes?.includes(user.user.id) ? <AiFillDislike /> : <AiOutlineDislike />}
-                                                <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
-
-                                                    {t.dislikes.length}
-                                                </motion.p>
-                                            </div>
+                                                {t.likes.length}
+                                            </motion.p>
                                         </div>
 
+                                        <div className="flex items-center gap-1" onClick={() => {
 
+                                            if (t?.dislikes?.includes(user.user.id)) {
+                                                removedislike(t._id)
+                                            } else {
+                                                adddislike(t._id)
+                                            }
+                                        }}>
+
+                                            {t?.dislikes?.includes(user.user.id) ? <AiFillDislike /> : <AiOutlineDislike />}
+                                            <motion.p key={t.likes.length} animate={{ scale: [1.3, 1] }} transition={{ duration: 0.3 }}>
+
+                                                {t.dislikes.length}
+                                            </motion.p>
+                                        </div>
+                                    </div>
+
+                                     
                                         <div className="space-x-2">
-                                            <button className="btn btn-success btn-sm" onClick={() => {
+                                            {user.user.id === t.user._id && (
+                                                <button className="btn btn-success btn-sm" onClick={() => {
                                                 setshowedit(true)
                                                 settid(t._id)
                                                 settitle(t.title)
                                                 setquestion(t.question)
                                             }}>Edit</button>
+                                            )}
+                                           
+                                            {user.user.id === t.user._id || user.user.role === "instructor" ? ( <button className="btn btn-error btn-sm" onClick={() => deletethreads(t._id)}>Delete</button>) : "" }
+                                           
 
-                                            <button className="btn btn-error btn-sm" onClick={() => deletethreads(t._id)}>Delete</button>
                                             {user.user.role === "instructor" && (<button className={`btn  btn-sm ${t.isresolved === true ? "btn-neutral" : "btn-accent"}`} onClick={() => {
                                                 if (t.isresolved === false) {
                                                     resolvethreads(t._id)
@@ -477,11 +481,13 @@ const Discussionforum = () => {
                                                 }
                                             }}>{t.isresolved === false ? "resolve" : "unresolve"}</button>)}
                                         </div>
+                                    
 
 
 
-                                    </div>
-                                ) : ""}
+
+                                </div>
+
 
                             </motion.div>
                         ))}
