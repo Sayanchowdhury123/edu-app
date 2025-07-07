@@ -13,7 +13,10 @@ const cloudinary = require("cloudinary").v2;
 const instructorroutes = require("./routes/instructorroutes")
 const livekitroute = require("./routes/livekit")
 const app = express();
-app.use(cors())
+app.use(cors({
+    origin:"https://edu-app-pied.vercel.app/",
+    credentials: true,
+}))
 app.use(express.json({limit:"100mb"}));
 app.use(express.urlencoded({extended:true, limit:"100mb"}));
 app.use(fileupload({useTempFiles: true}))
