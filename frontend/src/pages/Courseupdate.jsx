@@ -28,7 +28,7 @@ const Courseupdates = () => {
     const [searcharray,setsercharray] = useState([])
     const [searchtext,setsearchtext] = useState("")
    const[loading,setloading] = useState(false)
-
+   
    
 
     const fetchcourses = async () => {
@@ -126,6 +126,11 @@ const Courseupdates = () => {
                                         <Link className="btn btn-primary btn-sm" to={`/addupdate/${course._id}`}>
                                             Add Update
                                         </Link>
+                                        <button  className="btn btn-success btn-sm" onClick={() => navigate(`/editupdate/${course._id}`,{
+                                            state: {edittext: course.announcement.text}
+                                        })} >
+                                           Edit update
+                                         </button>
                                          <Link className="btn btn-error btn-sm" onClick={() => delupdate(course._id)} >
                                             Remove Update
                                         </Link>

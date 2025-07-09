@@ -40,6 +40,7 @@ import Courses from './pages/Courses'
 import Buycourse from './pages/Buycourse'
 import Approval from './pages/Approval'
 import Homeroute from './pages/Homeroute'
+import Editupdates from './pages/Editupdate'
 
 function App() {
  const {user} = useContext(Authcontext)
@@ -85,6 +86,7 @@ function App() {
          <Route path='/thread/:threadid' element={<Privateroute><Comments/></Privateroute>}  />
          <Route  path='/buy-course' element={<Privateroute><Buycourse/></Privateroute>} />
          <Route path='/approval/:courseid' element={<Privateroute><Approval/></Privateroute>} />
+         <Router path='/editupdate/:courseid'  element={<Privateroute><Editupdates/></Privateroute>} />
       </Routes>
     </Router>
        <Back/>
