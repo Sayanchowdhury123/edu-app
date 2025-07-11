@@ -53,7 +53,10 @@ router.put(
   isinstructor,
   async (req, res) => {
     try {
-      const course = await Course.findById(req.params.courseid);
+      const course = await Course.findById(req.params.courseid).populate(
+      "screenshots.uploadedby screenshots.course",
+      "name email avatar title price"
+    );
       if (!course) {
         return res.status(400).json("course not found");
       }
@@ -64,7 +67,8 @@ router.put(
       );
       screenshot.approval = true;
       await course.save();
-
+      console.log(screenshot);
+      res.status(200).json(screenshot);
       const subject = `Purchased ${course.title}`;
       const html = `
           <h2>Hello ${user.name}</h2>
@@ -72,7 +76,7 @@ router.put(
           <p>Start learning now!</p> `;
 
       await sendemail(user.email, subject, html);
-      res.status(200).json(screenshot);
+    
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "failed to approve screenshot" });
@@ -86,7 +90,10 @@ router.put(
   isinstructor,
   async (req, res) => {
     try {
-      const course = await Course.findById(req.params.courseid);
+      const course = await Course.findById(req.params.courseid).populate(
+      "screenshots.uploadedby screenshots.course",
+      "name email avatar title price"
+    );
       if (!course) {
         return res.status(400).json("course not found");
       }

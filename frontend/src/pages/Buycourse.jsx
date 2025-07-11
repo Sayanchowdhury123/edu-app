@@ -16,7 +16,7 @@ const Buycourse = () => {
 
      const uplLink = `upi://pay?pa=${upiid}&pn=${title}&am=${price}&cu=INR&tn=Course%20urchase`;
 
-     const [file,setfile] = useState(null)
+     const [file,setfile] = useState("")
 
   const filechange = async () => {
         
@@ -36,7 +36,7 @@ const Buycourse = () => {
                 })
                 console.log(res.data);
                 toast.success("Screenshot sent")
-               setfile(null)
+               setfile("")
             } catch (error) {
                 console.log(error);
                 toast.error("failed to send screenshot")
