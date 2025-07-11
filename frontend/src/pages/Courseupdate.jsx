@@ -127,7 +127,7 @@ const Courseupdates = () => {
                                             Add Update
                                         </Link>
                                         <button  className="btn btn-success btn-sm" onClick={() => navigate(`/editupdate/${course._id}`,{
-                                            state: {edittext: course.announcement.text}
+                                            state: {edittext: course?.announcement?.text}
                                         })} >
                                            Edit update
                                          </button>
