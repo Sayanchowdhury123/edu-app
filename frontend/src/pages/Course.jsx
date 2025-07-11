@@ -17,7 +17,7 @@ import { Sun, Moon } from "lucide-react"
 const socket = io(import.meta.env.VITE_BASE_URL)
 
 const Course = () => {
-      const {user} = useContext(Authcontext)
+    const { user } = useContext(Authcontext)
     const { courseid } = useParams()
     const [course, setcourse] = useState({})
     const [en, seten] = useState(false)
@@ -34,7 +34,7 @@ const Course = () => {
     const [reviews, setreviews] = useState([])
     const messageendref = useRef(null)
     const reviewcontainer = useRef(null)
-      const { theme, toggletheme } = useContext(Themecontext)
+    const { theme, toggletheme } = useContext(Themecontext)
 
     useEffect(() => {
         socket.emit("join-update", courseid)
@@ -63,11 +63,11 @@ const Course = () => {
             })
 
 
-           console.log(user);
+            console.log(user);
             setcourse(res.data)
-          //  console.log(res.data);
-               
-        console.log(user);
+            //  console.log(res.data);
+
+            console.log(user);
         } catch (error) {
             console.log(error);
         } finally {
@@ -95,7 +95,7 @@ const Course = () => {
                 }
             })
             setu(res.data)
-         
+
 
             //console.log(res.data);
         } catch (error) {
@@ -292,11 +292,11 @@ const Course = () => {
 
     }, [course])
 
-    const handleplay = (i,s) => {
+    const handleplay = (i, s) => {
         navigate(`/video/${i}`, {
-            state: {  courseid: courseid,  alllessons: s.lessons }
+            state: { courseid: courseid, alllessons: s.lessons }
         })
-        
+
     }
 
 
@@ -330,89 +330,93 @@ const Course = () => {
         course?.enrolledusers?.includes(user.user.id) && completedlessonlength === totallessons
     )
 
-console.log(alllessoncompleted);
+    console.log(alllessoncompleted);
 
     const screenshot = course.screenshots?.find((s) => s.uploadedby === user.user.id)
     const approval = screenshot?.approval;
-   // console.log(approval);
+    // console.log(approval);
 
 
 
 
     if (loading) return <Loadingscrenn />
     return (
-    <div>
-          
-
-        <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
-
-            {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement} />)}
-
-            {alllessoncompleted && (<h1>🎉Congratulations</h1>)}
+        <div>
 
 
-            {
-                uploading && (
-                    <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center z-1000">
-                        <span className="loading loading-bars loading-lg text-primary">
+            <motion.div className=" mx-auto p-6 " initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} >
 
-                        </span>
-                    </div>
-                )
-            }
+                {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement} />)}
+
+                {alllessoncompleted && (
+                    <div>
+                        <Congratulation courseid={course._id} />
+                    </div>)
+                }
 
 
+                {
+                    uploading && (
+                        <div className="absolute inset-0 bg-black opacity-50 flex items-center justify-center z-1000">
+                            <span className="loading loading-bars loading-lg text-primary">
 
-            <div className="card bg-base-100 shadow-xl mb-6">
-                <figure>
-                    <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
-                </figure>
+                            </span>
+                        </div>
+                    )
+                }
 
 
 
-
-
-                <div className="card-body">
-
-                    <p className="card-title text-2xl font-bold">{course.title}</p>
-                    <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
-                    <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
-                    <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
-                    <div className="flex gap-3 mt-4">
-
-                        {approval || user.user.role === "instructor" ? (
-                            <div>
-                                {course.enrolledusers?.includes(user.user.id) ? (
-                                    <button className="btn btn-primary btn-outline " onClick={() => unenrolled(course._id)}> Unenroll</button>
-                                ) : (<button className="btn btn-secondary btn-outline " onClick={() => enrolled(course._id)}> Enroll</button>)
-                                }
-
-                            </div>
-                        ) : (<span></span>)}
-
-
-
-                        {u?.wishlist?.some(w => w._id === course._id) ? (
-                            <button className="btn btn-outline btn-accent  " onClick={() => removewishlist(course._id)}> Remove From Wishlist</button>)
-                            : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
-                        }
-
-                        {
-                            approval || user.user.role === "instructor" ? "" : (
-                                <button className={`btn btn-outline btn-primary `} onClick={() => navigate(`/buy-course`, {
-                                    state: { course: course }
-                                })}>Buy</button>
-                            )
-                        }
+                <div className="card bg-base-100 shadow-xl mb-6">
+                    <figure>
+                        <motion.img src={course.thumbnail} alt="thumbnail" className="w-full h-96 object-cover bg-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} />
+                    </figure>
 
 
 
 
-                        {alllessoncompleted && (<button className="btn btn-success btn-outline" onClick={Downloadcertificate} >Download Certificate</button>)}
-                    </div>
+
+                    <div className="card-body">
+
+                        <p className="card-title text-2xl font-bold">{course.title}</p>
+                        <p className="text-sm line-clamp-2 text-gray-500">{course.description?.substring(0, 100)}</p>
+                        <p className="text-lg text-gray-700">Price : ₹{course.price}</p>
+                        <p className="text-sm text-gray-500">Author : {course.instructor?.name}</p>
+                        <div className="flex gap-3 mt-4">
+
+                            {approval || user.user.role === "instructor" ? (
+                                <div>
+                                    {course.enrolledusers?.includes(user.user.id) ? (
+                                        <button className="btn btn-primary btn-outline " onClick={() => unenrolled(course._id)}> Unenroll</button>
+                                    ) : (<button className="btn btn-secondary btn-outline " onClick={() => enrolled(course._id)}> Enroll</button>)
+                                    }
+
+                                </div>
+                            ) : (<span></span>)}
 
 
-            
+
+                            {u?.wishlist?.some(w => w._id === course._id) ? (
+                                <button className="btn btn-outline btn-accent  " onClick={() => removewishlist(course._id)}> Remove From Wishlist</button>)
+                                : (<button className="btn btn-outline btn-accent  " onClick={() => addtowishlist(course._id)}> Add To Wishlist</button>)
+                            }
+
+                            {
+                                approval || user.user.role === "instructor" ? "" : (
+                                    <button className={`btn btn-outline btn-primary `} onClick={() => navigate(`/buy-course`, {
+                                        state: { course: course }
+                                    })}>Buy</button>
+                                )
+                            }
+
+
+
+
+                            {alllessoncompleted && (<button className="btn btn-success btn-outline" onClick={Downloadcertificate} >Download Certificate</button>)}
+                        </div>
+
+
+
                         <div className="mt-6">
                             <h1 className="text-2xl font-bold mb-4">Chat Room and Discussion Forum</h1>
 
@@ -422,184 +426,184 @@ console.log(alllessoncompleted);
 
                             </div>
                         </div>
-                    
-
-                    <div className="mt-6">
-                        <h1 className="text-2xl font-bold mb-4">Sections</h1>
-                        {
-                            course.enrolledusers?.includes(user.user.id) ? (
-                                <div className="max-h-[260px] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
 
 
-                                    {course?.sections?.length === 0 ? (
-                                        <p className="text-gray-500">No Sections Added Yet</p>
-                                    ) : (
-                                        <div style={{ scrollbarWidth: "none" }}>
-                                            {course?.sections?.map((s, index) => (
-                                                <motion.div key={index} className="collapse collapse-arrow bg-base-200 mb-2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: index * 0.1 }}>
-
-                                                    <input type="checkbox" />
-                                                    <div className="collapse-title text-md font-medium">
-                                                        {s.title || `Section ${index + 1}`}
-                                                    </div>
-
-                                                    <div className="collapse-content">
-                                                        {s?.lessons?.map((l, i) => {
-                                                            const coursep = courseprogress?.find(c => c.course === courseid)
-                                                            const iscompleted = coursep?.completedlesson?.includes(l.id)
+                        <div className="mt-6">
+                            <h1 className="text-2xl font-bold mb-4">Sections</h1>
+                            {
+                                course.enrolledusers?.includes(user.user.id) ? (
+                                    <div className="max-h-[260px] overflow-y-auto" style={{ scrollbarWidth: "none" }}>
 
 
-                                                            return (
+                                        {course?.sections?.length === 0 ? (
+                                            <p className="text-gray-500">No Sections Added Yet</p>
+                                        ) : (
+                                            <div style={{ scrollbarWidth: "none" }}>
+                                                {course?.sections?.map((s, index) => (
+                                                    <motion.div key={index} className="collapse collapse-arrow bg-base-200 mb-2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: index * 0.1 }}>
 
-                                                                <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="text-sm font-medium">{l.title}</span>
-                                                                        {iscompleted && (<TiTick className="text-primary" />)}
-                                                                    </div>
+                                                        <input type="checkbox" />
+                                                        <div className="collapse-title text-md font-medium">
+                                                            {s.title || `Section ${index + 1}`}
+                                                        </div>
 
-                                                                    <div className="flex gap-2 items-center">
-
-                                                                        <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(i ,s)}>Watch video</button>
-                                                                        {l.lecture && l.lecture.data.length > 0 ? (<a className="btn btn-xs btn-outline btn-primary relative r" href={`${import.meta.env.VITE_BASE_URL}/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
-                                                                        {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
-                                                                            state: { course: course, lessonid: l.id }
-                                                                        })}>Give a quiz</button>)}
-                                                                    </div>
-
-
-                                                                </motion.div>
-
-                                                            )
-
-                                                        })}
-                                                    </div>
-
-                                                </motion.div>
-                                            ))}
-                                        </div>
-                                    )}
+                                                        <div className="collapse-content">
+                                                            {s?.lessons?.map((l, i) => {
+                                                                const coursep = courseprogress?.find(c => c.course === courseid)
+                                                                const iscompleted = coursep?.completedlesson?.includes(l.id)
 
 
-                                </div>) : (<div>  <p className="text-sm text-gray-500">You have to enroll to watch videos</p> </div>
-                            )
-                        }
-                    </div>
+                                                                return (
+
+                                                                    <motion.div key={i} initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.3 }} className="flex items-center justify-between py-2 px-2 bg-base-100 rounded shadow-sm mb-1">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-sm font-medium">{l.title}</span>
+                                                                            {iscompleted && (<TiTick className="text-primary" />)}
+                                                                        </div>
+
+                                                                        <div className="flex gap-2 items-center">
+
+                                                                            <button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => handleplay(i, s)}>Watch video</button>
+                                                                            {l.lecture && l.lecture.data.length > 0 ? (<a className="btn btn-xs btn-outline btn-primary relative r" href={`${import.meta.env.VITE_BASE_URL}/api/lecture/${courseid}/sections/${index}/lessons/${l.id}/preview`} target="_blank" rel="noopener noreferrer">Preview Lecture PDF</a>) : ""}
+                                                                            {l.quiz.length > 0 && (<button className="btn btn-xs btn-outline btn-primary relative r" onClick={() => navigate(`/render-quiz`, {
+                                                                                state: { course: course, lessonid: l.id }
+                                                                            })}>Give a quiz</button>)}
+                                                                        </div>
 
 
+                                                                    </motion.div>
 
+                                                                )
 
-                    <motion.div className="space-y-4 mt-4" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                        {course.enrolledusers?.includes(user.user.id) ? (
-                            <div className="">
-                                <h1 className="text-2xl font-bold mb-2">Add Review</h1>
-                                <form onSubmit={addreview} className="">
-                                    <textarea type="text" className="textarea w-full" placeholder="Write your comment" onChange={(e) => setcomment(e.target.value)} value={comment} />
-                                    <div className="starability-slot mt-2">
+                                                            })}
+                                                        </div>
 
-                                        <input type="radio" id="rate1" value="1" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate1" title="terrible">1 stars</label>
-
-                                        <input type="radio" id="rate2" value="2" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate2" title="not good">2 stars</label>
-
-                                        <input type="radio" id="rate3" value="3" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate3" title="average">3 stars</label>
-
-                                        <input type="radio" id="rate4" value="4" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate4" title="very good">4 stars</label>
-
-                                        <input type="radio" id="rate5" value="5" name="rating" onChange={(e) => setrating(e.target.value)} />
-                                        <label htmlFor="rate5" title="amazing">5 stars</label>
-
-
-
-
-                                    </div>
-                                    <button type="submit" className="btn btn-sm btn-info relative bottom-5">Add</button>
-
-                                </form>
-                            </div>
-                        ) : (
-                            <div>
-                                <p className="text-sm text-gray-500">you have to enroll to comment</p>
-                            </div>
-                        )}
-
-                        <div>
-                            <h1 className="text-2xl font-bold mb-4">Reviews</h1>
-
-                            {reviews?.length === 0 ? (
-                                <p className="text-gray-500">No Reviews yet</p>
-                            ) : (
-                                <div className="max-h-89 overflow-y-auto space-y-3 p-2 bg-base-200 rounded-2xl shadow-xl scroll-smooth  " style={{ scrollbarWidth: "none" }} ref={reviewcontainer} >
-                                    {Array.isArray(reviews) && reviews?.map((r) => (
-                                        <div key={r._id} className="bg-base-100 p-4 rounded-2xl shadow flex flex-col gap-2">
-                                            <div className="flex gap-2">
-                                                <img src={r?.user?.avatar} alt="" className="object-cover h-7 w-7 rounded-full " />
-                                                <p>{r?.user?.name}</p>
+                                                    </motion.div>
+                                                ))}
                                             </div>
-
-                                            <div className="starability-result" data-rating={r.rating}></div>
-                                            <p>Comment : <strong>{r.comment}  </strong></p>
+                                        )}
 
 
-                                            {course?.enrolledusers?.includes(user.user.id) && (
-                                                <div className="flex gap-2">
-                                                    <button className="btn btn-error btn-sm" onClick={() => delr(r._id)}>Delete</button>
-                                                    <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/reviews/${r._id}/${courseid}`)}>Edit</button>
+                                    </div>) : (<div>  <p className="text-sm text-gray-500">You have to enroll to watch videos</p> </div>
+                                )
+                            }
+                        </div>
 
-                                                </div>
-                                            )}
+
+
+
+                        <motion.div className="space-y-4 mt-4" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                            {course.enrolledusers?.includes(user.user.id) ? (
+                                <div className="">
+                                    <h1 className="text-2xl font-bold mb-2">Add Review</h1>
+                                    <form onSubmit={addreview} className="">
+                                        <textarea type="text" className="textarea w-full" placeholder="Write your comment" onChange={(e) => setcomment(e.target.value)} value={comment} />
+                                        <div className="starability-slot mt-2">
+
+                                            <input type="radio" id="rate1" value="1" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                            <label htmlFor="rate1" title="terrible">1 stars</label>
+
+                                            <input type="radio" id="rate2" value="2" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                            <label htmlFor="rate2" title="not good">2 stars</label>
+
+                                            <input type="radio" id="rate3" value="3" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                            <label htmlFor="rate3" title="average">3 stars</label>
+
+                                            <input type="radio" id="rate4" value="4" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                            <label htmlFor="rate4" title="very good">4 stars</label>
+
+                                            <input type="radio" id="rate5" value="5" name="rating" onChange={(e) => setrating(e.target.value)} />
+                                            <label htmlFor="rate5" title="amazing">5 stars</label>
+
+
+
+
                                         </div>
-                                    ))}
+                                        <button type="submit" className="btn btn-sm btn-info relative bottom-5">Add</button>
 
+                                    </form>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="text-sm text-gray-500">you have to enroll to comment</p>
                                 </div>
                             )}
 
+                            <div>
+                                <h1 className="text-2xl font-bold mb-4">Reviews</h1>
+
+                                {reviews?.length === 0 ? (
+                                    <p className="text-gray-500">No Reviews yet</p>
+                                ) : (
+                                    <div className="max-h-89 overflow-y-auto space-y-3 p-2 bg-base-200 rounded-2xl shadow-xl scroll-smooth  " style={{ scrollbarWidth: "none" }} ref={reviewcontainer} >
+                                        {Array.isArray(reviews) && reviews?.map((r) => (
+                                            <div key={r._id} className="bg-base-100 p-4 rounded-2xl shadow flex flex-col gap-2">
+                                                <div className="flex gap-2">
+                                                    <img src={r?.user?.avatar} alt="" className="object-cover h-7 w-7 rounded-full " />
+                                                    <p>{r?.user?.name}</p>
+                                                </div>
+
+                                                <div className="starability-result" data-rating={r.rating}></div>
+                                                <p>Comment : <strong>{r.comment}  </strong></p>
+
+
+                                                {course?.enrolledusers?.includes(user.user.id) && (
+                                                    <div className="flex gap-2">
+                                                        <button className="btn btn-error btn-sm" onClick={() => delr(r._id)}>Delete</button>
+                                                        <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/reviews/${r._id}/${courseid}`)}>Edit</button>
+
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                    </div>
+                                )}
+
+                            </div>
+                        </motion.div>
+
+
+                        <div className="mt-4">
+                            <h1 className="text-2xl font-bold mb-4 ">Similar Courses</h1>
+
+                            {sim?.length === 0 ? (
+                                <div className="text-center space-y-2" >
+                                    <p className="text-error">No similar courses found</p>
+                                    <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm"> Home Page</button>
+                                </div>
+                            ) : (
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"  >
+                                    {sim?.map((w, i) => (
+                                        <motion.div key={w._id} className="card bg-base-100 shadow-xl "
+                                            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ duration: 0.4, delay: i * 0.1 }} >
+                                            <figure>
+                                                <img src={w?.thumbnail} alt="thumbnail" className="h-48 w-full object-cover" />
+                                            </figure>
+
+                                            <div className="card-body">
+                                                <p className="card-title text-xl font-semibold text-primary">{w.title}</p>
+                                                <p className="text-lg text-gray-700">Price : ₹{w.price}</p>
+                                                <p className="text-sm text-gray-500">Author : {w.instructor?.name}</p>
+                                            </div>
+
+                                            <div className="card-actions  mt-4 pr-3 pb-6">
+                                                <button className="btn btn-primary btn-sm w-full" onClick={() => navigate(`/course/${w._id}`)} >View Course</button>
+
+                                            </div>
+
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    </motion.div>
 
-
-                    <div className="mt-4">
-                        <h1 className="text-2xl font-bold mb-4 ">Similar Courses</h1>
-
-                        {sim?.length === 0 ? (
-                            <div className="text-center space-y-2" >
-                                <p className="text-error">No similar courses found</p>
-                                <button onClick={() => navigate(`/home`)} className="btn btn-primary btn-sm"> Home Page</button>
-                            </div>
-                        ) : (
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"  >
-                                {sim?.map((w, i) => (
-                                    <motion.div key={w._id} className="card bg-base-100 shadow-xl "
-                                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.4, delay: i * 0.1 }} >
-                                        <figure>
-                                            <img src={w?.thumbnail} alt="thumbnail" className="h-48 w-full object-cover" />
-                                        </figure>
-
-                                        <div className="card-body">
-                                            <p className="card-title text-xl font-semibold text-primary">{w.title}</p>
-                                            <p className="text-lg text-gray-700">Price : ₹{w.price}</p>
-                                            <p className="text-sm text-gray-500">Author : {w.instructor?.name}</p>
-                                        </div>
-
-                                        <div className="card-actions  mt-4 pr-3 pb-6">
-                                            <button className="btn btn-primary btn-sm w-full" onClick={() => navigate(`/course/${w._id}`)} >View Course</button>
-
-                                        </div>
-
-                                    </motion.div>
-                                ))}
-                            </div>
-                        )}
                     </div>
-
                 </div>
-            </div>
-        </motion.div>
-    </div>
-       
+            </motion.div>
+        </div>
+
     )
 }
 
