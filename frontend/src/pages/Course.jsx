@@ -330,7 +330,7 @@ const Course = () => {
         course?.enrolledusers?.includes(user.user.id) && completedlessonlength === totallessons
     )
 
-
+console.log(alllessoncompleted);
 
     const screenshot = course.screenshots?.find((s) => s.uploadedby === user.user.id)
     const approval = screenshot?.approval;
@@ -348,7 +348,7 @@ const Course = () => {
 
             {course?.announcement?.text?.length > 0 && course?.enrolledusers?.includes(user.user.id) && (<AnnouncementBanner announcement={course?.announcement} />)}
 
-            {alllessoncompleted && <Congratulation courseid={course._id} />}
+            {alllessoncompleted && (<h1>🎉Congratulations</h1>)}
 
 
             {
