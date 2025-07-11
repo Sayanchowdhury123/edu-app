@@ -8,7 +8,7 @@ const sendemail = require("../utils/sendemail");
 router.get("/dashboard", protect, isinstructor, async (req, res) => {
   try {
     const courses = await Course.find({ instructor: req.user._id })
-      .select("title price enrolledusers thumbnail reviews ")
+      .select("title price enrolledusers thumbnail reviews announcement ")
       .lean();
 
     res.status(200).json({
