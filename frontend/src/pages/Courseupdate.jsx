@@ -120,8 +120,8 @@ const Courseupdates = () => {
                                 <div className="card-body">
 
                                     <h1 className="card-title ">{course.title}</h1>
-                                    <p className="text-sm line-clamp-2">{course.description?.substring(0, 100)}</p>
-                                    <p className="text-sm text-gray-500">Price : ₹{course.price}</p>
+                                    
+                                    <p className="text-sm text-gray-500">Price : ₹{course.announcement.text}</p>
                                     <div className="card-actions justify-start mt-4">
                                         <Link className="btn btn-primary btn-sm" to={`/addupdate/${course._id}`}>
                                             Add Update

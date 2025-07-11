@@ -10,13 +10,14 @@ import io from "socket.io-client"
 const socket = io(import.meta.env.VITE_BASE_URL)
 
 const Editupdates = () => {
+    const location = useLocation()
 const {edittext} = location.state || {};
 const[text,settext] = useState(edittext)
 const navigate = useNavigate()
 const {user} = useContext(Authcontext)
 const {courseid} = useParams()
 
-const location = useLocation()
+
 
 
 
