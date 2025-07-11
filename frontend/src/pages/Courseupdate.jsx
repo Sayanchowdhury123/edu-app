@@ -87,7 +87,10 @@ const Courseupdates = () => {
                         Authorization: `Bearer ${user.user.token}`
                     }
             })
+           
+        setcourses(prev => prev.map(c => c._id === courseid ? {...c, announcement: {...c.announcement,text:""}} : c) )
             toast.success("removed announcement")
+
         
         } catch (error) {
             toast.error("failed to remove announcement")
