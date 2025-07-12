@@ -392,7 +392,7 @@ const Course = () => {
                                     }
 
                                 </div>
-                            ) : (<span></span>)}
+                            ) : ""}
 
 
 
