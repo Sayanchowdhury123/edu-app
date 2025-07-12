@@ -4,6 +4,8 @@ const Course = require("../models/course");
 const User = require("../models/user");
 const router = express.Router();
 const sendemail = require("../utils/sendemail");
+const Courseprogress = require("../models/courseprogress");
+const Quizresult = require("../models/quizresults");
 
 router.get("/dashboard", protect, isinstructor, async (req, res) => {
   try {
@@ -54,13 +56,13 @@ router.put(
   async (req, res) => {
     try {
       const course = await Course.findById(req.params.courseid).populate(
-      "screenshots.uploadedby screenshots.course",
-      "name email avatar title price"
-    );
+        "screenshots.uploadedby screenshots.course",
+        "name email avatar title price"
+      );
       if (!course) {
         return res.status(400).json("course not found");
       }
-        const user = await User.findById(req.user._id);
+      const user = await User.findById(req.user._id);
 
       const screenshot = course.screenshots.find(
         (s) => s._id.toString() === req.params.ssid.toString()
@@ -76,7 +78,6 @@ router.put(
           <p>Start learning now!</p> `;
 
       await sendemail(user.email, subject, html);
-    
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "failed to approve screenshot" });
@@ -91,9 +92,9 @@ router.put(
   async (req, res) => {
     try {
       const course = await Course.findById(req.params.courseid).populate(
-      "screenshots.uploadedby screenshots.course",
-      "name email avatar title price"
-    );
+        "screenshots.uploadedby screenshots.course",
+        "name email avatar title price"
+      );
       if (!course) {
         return res.status(400).json("course not found");
       }
@@ -101,7 +102,24 @@ router.put(
       const screenshot = course.screenshots.find(
         (s) => s._id.toString() === req.params.ssid.toString()
       );
+
+      if (!screenshot) {
+        return res.status(400).json("screenshot not found");
+      }
       screenshot.approval = false;
+
+      course.enrolledusers = course.enrolledusers.filter(
+        (s) => s._id.toString() !== screenshot.uploadedby._id.toString()
+      );
+     
+     
+      await Courseprogress.findOneAndDelete({
+        course: req.params.courseid,
+      });
+      await Quizresult.findOneAndDelete({
+        userid: screenshot.uploadedby._id,
+      });
+
       await course.save();
       res.status(200).json(screenshot);
     } catch (error) {
