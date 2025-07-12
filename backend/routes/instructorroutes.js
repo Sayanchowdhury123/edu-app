@@ -115,6 +115,7 @@ router.put(
      
       await Courseprogress.findOneAndDelete({
         course: req.params.courseid,
+        user: screenshot.uploadedby._id,
       });
       await Quizresult.findOneAndDelete({
         userid: screenshot.uploadedby._id,
