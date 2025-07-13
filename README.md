@@ -211,9 +211,7 @@ Email: sayanchoudhury506@gmail.com
 This project is open source and available under the MIT License.
 
 
----
 
-Let me know if you'd like me to include screenshots or deployment setup steps in more detail!
 
 
 
