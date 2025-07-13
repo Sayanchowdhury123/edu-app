@@ -1,4 +1,3 @@
-
 📚 Edu App – MERN Stack Course Platform
 
 An online course platform where instructors can create courses, and students can enroll, watch lecture videos, participate in quizzes, and receive course certificates after completion.
