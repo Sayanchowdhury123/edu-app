@@ -34,7 +34,7 @@ const Buycourse = () => {
 
                     }
                 })
-                console.log(res.data);
+                
                 toast.success("Screenshot sent")
                setfile("")
             } catch (error) {

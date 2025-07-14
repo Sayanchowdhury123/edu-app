@@ -63,11 +63,11 @@ const Course = () => {
             })
 
 
-            console.log(user);
+            
             setcourse(res.data)
-            //  console.log(res.data);
+            
 
-            console.log(user);
+            
         } catch (error) {
             console.log(error);
         } finally {
@@ -97,7 +97,7 @@ const Course = () => {
             setu(res.data)
 
 
-            //console.log(res.data);
+            
         } catch (error) {
             console.log(error);
         }
@@ -112,7 +112,7 @@ const Course = () => {
             })
 
             setcourseprogress(res.data)
-            // console.log(res.data);
+            
         } catch (error) {
             console.log(error);
         }
@@ -124,7 +124,7 @@ const Course = () => {
 
     useEffect(() => {
         fetchcourse();
-        // console.log(courseid);
+        
 
     }, [courseid])
 
@@ -223,7 +223,7 @@ const Course = () => {
             })
 
             setreviews(res.data.reviews)
-            // console.log(res.data.reviews);
+            
         } catch (error) {
             console.log(error);
         }
@@ -261,7 +261,7 @@ const Course = () => {
                 }
             })
             const id = res.data;
-            console.log(id);
+            
             setreviews((prev) => prev.filter(r => r._id?.toString() !== id?.toString()))
             // fetchcourse();
             toast.success("review deleted")
@@ -330,7 +330,7 @@ const Course = () => {
         course?.enrolledusers?.includes(user.user.id) && completedlessonlength === totallessons
     )
 
-    console.log(alllessoncompleted);
+    
 
     const screenshot = course.screenshots?.find((s) => s.uploadedby === user.user.id)
     const approval = screenshot?.approval;

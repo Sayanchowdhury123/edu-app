@@ -42,7 +42,7 @@ const Sessionlesson = () => {
             });
 
             setsections(res.data.sections)
-            console.log(res.data.sections);
+           // console.log(res.data.sections);
         } catch (error) {
             console.log(error);
             toast.error("failed to fetch sections")
@@ -77,7 +77,7 @@ const Sessionlesson = () => {
         const formdata = new FormData();
         formdata.append("title", data.title)
         formdata.append("video", data.videourl)
-        console.log(data);
+       // console.log(data);
 
         
      
@@ -96,7 +96,7 @@ const Sessionlesson = () => {
                 onUploadProgress: (ProgressEvent) => {
                     const percent = Math.round((ProgressEvent.loaded * 100) / ProgressEvent.total)
                     setuploadprogress(percent)
-                    console.log(uploadprogress);
+                   // console.log(uploadprogress);
                 }
             })
 
@@ -156,7 +156,7 @@ const Sessionlesson = () => {
 
     const deletsection = async (sectionindex) => {
         try {
-            console.log(sectionindex);
+          //  console.log(sectionindex);
             setdeleting(sectionindex)
             const res = await axiosinstance.delete(`/course/${courseid}/sections/${sectionindex}`, {
                 headers: {

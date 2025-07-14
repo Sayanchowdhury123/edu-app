@@ -28,7 +28,7 @@ const Createcourse = () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
-            console.log(res.data);
+            
             resetForm();
             toast.success("cousre created successsfully")
            navigate("/course-management")

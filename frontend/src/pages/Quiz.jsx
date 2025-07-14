@@ -28,7 +28,7 @@ const Quiz = () => {
 
             seto("")
             toast.success(` Added ${o}`)
-            console.log(options);
+           // console.log(options);
 
         }
     }
@@ -44,7 +44,7 @@ const addquiz = async () => {
 
             
             toast.success("quiz added")
-            console.log(res.data.course);
+          //  console.log(res.data.course);
             settile("")
             setque("")
             setans("")

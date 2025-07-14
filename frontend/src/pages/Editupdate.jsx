@@ -29,7 +29,7 @@ const addupdate = async () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
         })
-        console.log(res.data);
+       // console.log(res.data);
         toast.success("added announcement")
         navigate('/course-updates')
         let adata = res.data;

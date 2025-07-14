@@ -38,9 +38,9 @@ const Discussionforum = () => {
 
 
             setthreads(res.data)
-            console.log(res.data);
+            
 
-            //  console.log(user.user);
+            
         } catch (error) {
             console.log(error.response.data);
         } finally {
@@ -68,7 +68,7 @@ const Discussionforum = () => {
             setquestion("")
             setthreads((prev) => [...prev, res.data])
             toast.success("Thread Added")
-            console.log(res.data);
+        
             setcreatethrread(false)
             //  console.log(user.user);
         } catch (error) {
@@ -106,7 +106,7 @@ const Discussionforum = () => {
 
         try {
 
-            console.log(tid);
+            
             if (tid) {
                 const res = await axiosinstance.put(`/dis/thread/${tid}`, { title, question }, {
                     headers: {
@@ -116,11 +116,11 @@ const Discussionforum = () => {
 
 
 
-                console.log(res.data);
+                
                 settitle("")
                 setquestion("")
                 setthreads((prev) => prev.map(t => t._id === tid ? res.data : t))
-                console.log(res.data);
+            
                 setshowedit(false)
                 toast.success("Thrread edited")
             }
@@ -150,7 +150,7 @@ const Discussionforum = () => {
 
 
                 setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, isresolved: true } : t))
-                console.log(res.data);
+                
 
                 toast.success("Thrread is resolved")
             }
@@ -180,7 +180,7 @@ const Discussionforum = () => {
 
 
                 setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, isresolved: false } : t))
-                console.log(res.data);
+                
 
                 toast.success("Thread is unresolved")
             }
@@ -243,7 +243,7 @@ const Discussionforum = () => {
 
             setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, likes: res.data.likes } : t))
 
-            console.log(res.data);
+            
 
 
 
@@ -277,7 +277,7 @@ const Discussionforum = () => {
                 }
             })
 
-            console.log(res.data.likes.length);
+           // console.log(res.data.likes.length);
             setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, dislikes: res.data.dislikes } : t))
         } catch (error) {
             console.log(error.response.data);
@@ -296,7 +296,7 @@ const Discussionforum = () => {
             })
 
             setthreads((prev) => prev.map((t) => t._id === tid ? { ...t, dislikes: res.data.dislikes } : t))
-            console.log(res.data);
+          //  console.log(res.data);
 
             //  console.log(user.user);
         } catch (error) {

@@ -51,7 +51,7 @@ const Editcourse = () => {
                    category: data.category
                  })
 
-                console.log(data.price);
+              //  console.log(data.price);
               
             } catch (error) {
                 console.log("failed to fetch");
@@ -69,7 +69,7 @@ const Editcourse = () => {
                     Authorization: `Bearer ${user.user.token}`
                 }
             })
-            console.log(res.data);
+          //  console.log(res.data);
             resetForm();
             toast.success("cousre Edited successsfully")
            navigate("/course-management")

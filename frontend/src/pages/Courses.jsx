@@ -15,7 +15,7 @@ const Courses = () => {
             setloading(true)
             const res = await axiosinstance.get("/course")
             setcourses(res.data)
-            console.log(res.data);
+            
             //  console.log(res.data);
 
 

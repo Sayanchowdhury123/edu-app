@@ -34,9 +34,7 @@ const Comments = () => {
 
 
             setthread(res.data)
-            //console.log(res.data);
-            //);
-            //  console.log(user.user);
+          
         } catch (error) {
             console.log(error.response.data);
         } finally {
@@ -46,7 +44,7 @@ const Comments = () => {
 
     useEffect(() => {
         fetchthreads()
-        console.log(threadid);
+        
     }, [threadid])
 
 
@@ -67,9 +65,9 @@ const Comments = () => {
             settext("")
 
             toast.success("Comment Added")
-            console.log(res.data);
+            
 
-            //  console.log(user.user);
+            
         } catch (error) {
             console.log(error.response.data);
             toast.error("Failed to add Comment")
@@ -93,7 +91,7 @@ const Comments = () => {
             }))
             toast.success("Comment deleted")
 
-            //  console.log(user.user);
+            
         } catch (error) {
             console.log(error.response.data);
             toast.error("failed to delete Comment")
@@ -117,17 +115,17 @@ const Comments = () => {
 
 
 
-                //  console.log(res.data);
+            
                 settext("")
                 setthread((prev) => ({
                     ...prev, comment: prev.comment.map((c) => c._id === commentid ? { ...c, text } : c)
                 }))
-                console.log(res.data);
+                
                 setshowedit(false)
                 toast.success("Thrread edited")
             }
 
-            //  console.log(user.user);
+            
         } catch (error) {
             console.log(error.response.data);
             toast.error("failed to edit thraed")

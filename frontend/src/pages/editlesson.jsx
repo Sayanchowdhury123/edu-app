@@ -20,7 +20,7 @@ const Editlesson = () => {
   
 
     const editl = async (courseid,sectionindex,lessonid) => {
-       console.log(courseid);
+      // console.log(courseid);
         const formdata = new FormData();
         formdata.append("title", title)
         formdata.append("video", videourl)

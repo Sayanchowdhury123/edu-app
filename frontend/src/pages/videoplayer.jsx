@@ -234,13 +234,13 @@ const Videoplayer = () => {
 
     const skipforward = () => {
         const currenttime = playerref.current.getCurrentTime();
-        console.log(currenttime);
+       // console.log(currenttime);
         playerref.current.seekTo(currenttime + 10)
     }
 
     const skipbackward = () => {
         const currenttime = playerref.current.getCurrentTime();
-        console.log(currenttime);
+       // console.log(currenttime);
         playerref.current.seekTo(currenttime - 10)
     }
 

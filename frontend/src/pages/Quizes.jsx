@@ -29,7 +29,7 @@ const Quizes = () => {
                 }
             })
             setcourse(res.data)
-            console.log(res.data);
+          //  console.log(res.data);
             //  console.log(user.user);
         } catch (error) {
             console.log(error);
@@ -45,7 +45,7 @@ const Quizes = () => {
 
 
     const deletequiz = async (sectionindex, lessonid, quizid) => {
-        console.log(sectionindex, lessonid, quizid, courseid);
+       // console.log(sectionindex, lessonid, quizid, courseid);
         try {
             setdeleting(sectionindex)
             const res = await axiosinstance.delete(`quiz/${courseid}/sections/${sectionindex}/lessons/${lessonid}/q/${quizid}`, {
@@ -70,7 +70,7 @@ const Quizes = () => {
 
 
             toast.success("quiz removed")
-            console.log(res.data.course);
+           // console.log(res.data.course);
             
 
         } catch (error) {

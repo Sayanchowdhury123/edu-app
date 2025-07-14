@@ -41,7 +41,7 @@ const Cousremanagementpage = () => {
                 }
             })
             setcousre(res.data.courses)
-            console.log(res.data.courses);
+            
             //console.log(res.data.courses);
         } catch (error) {
             console.log("failed to fetch");

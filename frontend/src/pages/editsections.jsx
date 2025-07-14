@@ -14,7 +14,7 @@ const[sectiontitle,setsectiontitle] = useState("")
 const {user} = useContext(Authcontext)
 const navigate = useNavigate();
 
-   console.log(sectionindex);
+   //console.log(sectionindex);
  const editsection = async () => {
         try {
              const res = await axiosinstance.put(`/course/${courseid}/sections/${sectionindex}`,{title: sectiontitle} , {

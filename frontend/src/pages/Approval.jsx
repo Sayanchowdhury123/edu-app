@@ -30,8 +30,8 @@ const Approval = () => {
                 }
             })
             setscreenshots(res.data.screenshots)
-            console.log(res.data.screenshots);
-            //console.log(res.data.courses);
+            
+            
         } catch (error) {
             console.log("failed to fetch");
         } finally {
@@ -41,7 +41,7 @@ const Approval = () => {
 
     useEffect(() => {
         fetchinfo()
-        console.log(courseid);
+        
     }, [])
 
 
@@ -54,7 +54,7 @@ const Approval = () => {
                 }
             })
 
-            console.log(res.data);
+            
 
             setscreenshots((prev) => prev.map((s) => s._id === ssid ? res.data : s))
             toast.success("payment approved")

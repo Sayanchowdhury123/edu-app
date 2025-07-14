@@ -41,7 +41,7 @@ const Homepage = () => {
             setcourses(res.data)
             setfiltered(res.data)
             setsercharray(res.data)
-            console.log(user);
+           // console.log(user);
 
             const unique = [
                 "All", ...new Set(res.data.map((c) => c.category))
@@ -73,7 +73,7 @@ const Homepage = () => {
 
     useEffect(() => {
         if (location.state?.cat) {
-            console.log(location.state?.cat);
+           // console.log(location.state?.cat);
             if (location.state?.cat) {
                 catc();
             }

@@ -40,7 +40,7 @@ const Courseupdates = () => {
                            }
                        })
             setcourses(res.data.courses)
-            console.log(res.data.courses);
+
              
         } catch (error) {
             console.log(error);
@@ -64,7 +64,7 @@ const Courseupdates = () => {
             })
 
             setprofile(res.data)
-            console.log(res.data);
+        
         } catch (error) {
             console.log(error);
         }

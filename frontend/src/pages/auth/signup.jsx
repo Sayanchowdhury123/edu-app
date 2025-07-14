@@ -29,7 +29,7 @@ const Signup = () => {
     const handlesubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const res = await axiosinstance.post("/auth/register", values)
-            console.log(res.data);
+           // console.log(res.data);
             resetForm();
             toast.success("Register successsfully")
             navigate("/login")

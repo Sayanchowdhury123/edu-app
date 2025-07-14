@@ -30,7 +30,7 @@ const RenderQuiz = () => {
     const [current, setCurrent] = useState(0);
     const q = questions[current];
 
-  console.log(q);
+ // console.log(q);
 
     const next = () => {
         if (current < questions.length - 1) setCurrent(current + 1);
@@ -75,7 +75,7 @@ const RenderQuiz = () => {
                         }
                     })
 
-                    console.log(res.data);
+                   // console.log(res.data);
 
 
 

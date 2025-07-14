@@ -11,7 +11,7 @@ const [show,setshow] = useState(true)
         return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     }
 
-console.log(announcement);
+
   if (!announcement) return null;
 
   return (

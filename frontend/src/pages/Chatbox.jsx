@@ -36,7 +36,7 @@ const Chatbox = () => {
                 }
             })
             setcourse(res.data)
-            //console.log(res.data);
+            
 
         } catch (error) {
             console.log(error);
@@ -45,19 +45,19 @@ const Chatbox = () => {
 
     useEffect(() => {
         fetchcourse()
-       // console.log(user.user.token);
+       
     }, [])
 
     useEffect(() => {
         socket.emit("join-room", courseid)
 
         socket.on("receive-message", (data) => {
-            console.log(data);
+            
             setmessages((prev) => [...prev, data])
         })
 
         socket.on("r-edit", (message) => {
-            //  console.log(message);
+            
             setmessages((prev) => prev.map((msg) => msg?._id === message?._id ? message : msg))
         })
 
@@ -82,8 +82,8 @@ const Chatbox = () => {
             })
 
             setmessages(res.data)
-            console.log(res.data);
-           // console.log(res.data);
+            
+           
         } catch (error) {
             console.log(error);
         }
@@ -91,7 +91,7 @@ const Chatbox = () => {
 
     useEffect(() => {
         fetchmessgaes();
-        //  console.log(courseid);
+        
          
     }, [courseid])
 
@@ -152,8 +152,8 @@ const Chatbox = () => {
                 })
                  
                  const textupdated = res.data;
-                 console.log(textupdated);
-                // console.log(textupdated);
+                
+                
                  socket.emit("edit", {courseid, textupdated} )
               
                 setshowedit(false)

@@ -31,7 +31,7 @@ const[loading,setloading] = useState(false)
             }
         })
        setstats(res.data)
-       console.log(res.data);
+     //  console.log(res.data);
     } catch (error) {
         console.log("failed to fetch");
     }finally{
